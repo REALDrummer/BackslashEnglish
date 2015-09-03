@@ -1,1 +1,808 @@
-/home/connor/\English/gedit coloring/\English.lang
+<?xml version="1.0" encoding="UTF-8"?>
+<language id="beng" _name="\English" version="2.0" _section="Sources">
+	<metadata>
+	  <property name="globs">*.beng;*.blib</property>
+	</metadata>
+
+	<styles>
+		<style id="linked"			_name="Linked"			  map-to="def:underlined"/>
+		<style id="comment"		   _name="Comment"			 map-to="def:comment"/>
+		<style id="error"			 _name="Error"			   map-to="def:error"/>
+		<style id="string"			_name="String"			  map-to="def:string"/>
+		<style id="preprocessor"	  _name="Preprocessor"		map-to="def:preprocessor"/>
+		<style id="operator-definition-special" _name="Operator Definition Special"		map-to="def:preprocessor"/>
+		<style id="function"		_name="Function"			map-to="def:function"/>
+		<style id="common-defines"	_name="Common Defines"	  map-to="def:special-constant"/>
+		<style id="included-file"	 _name="Included File"	   map-to="def:string"/>
+		<style id="char"			  _name="char"		   map-to="def:character"/>
+		<style id="key-op"			_name="Keyword"			 map-to="def:keyword"/>
+		<style id="type"			  _name="Data Type"		   map-to="def:type"/>
+		<style id="escaped-char" _name="Escaped char"   map-to="def:special-char"/>
+		<style id="regex-special-char"  _name="Regex escaped char" map-to="def:preprocessor"/>
+		<style id="floating-point"	_name="Floating point number" map-to="def:floating-point"/>
+		<style id="binary"			_name="Binary number"	   map-to="def:base-n-integer"/>
+		<style id="decimal"		   _name="Decimal number"	  map-to="def:decimal"/>
+		<style id="octal"			 _name="Octal number"		map-to="def:base-n-integer"/>
+		<style id="hexadecimal"	   _name="Hexadecimal number"  map-to="def:base-n-integer"/>
+		<style id="bit"			   _name="Bit value"		   map-to="def:boolean"/>
+	</styles>
+
+	<definitions>
+		<define-regex id="escaped-char" extended="true">
+			\\(						# leading backslash
+			[\\\"`nrtfav0]|			# escaped char; note that \b is gone to avoid conflict with regex's word boundary, the single quote is not present because it never needs to be escaped, and the question mark is not present because there are no trigraphs in this language
+			u[0-9A-Fa-f]{4}|		# 'u' followed by 4 hex digits
+			U[0-9A-Fa-f]{8}|		# 'U' followed by 8 hex digits
+			x[0-9A-Fa-f]+(\\x)?		# 'x' followed by hex digits optionally ending with another "\x"
+			)
+		</define-regex>
+
+		<context id="beng" class="no-spell-check">
+			<include>
+				<!-- the all-escaping backslash -->
+				<context id="escaping-backslash">
+					<match>(\\).</match>
+					<include>
+						<context sub-pattern="1" style-ref="escaped-char"/>
+					</include>
+				</context>
+				
+				<!-- comments -->
+				<context id="comment" style-ref="comment" end-at-line-end="true" class="comment" class-disabled="no-spell-check">
+					<start>#+-</start>
+
+					<include>
+					  <context ref="def:in-line-comment"/>
+					</include>
+				</context>
+
+				<context id="comment-multiline" style-ref="comment" class="comment" class-disabled="no-spell-check">
+					<start>#+&lt;</start>
+					<end>>#+</end>
+					<include>
+						<!-- this self-reference allows for nested comments! -->
+						<context ref="comment-multiline"/>
+						<context ref="def:in-comment"/>
+					</include>
+				</context>
+
+				<!-- strings and chars -->
+				 <context id="string" end-at-line-end="true" class="string" class-disabled="no-spell-check">
+					<start>"</start>
+					<end>"</end>
+					<include>
+						<context sub-pattern="0" where="start" style-ref="string"/>
+						<context sub-pattern="0" where="end" style-ref="string"/>
+						<context id="string-interior">
+							<include>
+								<context id="metaquote" style-ref="escaped-char" end-at-line-end="true">
+									<start>\\Q</start>
+									<end>\\E</end>
+									<include>
+										<context ref="def:line-continue"/>
+									</include>
+								</context>
+								<context id="escaped-char" style-ref="escaped-char">
+									<match>\%{escaped-char}</match>
+								</context>
+								<context id="string-backtick-insertion">
+									<start>`</start>
+									<end>`</end>
+									<include>
+										<context sub-pattern="0" where="start" style-ref="string"/>
+										<context sub-pattern="0" where="end" style-ref="string"/>
+										<context ref="beng"/>
+									</include>
+								</context>
+								<context id="invalid-escape" style-ref="error">
+									<match extended="true">\\(
+										[uU][A-Fa-f0-9]*|
+										.
+									)</match>
+								</context>
+								<context id="string-literal" style-ref="string">
+									<!-- match any character not captured by one of the special cases above as a plain string character; exclude matching quotes to avoid context-stealing the string's terminating quote (and remember that escaped quotes will be caught by the escaped character context above anyway) -->
+									<match>[^"]</match>
+								</context>
+							</include>
+						</context>
+					</include>
+				</context>
+				
+				<define-regex id="regex-escaped-char" extended="true">
+					\\[bBSsWwDd\d]
+				</define-regex>
+				
+				<define-regex id="regex-capturing-group-starter" extended="true">
+					\((				# all types of capturing groups start with a parenthese
+						(?!\?)|		# a plain opening parenthese may begin a capturing group without a "?" following
+						\?'.+?'		# named groups are also capturing groups
+					)
+				</define-regex>
+				
+				<define-regex id="regex-special-group-starter" extended="true">
+					\(\?(
+						'.+?'|				# named groups, which are also capturing groups
+						:|					# non-capturing groups (which are really just special mode groups)
+						[ismx]*(-[ismx]+)?	# mode groups with flags specified
+						(:|(?=\)))|			# with mode groups, ensure that the flags either end with a colon to continue the group or they are followed immediately by the closing parenthese to apply to the remainder of the regex
+						[&lt;&gt;][=!]		# positive/negative lookahead/lookbehind groups
+					)
+				</define-regex>
+				
+				<define-regex id="regex-consistent-special-char" extended="true">
+					(?!\\[Bb])					# exclude \b and \B since they are not special in char classes
+					\%{regex-escaped-char}		# all other escaped characters, e.g. \S and \d, are special everywhere
+				</define-regex>
+				
+				<define-regex id="regex-outside-char-class-special-char" extended="true">
+					\%{regex-consistent-special-char}|
+					\%{regex-special-group-starter}|
+					[|+*{}$?^.]
+				</define-regex>
+				
+				<define-regex id="container-char" extended="true">
+					[(){}[\]]
+				</define-regex>
+				
+				<context id="regex" end-at-line-end="true">
+					<start>(?=/")</start>
+					<end>"/</end>
+					<include>
+						<context sub-pattern="0" where="end" style-ref="char"/>
+						<context id="regex-string-interior">
+							<include>
+								<context id="regex-group-interior">
+									<include>
+										<context id="regex-specials">
+											<include>
+												<context ref="metaquote"/>
+												<context ref="escaped-char"/>
+												<context id="regex-escaped-special-char">
+													<match>(\\)((?!\\)\%{regex-outside-char-class-special-char}|[()[\]])</match>
+													<include>
+														<context sub-pattern="1" style-ref="escaped-char"/>
+														<context sub-pattern="2" style-ref="char"/>
+													</include>
+												</context>
+												<context id="regex-string-backtick-insertion">
+													<start>`</start>
+													<end>`</end>
+													<include>
+														<context sub-pattern="0" where="start" style-ref="char"/>
+														<context sub-pattern="0" where="end" style-ref="char"/>
+														<context ref="beng"/>
+													</include>
+												</context>
+												<context id="regex-char-class">
+													<start extended="true">
+														\[\^?
+														(?=([^"]|"(?!/))*?\])		# ensure that the group ends before the regex string does
+													</start>
+													<end extended="true">
+														\]|					# end normally on an unescaped closing bracket
+														(?="/)					# end when the regex string ends with a quote-slash backtick
+													</end>
+													<include>
+														<context sub-pattern="0" where="start" style-ref="regex-special-char"/>
+														<context sub-pattern="0" where="end" style-ref="regex-special-char"/>
+														<context id="regex-char-class-special-char" style-ref="regex-special-char">
+															<match>(?!\])\%{regex-consistent-special-char}</match>
+														</context>
+														<context id="regex-char-class-range-dash">
+															<start extended="true">
+																(.(?=-[^\]]))|		# capture a character to ensure that there's a character to start the range
+																(?=(\%{escaped-char}|\%{regex-consistent-special-char})-[^\]])	# there's also a chance that the first character in the range was a special character, in which case we'll have to capture it, but we can capture the	whole escape sequence and include its context to color it as well
+															</start>
+															<end>-</end>
+															<include>
+															<context sub-pattern="0" where="start" style-ref="string"/>
+																<context sub-pattern="0" where="end" style-ref="regex-special-char"/>
+																<context ref="escaped-char"/>
+																<context ref="regex-escaped-special-char"/>
+																<context ref="regex-char-class-special-char"/>
+															</include>
+														</context>
+														<context ref="regex-string-backtick-insertion"/>
+														<context ref="escaped-char"/>
+														<context id="regex-char-class-literal-char" style-ref="string">
+															<match>[^\]"]|"(?!/)</match>
+														</context>
+													</include>
+												</context>
+												<context id="regex-incorrect-special-group">
+													<start extended="true">
+														(?!\%{regex-special-group-starter})\(\?
+													</start>
+													<end>\)|(?="/)</end>
+													<include>
+														<context sub-pattern="0" where="start" style-ref="error"/>
+														<context sub-pattern="0" where="end" style-ref="regex-special-char"/>
+														<context ref="regex-group-interior"/>
+													</include>
+												</context>
+												<context id="regex-capturing-group" style-ref="linked">
+													<start extended="true">
+														\%{regex-capturing-group-starter}
+														(?=([^"]|"(?!/))*?\))		# ensure that the capturing group ends before the regex string does
+													</start>
+													<end>\)</end>
+													<include>
+														<context sub-pattern="0" where="start" style-ref="regex-special-char"/>
+														<context sub-pattern="0" where="end" style-ref="regex-special-char"/>
+														<context ref="regex-group-interior"/>
+														<context id="regex-group-mismatched-char" style-ref="error">
+															<!-- since the normal mismatched character context also matches the parenthese we need to close the regex group, in here, we'll match all container chars except the closing parenthese as a mismatched character -->
+															<match>(?!\))\%{container-char}</match>
+														</context>
+													</include>
+												</context>
+												<context id="regex-group">
+													<!-- This group's whole purpose is to ensure parenthese matching works. -->
+													<start extended="true">
+														(\%{regex-special-group-starter}|\()
+														(?=([^"]|"(?!/))*?\))		# ensure that the capturing group ends before the regex string does</start>
+													<end>\)</end>
+													<include>
+														<context sub-pattern="0" where="start" style-ref="regex-special-char"/>
+														<context sub-pattern="0" where="end" style-ref="regex-special-char"/>
+														<context ref="regex-group-interior"/>
+														<context ref="regex-group-mismatched-char"/>
+													</include>
+												</context>
+												<define-regex id="regex-quantifier-input" extended="true">
+													`.+`|	# a backtick inserted string, regex string, or unsigned int
+													\d+|	# a literal unsigned integer
+													".*?"|	# a literal string
+													/".*?"/	# a literal regex string
+												</define-regex>
+												<context id="regex-quantifier-range">
+													<start extended="true">
+														\{		# start on an opening brace
+														(?=		# ensure that the contents of the range have the correct format
+															\s*\%{regex-quantifier-input}
+															\s*(,			## optionally follow with a comma
+																\s*(
+																	\%{regex-quantifier-input}\s*	## optionally follow the comma with another parameter
+																)?
+															){0,2}
+														\})		## ...and, of course, end with a closing brace
+													</start>
+													<end>\}</end>
+													<include>
+														<context sub-pattern="0" where="start" style-ref="regex-special-char"/>
+														<context sub-pattern="0" where="end" style-ref="regex-special-char"/>
+														<context ref="string"/>
+														<context ref="regex"/>
+														<context ref="regex-string-backtick-insertion"/>
+														<context ref="regex-string-literal"/>
+													</include>
+												</context>
+												<context id="regex-incorrect-quantifier-range" style-ref="error">
+													<match>\{.*?\}</match>
+												</context>
+												<context id="regex-outside-char-class-special-char" style-ref="regex-special-char">
+													<match>\%{regex-outside-char-class-special-char}</match>
+												</context>
+												<context ref="invalid-escape"/>
+											</include>
+										</context>
+										<context id="regex-string-literal" style-ref="char">
+											<!-- match any character not covered by the special groups above, but avoid capturing the regex string's terminating quote-slash or the regex string will never end; also don't match parentheses or other container characters to avoid stealing context from the mismatched character error marker -->
+											<match>(?!\%{container-char})[^"]|"(?!/)</match>
+										</context>
+									</include>
+								</context>
+								<context id="mismatched-char" style-ref="error">
+									<!-- container chars are all associated with a context of some sort, so if one is not matched to one of those, it must be a mismatch -->
+									<match>\%{container-char}</match>
+								</context>
+							</include>
+						</context>
+					</include>
+				</context>
+				
+				<context id="escaped-char-literal" style-ref="char">
+					<match>'(\%{escaped-char})'</match>
+					<include>
+						<context sub-pattern="1" style-ref="escaped-char"/>
+					</include>
+				</context>
+				
+				<context id="invalid-escaped-char" style-ref="char">
+					<match>'(\\.+?)'</match>
+					<include>
+						<context sub-pattern="1" style-ref="error"/>
+					</include>
+				</context>
+				
+				<context id="plain-char" style-ref="char">
+					<match>'.'</match>
+				</context>
+
+				<!-- special paths, e.g. e-mails or files or links -->
+				<define-regex id="domain-name-char">\w|%[a-fA-F0-9]{2}</define-regex>
+				
+				<context id="paths" style-ref="linked">
+					<match extended="true">(?&lt;!\\)(
+						\w+([-+.']\w+)*@([-.]\w+)*\.\w+([-.]\w+)*|		# e-mail address
+						[a-zA-Z]+://									# U.R.L.: derived from Diego Perini's
+						(\S+(:\S*)?@)?(									## optional user:password identification
+							(\d{1,3}(\.\d{1,3}){3})|					### I.P. address domain OR
+							((\%{domain-name-char}-*)*\%{domain-name-char}+\.)?	### domain name
+							(\%{domain-name-char}-*)*\%{domain-name-char}+
+							\.\%{domain-name-char}{2,}
+						)(:\d{2,5})?									## optional port number
+						([/?\#]\S*)?									## optional resource path
+					)</match>
+				</context>
+				
+				<define-regex id="file-path-char">[^\s()/:*?"&lt;&gt;|]|\\[\s()]</define-regex>
+				
+				<context id="file-path" style-ref="linked">
+					<match extended="true">(
+							(\b[A-Z]:|\.+|(?&lt;=\bstdlib\b))/|	# start with a slash preceded by a Windows letter drive, one or more dots for relative directories, or the "stdlib" key-op OR
+							(?&lt;!\w)/(?=[A-Za-z]+)		# start with a slash for a *nix root followed by at least one letter
+						)
+						(\%{file-path-char}+/)*
+						(\%{file-path-char}+)
+						(?&lt;!\.)								# ensure that it doesn't end in a dot
+					</match>
+				</context>
+
+				<!-- numbers -->
+				<context id="float" style-ref="floating-point">
+					<match extended="true">
+						(?&lt;!\w)(
+						([0-9]*\.[0-9]+)([Ee][+-]?[0-9]+)?
+						)(?!\w)
+					</match>
+				</context>
+
+				<context id="hexadecimal" style-ref="hexadecimal">
+					<match extended="true">
+						(?&lt;![\w\.])
+						0[xX][a-fA-F0-9]+
+						(?!\w)
+					</match>
+				</context>
+
+				<context id="octal" style-ref="octal">
+					<match extended="true">
+						(?&lt;![\w\.])
+						0[oO][0-7]+
+						(?!\w)
+					</match>
+				</context>
+
+				<context id="decimal" style-ref="decimal">
+					<match extended="true">
+						(?&lt;![\w\.])
+						[0-9]+([Ee][+-]?[0-9]+)?
+						(?!\w)
+					</match>
+				</context>
+				
+				<context id="binary" style-ref="binary">
+					<match extended="true">
+						(?&lt;![\w\.])
+						0[bB][01]+
+						(?!\w)
+					</match>
+				</context>
+				
+				<!-- operator definitions -->
+				<context id="operator-definition-with-body">
+					<start>\bdefine\b</start>
+					<end>;</end>
+					<include>
+						<context sub-pattern="0" where="start" style-ref="key-op"/>
+						<context sub-pattern="0" where="end" style-ref="function"/>
+						<context id="operator-definition">
+							<include>
+								<context id="operator-definition-specials" style-ref="operator-definition-special">
+									<match extended="true">(?&lt;!\w)(
+										\\[0-9]+\b|			# regex capturing group used in operator definition bodies
+										@(\w+)?				# type matching in operator definitions and their bodies
+									)</match>
+								</context>
+								<context id="operator-definition-return-type-and-regex">
+									<start>&lt;(?=.+?>)</start>
+									<end>(?=:)</end>
+									<include>
+										<context sub-pattern="0" where="start" style-ref="function"/>
+										<context id="operator-definition-regex">
+											<start>(?&lt;!=)>(?!=)</start>
+											<end>(?=:)</end>
+											<include>
+												<context sub-pattern="0" where="start" style-ref="function"/>
+												<context id="operator-definition-escaped-special-char">
+													<match>(\\)(\%{regex-outside-char-class-special-char}|[&lt;: ()[\]])</match>
+													<include>
+														<context sub-pattern="1" style-ref="escaped-char"/>
+													</include>
+												</context>
+												<context ref="operator-definition-specials"/>
+												<context id="operator-definition-capturing-group" style-ref="linked">
+													<start extended="true">
+														\%{regex-capturing-group-starter}
+														(?=([^:])*?\))		# ensure that the capturing group ends before the operator definition does						
+													</start>
+													<end>\)</end>
+													<include>
+														<context sub-pattern="0" where="start" style-ref="regex-special-char"/>
+														<context sub-pattern="0" where="end" style-ref="regex-special-char"/>
+														<context ref="operator-definition-escaped-special-char"/>
+														<context ref="operator-definition-specials"/>
+														<context ref="operator-definition-capturing-group"/>
+														<context ref="operator-argument"/>
+														<context ref="regex-specials"/>
+														<context ref="regex-group-mismatched-char"/>
+													</include>
+												</context>
+												<context id="operator-argument">
+													<start>&lt;</start>
+													<end>(?&lt;!=)>(?!=)</end>
+													<include>
+														<context sub-pattern="0" where="start" style-ref="operator-definition-special"/>
+														<context sub-pattern="0" where="end" style-ref="operator-definition-special"/>
+														<context ref="operator-definition-specials"/>
+														<!-- the all-escaping \English backslash covers escaped closing angle brackets -->
+														<context ref="beng"/>
+													</include>
+												</context>
+												<context ref="regex-specials"/>
+												<context ref="mismatched-char"/>
+											</include>
+										</context>
+										<context ref="operator-definition-specials"/>
+										<context ref="beng"/>
+									</include>
+								</context>
+								<context ref="beng"/>
+							</include>
+						</context>
+						<context id="operator-body">
+							<start>:</start>
+							<end>(?=;)</end>
+							<include>
+								<context sub-pattern="0" where="start" style-ref="function"/>
+								<context id="operator-body-interior">
+									<include>
+										<context id="is-given-operator" style-ref="key-op">
+											<match>is\s+(not\s+)?given</match>
+										</context>
+										<!-- this context ensures that the ending semicolon is matched properly -->
+										<context id="block">
+											<start>:(?!=)</start>
+											<end>;</end>
+											<include>
+												<context ref="operator-body-interior"/>
+												<context ref="beng"/>
+											</include>
+										</context>
+										<context ref="operator-definition-specials"/>
+										<context ref="beng"/>
+									</include>
+								</context>
+							</include>
+						</context>
+					</include>
+				</context>
+				
+				<context id="template-operator-definition">
+					<start extended="true">
+						\btemplate\b
+						(?=[^>]*?&lt;.+?>.+?:)	# ensure that the stuff after it looks like an operator declaration to differentiate from its use as a modifier
+					</start>
+					<end>:</end>
+					<include>
+						<context sub-pattern="0" where="start" style-ref="common-defines"/>
+						<context sub-pattern="0" where="end" style-ref="function"/>
+						<context ref="operator-definition"/>
+					</include>
+				</context>
+				
+				<!-- TODO TEMP CMT
+				<context id="where-operator-definitions">
+					<start>\bwith\b</start>
+					<end>:=</end>
+					<include>
+						<context sub-pattern="0" where="start" style-ref="common-defines"/>
+						<context sub-pattern="0" where="end" style-ref="function"/>
+						<context ref="operator-definition"/>
+					</include>
+				</context> -->
+				
+				<!-- stdlib basic operators -->
+				<context id="switch-case">
+					<start>(switch(\s+by)?)(?=.+?:)</start>
+					<end>(?&lt;=;)</end>
+					<include>
+						<context sub-pattern="1" where="start" style-ref="common-defines"/>
+						<context id="case">
+							<start>(case)(?=.+?:)</start>
+							<end>(?&lt;=;)</end>
+							<include>
+								<context sub-pattern="1" where="start" style-ref="common-defines"/>
+								<context ref="case"/>
+								<context id="default-case">
+									<start>(default|otherwise|else):</start>
+									<end>(?=;)</end>
+									<include>
+										<context sub-pattern="1" where="start" style-ref="common-defines"/>
+										<context ref="beng"/>
+									</include>
+								</context>
+								<context ref="beng"/>
+							</include>
+						</context>
+					</include>
+				</context>
+
+				<context id="basic-operators" style-ref="common-defines" class="common-defines">
+					<match extended="true">\b(
+						is(\s+an?)?|
+						to|
+						if|
+						else|
+						while|
+						for(\s+(each|any))?|
+						from|
+						do(\s+nothing)?|
+						times|
+						((read|write)-)?(
+							public|
+							protected|
+							packaged|
+							private
+						)|
+						templates?|
+						var(iable)?s?|
+						(is\s+)?in|
+						contains|
+						(b(itwise)?-)?(
+							n?and|
+							x?n?or
+						)|
+						n?either|
+						both|
+						true|yes|on|
+						false|no|off|
+						a(\s+or\s+|/)an|
+						map(?!\[|\s*of)(?=.+?to)|
+						return|
+						overridden|
+						strict|
+						(an\s+)?empty\s+list|
+						is\s+empty|
+						(the\s+)?current\s+time(\s+of\s+day)?|
+						forever|
+						when|
+						after|
+						throw(\s+an?)?|
+						try(\s+to)?|
+						(and\s+)?catch(\s+any)?|
+						print|
+						swap|switch		# this switch is an alias for "swap"; it is different from the switch-case setup
+					)\b</match>
+				</context>
+				
+				<context id="saying-word-in-throws">
+					<match>(errors?|warnings?)\s+(saying)</match>
+					<include>
+						<context sub-pattern="1" style-ref="key-op"/>
+						<context sub-pattern="2" style-ref="common-defines"/>
+					</include>
+				</context>
+				
+				<!-- more key operators -->
+				<context id="key-ops" style-ref="key-op">
+					<match extended="true">\b(
+						as(\s+an?)?|
+						run|
+						using|
+						with|
+						op(erator)?s?|
+						modifiers?|
+						types?(\s+of)?|
+						(a\s+)?new|
+						(a\s+)?new\s+type\s+of|
+						(new\s+)?types\s+of|
+						(copies|clones)\s+of|
+						(a\s+)?(copy|clone)(\s+of)?|
+						((return|enviro)-)?final|
+						(super-)?implicit|
+						priority-(?=\S)|
+						alias|
+						null|
+						bits?|
+						ignore(?=.+?warnings?)|
+						warnings?|
+						errors?|
+						use|
+						stdlib
+					)\b</match>
+				</context>
+				
+				<!-- stdlib basic types -->
+				<context id="types" style-ref="type" class="type">
+					<match extended="true">(?&lt;!\\)\b(
+						(
+							thing|
+							((un)?signed\s+|u)?(double\s+|d)?(
+								number|
+								int(eger)?|
+								byte|
+								float)|
+							stream|
+							((exec(utable)?|data?|binary|text|random\s+access)\s+)?file|RAF|R\.A\.F\.|
+							char(acter)?|
+							string|
+							((array|hash)\s+)?map|
+							warning|
+							error|
+							enum(\s+value)?|
+							time(\s+of\s+day)?\s+interval|
+							duration
+						)s?|(
+							collection|
+							list|
+							array|
+							((AVL|A\.V\.L\.|red(-|\s+)black|RB|R.B.|binary(\s+search)?)\s+)?tree|BST|B\.S\.T\.|
+							tuple)
+						s?(\s+of)?|
+						process(es)?|
+						times?\s+of\s+day
+					)\b</match>
+				</context>
+				
+				<!-- asm terms -->	 
+				<!-- in the future, just make asm create a context that uses nasm highlighting -->  
+				<context id="NASM" style-ref="key-op">
+					<match extended="true">
+					(asm|ASM)			# the unescaped ASM directive "keyword"
+					(\s+\.?\w+:?)?		# an optional assembly label
+					(\s+(
+						aa[asdm]|AA[ASDM]|
+						adc|ADC|
+						add|ADD|
+						and|AND|
+						bound|BOUND|
+						bs[fr]|BS[FR]|
+						bswap|BSWAP|
+						bt[crs]?|BT[CRS]?|
+						call|CALL|
+						c(bw|wd|dq|wde)|C(BW|WD|DQ|WDE)|
+						cl([cdi]|ts)|CL([CDI]|TS)|
+						cmc|CMC|
+						cmp(s[bwd])?|CMP(S[BWD])?|
+						da[as]|DA[AS]|
+						dec|DEC|
+						div|DIV|
+						enter|ENTER|
+						f2xm1|F2XM1|
+						fabs|FABS|
+						faddp?|FADDP?|
+						fb(ld|stp)|FB(LD|STP)|
+						fchs|FCHS|
+						fclex|FCLEX|
+						fcomp{0,2}|FCOMP{0,2}|
+						fcos|FCOS|
+						fdecstp|FDECSTP|
+						fn?(en|dis)i|FN?(EN|DIS)I|
+						fdivr?p?|FDIVR?P?|
+						ffree|FFREE|
+						fiadd|FIADD|
+						ficomp?|FICOMP?|
+						fidivr?|FIDIVR?|
+						fi(ld|stp?)|FI(LD|STP?)|
+						fimul|FIMUL|
+						fincstp|FINCSTP|
+						fn?init|FN?INIT|
+						fisubr?|FISUBR?|
+						fld(1|l2e|l2t|lg2|ln2|pi|2)|FLD(1|L2E|L2T|LG2|LN2|PI|2)|
+						fld(cw|env)|FLD(CW|ENV)|
+						fmulp?|FMULP?|
+						fpa?tan|FPA?TAN|
+						fprem1?|FPREM1?|
+						frndint|FRNDINT|
+						f(n?save|rstor)|F(N?SAVE|RSTOR)|
+						fscale|FSCALE|
+						fsin(cos)?|FSIN(COS)?|
+						fsqrt|FSQRT|
+						fstp?|FSTP?|
+						fst(cw|env)|FST(CW|ENV)|
+						fsubp?r?|FSUBP?R?|
+						ftst|FTST|
+						fucom[pi]?p?|FUCOM[PI]?P?|
+						fxam|FXAM|
+						fxch|FXCH|
+						fxtract|FXTRACT|
+						hlt|HLT|
+						idiv|IDIV|
+						imul|IMUL|
+						in|IN|
+						inc|INC|
+						ins[bwd]|INS[BWD]|
+						int(o|3|0?1)?|INT(O|3|0?1)?|
+						invd|INVD|
+						invlpg|INVLPG|
+						iret[wd]|IRET[WD]|
+						je?cxz|JE?CXZ|
+						jmp|JMP|
+						j((n?[osezbcalgp]|[abgl]e)|p[eo])|J((N?[OSEZBCALGP]|[ABGL]E)|P[EO])|
+						lahf|LAHF|
+						lar|LAR|
+						l[d-gs]s|L[D-GS]S|
+						lea|LEA|
+						leave|LEAVE|
+						l[gil]dt|L[GIL]DT|
+						lmsw|LMSW|
+						lods[bwd]|LODS[BWD]|
+						loop(n?[ez])?|LOOP(N?[EZ])?|
+						lsl|LSL|
+						ltr|LTR|
+						mov[dq]?|MOV[DQ]?|
+						movs[bwd]|MOVS[BWD]|
+						mov[sz]x|MOV[SZ]X|
+						mul|MUL|
+						neg|NEG|
+						not|NOT|
+						nop|NOP|
+						or|OR|
+						out(s[bwd])?|OUT(S[BWD])?|
+						packss(dw|wb)|PACKSS(DW|WB)|
+						packuswb|PACKUSWB|
+						paddu?s[bw]|PADDU?S[BW]|
+						paddsiw|PADDSIW|
+						pandn?|PANDN?|
+						paveb|PAVEB|
+						pcmp(eq|gt)[bwd]|PCMP(EQ|GT)[BWD]|
+						pop([af][wd]?)?|POP([AF][WD]?)?|
+						por|POR|
+						ps(ll|r[al])[dwq]|PS(LL|R[AL])[DWQ]|
+						psub(u?s)?[bwd]|PSUB(U?S)?[BWD]|
+						psubsiw|PSUBSIW|
+						punpck[hl](bw|wd|dq)|PUNPCK[HL](BW|WD|DQ)|
+						push(a[dw]?)?|PUSH(A[DW]?)?|
+						pxor|PXOR|
+						rc[lr]|RC[LR]|
+						rdmsr|RDMSR|
+						rdpmc|RDPMC|
+						rdtsc|RDTSC|
+						ret[fn]?|RET[FN]?|
+						ro[lr]|RO[LR]|
+						rsm|RSM|
+						sahf|SAHF|
+						sa[lr]|SA[LR]|
+						salc|SALC|
+						sbb|SBB|
+						scas[bwd]|SCAS[BWD]|
+						s[gil]dt|S[GIL]DT|
+						sh[lr]d?|SH[LR]D?|
+						smi|SMI|
+						smsw|SMSW|
+						st[cdi]|ST[CDI]|
+						stos[bwd]|STOS[BWD]|
+						str|STR|
+						sub|SUB|
+						test|TEST|
+						umov|UMOV|
+						ver[rw]|VER[RW]|
+						wait|WAIT|
+						wbinvd|WBINVD|
+						wrmsr|WRMSR|
+						xadd|XADD|
+						xbts|XBTS|
+						xchg|XCHG|
+						xlatb|XLATB|
+						xor|XOR|
+						(res|d)[bwdq]|(RES|D)[BWDQ]|
+						equ|EQU
+					))?</match>
+				</context>
+			</include>
+		</context>
+	</definitions>
+</language>

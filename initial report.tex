@@ -1,1 +1,78 @@
-/home/connor/\English/spec.tex
+\documentclass{article}
+
+\usepackage{amsmath}				% used for making mathematical equations and such
+\usepackage{multicol}				% used for making multi-column sections
+\usepackage[margin=1in]{geometry}	% controls margins
+\usepackage{indentfirst}			% indents the first lines of the first paragraphs after sections
+% \usepackage{hyperref}
+
+\newcommand{\name}{\textbackslash{}English}
+
+\title{\name{}}
+\date{2015-08-28}
+\author{Connor Davey}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\newpage
+	
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+\section{Introduction}
+In the 1940s in the newly emerging field of computer science, the idea of programming a generalized computer lead to the idea of a programming language. Since then, not only has the idea of programming languages become reality, but the idea of what a programming language is or should be has changed and developed and hundreds of different programming languages have been created based on these changing theories and convictions.
+\name{} considers a large number of the problems with programming language design and seeks to tackle some of the most relevant and important of them as best as possible:
+	\begin{multicols}{2}
+	\begin{itemize}
+		\item readability
+		\item understandability
+		\item extensibility
+		\item efficiency (esp. runtime)
+	\end{itemize}
+	\end{multicols}
+\indent While all practical programming languages attempt to address all of these problems to some extent, more often than not, some of these important properties are sacrificed in order to improve some of the remaining properties. Generally, in more recent decades of computer science, runtime efficiency has been sacrificed more and more in favor of readability and understandability. As computers became more widely used and programming professions and projects became more commonplace, programming languages became easier to read, learn, and use. However, this often came at a great cost to efficiency. For example, Python is a high-level language often revered as one of the simplest to read and understand\cite{Sanner99} with modern day usage in many areas, especially concerning web development (see Django2 as an example). However, Python sacrifices programming efficiency in order to achieve much of this readability3,4,5.\\
+\indent \name{} seeks to unite extreme simplicity and readability with high orders of efficiency using everything from high-level high order functionality to low-level Assembly programming. The grammar of the language is intended to closely relate to ordinary English (hence the name of the language) while maintaining and extending a few of the most basic, widely used programming language syntactic structures. Meanwhile, the ability to write "safe" Assembly code integrated into a highly functional language allows for powerful extensibility and high potential for runtime efficiency.
+	
+\section{Language Overview}
+\indent Most unique about \name{} is the fact that its syntax is programmatically defined; the entire language is made up of operators declared with a context-free grammatical description of their syntaxes. The code is parsed as a context-dependent grammar using a dynamic set of rules defined by \name{}'s most basic operator:\\
+\centerline{\texttt{define <<type>> <declaration>: <body>;}}\\
+where "\verb+<type>+" is the return type of the operator, "\verb+<declaration>+" is the context-free grammatical description of the operator complete with typed arguments and punctuation, and "\verb+<body>+" is the set of operations that the operator will perform.\\
+\indent \name{} is comprised completely of operators even more so than Haskell is comprised of functions. Every part of the language works on this paradigm, including code blocks like loops or conditional statements and the type system. This not only unifies the language and improves parsing simplicity, but also improves the versatility of the language by removing unnecessary restrictions on usage of the operators. Even variables are only a special type of operator that takes no arguments and stores its return value in memory instead of evaluating an expression each time it is called.
+Operators' true function comes from the "asm" operator, which allows the use of Assembly-level NASM commands to describe functions. This Assembly level integration works with the standard library to not only allow ease of use and powerful low-level operation, but also to ensure the restriction of potentially unsafe operations that may hinder the language's optimizability and safety, e.g. the use of arbitrary pointers.\\
+\indent Because types, too, are defined using operators, types are parameterizable not only with other types like Java type parameterization or C++ templates, but with any kind of term, allowing types to not only include such data as the type of items contained in a list, but also the range in which a number may lie or the number of elements in a list. This adds structure and readability to the code and improves error finding and debugging.\\
+\indent \name{} is also built for optimization. It is a pure compiled language like C and, like C, includes the ability to implement Assembly instructions. In addition, like Haskell, \name{} is built to accomodate functional optimizations such as referential integrity preprocessing referred to in \name{} as "finalization". This optimization theoretically allows the compiler to determine which operators preserve referential integrity (always return the same value given the same arguments) and run any process composed of only final operators at compile time using basic Assembly emulation.\\
+\indent Because \name{} has mutable variables unlike Haskell, this "finality" is categorized into two types: "return-finality", which means that the return value is consistent given consistent arguments, and "enviro-finality", which means that the operator does not modify the value of any variables outside of its own body. \name{} is built to be able to classify such instances of either of these at the Assembly level using the "safe" asm directive, allowing an optimizing compiler to potentially ignore all operations concerning the return value of an operator if that return value is not used or lazily evaluate operations on variables outside of the operator.\\
+\indent A great example of the use of this finalization would be in processing regex strings. \name{} allows the capture of literal characters in operator definitions, allowing programmers to create special types of srings; one such case in the standard library is a regex string that represents a regular expression. In languages like Java or C++, such functionality would be achieved by passing a plain string into a method or function to process the string's grammar into a regex object. That object represents the structure of the regular expression and can then be used for matches against strings. This system processes these regexes at runtime, which is not only less efficient than preprocessing at compile time, but creates the potential for runtime errors caused by misspellings or regex grammatical mistakes. In \name{}, regex string processing is final because it takes in only one argument: literal static code characters. This means that not only can \name{} run the code once at compile time instead of every time the operator is called at runtime, but it also means that any errors in the given regular expression are guaranteed to be thrown at compile time rather than possibly thrown at runtime whenever (if ever) that particular section of the code is run during software testing.\\
+\indent Finally, because of \name{}'s dynamically defined completely malleable syntax, it can be defined to look and work exactly like other programming languages in a form that the \name{} compiler can understand. This means that by simply "turning off" \name{} standard operators selectively, the \name{} compiler can understand other programming languages in the same terms that it understands \name{}. Using a simple system built into the compiler, then, \name{} code can be seamlessly integrated with other libraries or projects written in other programming languages. Tool libraries like C++ GUI libraries or SQL query libraries can be made available without rewriting the entire library in \name{}; the code, whether compiled or interpreted normally, can be compiled along with \name{}; and all (or most) of the same optimizations used in the \name{} compiler can be applied to other languages.\\
+\indent In summary, \name{} attempts to provide solutions to the difficult problem of readability and the even more elusive problem of understandability without sacrificing optimizability, efficiency, and accuracy of the language. In fact, \name{} attempts to make strides in all of these areas: readability via a powerful syntax allowing inlaid words and punctuation; understandability with short, elegant statements and code bodies; optimizability via techniques such as finalization; efficiency via consolidation of Assembly level and highly functional coding paradigms; and accuracy via strong, static, limitlessly parameterizable typing. With the translational library system, this language also pursues the unification of languages and the reuse of existing libraries and tools for extension of the abilities of the language/project.
+
+\section{Project Goals}
+\indent This project seeks to satisfy the following goals.
+\subsection{Concrete Goals}
+% TODO
+\subsection{Abstract Goals}
+% TODO
+
+\section{Tools}
+\indent Resources to be used in building the project include, but is not limited to, the following open-source free to use tools.
+\subsection{Compiler Tools}
+% TODO
+\subsubsection{The NASM Assembler}
+% TODO
+\subsubsection{L.D.}
+% TODO
+\subsection{Production Tools}
+% TODO
+\subsubsection{G++}
+% TODO
+
+\begin{thebibliography}{9}
+\bibitem{Sanner99}\texttt{"Python’s elegant, and not overly cryptic, syntax emphasizes support for common programming methodology and promotes code readability and thus maintainability."} -- Sanner, Michel F. \emph{Python: a programming language for software integration and development}. J Mol Graph Model 17.1 (1999): 57-61.
+%\bibitem{PythonVsJava}\href{http://benchmarksgame.alioth.debian.org/u64q/python.html}{http://benchmarksgame.alioth.debian.org/u64q/python.html}
+%\bibitem{PythonVsC}\href{http://benchmarksgame.alioth.debian.org/u64q/compare.php?lang=python3&lang2=gcc}{http://benchmarksgame.alioth.debian.org/u64q/compare.php?lang=python3&lang2=gcc}
+\bibitem{Cai05}\texttt{"It is fair to say that the core of the Python programming language is not particularly suitable for scientific applications involving intensive computations. This is mainly due to slow execution of long nested loops and the lack of efficient array data structures."} -- Cai, Xing, Hans Petter Langtangen, and Halvard Moe. \emph{On the performance of the Python programming language for serial and parallel scientific computations.} Scientific Programming 13.1 (2005): 31-56.
+\end{thebibliography}
+\end{document}

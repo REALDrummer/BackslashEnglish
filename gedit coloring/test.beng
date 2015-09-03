@@ -1,1 +1,85 @@
-/home/connor/\English/gedit coloring/test.beng
+# 
+	This file is used to test the Gedit \English syntax highlighting.
+#
+
+use ./test/what\ ever/something.beng.
+use stdlib/thing.beng.
+
+#- switch-case testing
+switch by Number:
+	case 1:
+		do nothing
+		use case, but not that case
+	case 5:
+		do nothing 5 times
+	default:
+		whatever
+	case not-actually-a-case:
+		#- this should not count as a case even though it's in the switch block because it's coming after the default case
+		Number := -1;
+
+switch by Number:
+	case 5:
+		switch by Number2:
+			case '\x5':
+				print "They're equal!"
+			default:
+				print "The first number was 5, but the other wasn't!"
+				default:
+					just kidding, because this default case isn't hanging onto anything;
+	default:
+		do nothing
+		case:
+			just kidding, not a case
+		default:
+			just kidding, not a default case;
+		
+
+#- regex and regular string testing:
+
+"testing" No color!
+"\""		¡Nada de color!
+"\Q`jrel\El" No color here!
+"my `Test string My String` string" No color!
+"multi-line `insertion
+	testing` string".
+"\tnon-regex^string\n\"`whatever`IS (?'name'\)\"regexp?(?ss)\)\\) because(?'name':h) of\1 \\(l?<!l) \s!"/ No color here!
+"This? `Thing`\s+IS\s+regex\s+`but this`is+NOT?+regex`check.
+
+test
+
+/"(?i)f+u*[ck]+"/ Color?
+/"L?+[R.r].egexp?\s+?[^Tt{?`Char`\n-\t-]est?\n"(?x-i:with)(?{}[T-t?.\n-\t-]l)\"\?`this?`\t\Q`NOT"\Eregex(?!p)$\"\``this too`also{5,`Num2`}NOT*\1regex\"$"/. This should not be colored!
+/"T[`Char`+-l][^"/ + 'e' + /"-l(]"/  No color here!
+/" \[Not actually a character class!\] "/
+/" [^\]] "/
+/" a{0,2,""}"/
+
+ " \b\B "
+/" \b\B\s\w[\n-\s] "/
+
+"\x"
+"\u3346`this`\U8923FFfadg`tests`\x`escape + "\n\t\u\r`sequences`\u5!"
+
+#- all-escaping backslash testing:
+\asm
+asm
+super-\implicit
+
+#- char testing:
+'\''
+'\'
+'\x'
+'\x6'
+'\u6678'
+'''
+
+#- operator definition testing
+Non-existent Arg is not given  #- <- no highlighting on "is not given"
+
+
+define test <int Arg1> [-+] \t?<dint Arg2>?:
+	if Arg2 is not given:
+		Arg2 := 19;;	#- <- ending semicolon at the end of this line
+
+Non-existent Arg is not given  #- <- no highlighting on "is not given"

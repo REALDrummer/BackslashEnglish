@@ -1,1 +1,259 @@
-/home/connor/\English/gedit coloring/NASM.lang
+<?xml version="1.0" encoding="UTF-8"?>
+<language id="nasm" _name="NASM" version="2.0" _section="Sources">
+    <metadata>
+      <property name="globs">*.asm</property>
+    </metadata>
+
+    <styles>
+        <style id="comment"           _name="Comment"             map-to="def:comment"/>
+        <style id="error"             _name="Error"               map-to="def:error"/>
+        <style id="string"            _name="String"              map-to="def:string"/>
+        <style id="preprocessor"      _name="Preprocessor"        map-to="def:preprocessor"/>
+        <style id="common-defines"    _name="Common Defines"      map-to="def:special-constant"/>
+        <style id="included-file"     _name="Included File"       map-to="def:string"/>
+        <style id="char"              _name="Character"           map-to="def:character"/>
+        <style id="keyword"           _name="Keyword"             map-to="def:keyword"/>
+        <style id="type"              _name="Data Type"           map-to="def:type"/>
+        <style id="storage-class"     _name="Storage Class"       map-to="def:type"/>
+        <style id="printf"            _name="printf Conversion"   map-to="def:special-char"/>
+        <style id="escaped-character" _name="Escaped Character"   map-to="def:special-char"/>
+        <style id="floating-point"    _name="Floating point number" map-to="def:floating-point"/>
+        <style id="decimal"           _name="Decimal number"      map-to="def:decimal"/>
+        <style id="octal"             _name="Octal number"        map-to="def:base-n-integer"/>
+        <style id="hexadecimal"       _name="Hexadecimal number"  map-to="def:base-n-integer"/>
+        <style id="boolean"           _name="Boolean value"       map-to="def:boolean"/>
+    </styles>
+
+    <definitions>
+    	<context id="nasm" class="no-spell-check">
+            <include>
+                <!-- comments -->
+                <context id="comment" style-ref="comment" end-at-line-end="true" class="comment" class-disabled="no-spell-check">
+                    <start>;</start>
+                    <include>
+                      <context ref="def:in-line-comment"/>
+                    </include>
+                </context>
+
+                <!-- preprocessor -->
+
+                <context id="preprocessor" style-ref="preprocessor">
+                    <match extended="true">\b(
+                    	extern|EXTERN|
+                    	bits|BITS|
+                    	section|SECTION|
+                    	segment|SEGMENT|
+                    	absolute|ABSOLUTE|
+                    	global|GLOBAL|
+                    	common|COMMON
+                    	)\b|\$
+                    </match>
+                    <include>
+                        <context id="included-file" sub-pattern="2" style-ref="included-file"/>
+                    </include>
+                </context>
+
+                <context id="string" style-ref="string" end-at-line-end="true" class="string" class-disabled="no-spell-check">
+                    <start>"</start>
+                    <end>"</end>
+                </context>
+                
+                <!-- registers -->
+                <context id="registers" style-ref="type">
+                    <match extended="true">\b(
+                    	[re]?[a-d][xhl]|[RE]?[A-D][XHL]|
+                    	[re]?[ds]i|[RE][DS]I|
+                    	[re]?[bs]p|[RE]?[BS]P|
+                    	r(8|9|1[0-5])[dwb]?|R(8|9|1[0-5])[DWB]?|
+                    	[re]ip|[RE]IP|
+                    	r?flags|R?FLAGS|
+                    	(xmm|XMM)[0-8]
+                    )\b</match>
+                </context>
+
+                <!-- http://www.lysator.liu.se/c/ANSI-C-grammar-l.html -->
+                <context id="float" style-ref="floating-point">
+                    <match extended="true">
+                        (?&lt;![\w\.])
+                        ((\.[0-9]+ | [0-9]+\.[0-9]*) ([Ee][+-]?[0-9]*)? |
+                         ([0-9]+[Ee][+-]?[0-9]*))
+                        [fFlL]?
+                        (?![\w\.])
+                    </match>
+                </context>
+
+                <context id="hexadecimal" style-ref="hexadecimal">
+                    <match extended="true">
+                        (?&lt;![\w\.])(
+                        	0[xX][a-fA-F0-9]+|
+                        	[a-fA-F0-9]+h
+                        )(?![\w\.])
+                    </match>
+                </context>
+
+                <context id="octal" style-ref="octal">
+                    <match extended="true">
+                        (?&lt;![\w\.])
+                        0[0-7]+
+                        (?![\w\.])
+                    </match>
+                </context>
+
+                <context id="decimal" style-ref="decimal">
+                    <match extended="true">
+                        (?&lt;![\w\.])
+                        [0-9]+
+                        (?![\w\.])
+                    </match>
+                </context>
+
+                <!-- keywords -->
+                <context id="operations" style-ref="keyword">
+                    <match extended="true">\b(
+                    	aa[asdm]|AA[ASDM]|
+                    	adc|ADC|
+                    	add|ADD|
+                    	and|AND|
+                    	bound|BOUND|
+                    	bs[fr]|BS[FR]|
+                    	bswap|BSWAP|
+                    	bt[crs]?|BT[CRS]?|
+                    	call|CALL|
+                    	c(bw|wd|dq|wde)|C(BW|WD|DQ|WDE)|
+                    	cl([cdi]|ts)|CL([CDI]|TS)|
+                    	cmc|CMC|
+                    	cmp(s[bwd])?|CMP(S[BWD])?|
+                    	da[as]|DA[AS]|
+                    	dec|DEC|
+                    	div|DIV|
+                    	enter|ENTER|
+                    	f2xm1|F2XM1|
+                    	fabs|FABS|
+                    	faddp?|FADDP?|
+                    	fb(ld|stp)|FB(LD|STP)|
+                    	fchs|FCHS|
+                    	fclex|FCLEX|
+                    	fcomp{0,2}|FCOMP{0,2}|
+                    	fcos|FCOS|
+                    	fdecstp|FDECSTP|
+                    	fn?(en|dis)i|FN?(EN|DIS)I|
+                    	fdivr?p?|FDIVR?P?|
+                    	ffree|FFREE|
+                    	fiadd|FIADD|
+                    	ficomp?|FICOMP?|
+                    	fidivr?|FIDIVR?|
+                    	fi(ld|stp?)|FI(LD|STP?)|
+                    	fimul|FIMUL|
+                    	fincstp|FINCSTP|
+                    	fn?init|FN?INIT|
+                    	fisubr?|FISUBR?|
+                    	fld(1|l2e|l2t|lg2|ln2|pi|2)|FLD(1|L2E|L2T|LG2|LN2|PI|2)|
+                    	fld(cw|env)|FLD(CW|ENV)|
+                    	fmulp?|FMULP?|
+                    	fpa?tan|FPA?TAN|
+                    	fprem1?|FPREM1?|
+                    	frndint|FRNDINT|
+                    	f(n?save|rstor)|F(N?SAVE|RSTOR)|
+                    	fscale|FSCALE|
+                    	fsin(cos)?|FSIN(COS)?|
+                    	fsqrt|FSQRT|
+                    	fstp?|FSTP?|
+                    	fst(cw|env)|FST(CW|ENV)|
+                    	fsubp?r?|FSUBP?R?|
+                    	ftst|FTST|
+                    	fucom[pi]?p?|FUCOM[PI]?P?|
+                    	fxam|FXAM|
+                    	fxch|FXCH|
+                    	fxtract|FXTRACT|
+                    	hlt|HLT|
+                    	idiv|IDIV|
+                    	imul|IMUL|
+                    	in|IN|
+                    	inc|INC|
+                    	ins[bwd]|INS[BWD]|
+                    	int(o|3|0?1)?|INT(O|3|0?1)?|
+                    	invd|INVD|
+                    	invlpg|INVLPG|
+                    	iret[wd]|IRET[WD]|
+						je?cxz|JE?CXZ|
+						jmp|JMP|
+						j((n?[osezbcalgp]|[abgl]e)|p[eo])|J((N?[OSEZBCALGP]|[ABGL]E)|P[EO])|
+                    	lahf|LAHF|
+                    	lar|LAR|
+                    	l[d-gs]s|L[D-GS]S|
+                    	lea|LEA|
+                    	leave|LEAVE|
+                    	l[gil]dt|L[GIL]DT|
+                    	lmsw|LMSW|
+                    	lods[bwd]|LODS[BWD]|
+                    	loop(n?[ez])?|LOOP(N?[EZ])?|
+                    	lsl|LSL|
+                    	ltr|LTR|
+                    	mov[dq]?|MOV[DQ]?|
+                    	movs[bwd]|MOVS[BWD]|
+                    	mov[sz]x|MOV[SZ]X|
+                    	mul|MUL|
+                    	neg|NEG|
+                    	not|NOT|
+                    	nop|NOP|
+                    	or|OR|
+                    	out(s[bwd])?|OUT(S[BWD])?|
+                    	packss(dw|wb)|PACKSS(DW|WB)|
+                    	packuswb|PACKUSWB|
+                    	paddu?s[bw]|PADDU?S[BW]|
+                    	paddsiw|PADDSIW|
+                    	pandn?|PANDN?|
+                    	paveb|PAVEB|
+                    	pcmp(eq|gt)[bwd]|PCMP(EQ|GT)[BWD]|
+                    	pop([af][wd]?)?|POP([AF][WD]?)?|
+                    	por|POR|
+                    	ps(ll|r[al])[dwq]|PS(LL|R[AL])[DWQ]|
+                    	psub(u?s)?[bwd]|PSUB(U?S)?[BWD]|
+                    	psubsiw|PSUBSIW|
+                    	punpck[hl](bw|wd|dq)|PUNPCK[HL](BW|WD|DQ)|
+                    	push(a[dw]?)?|PUSH(A[DW]?)?|
+                    	pxor|PXOR|
+                    	rc[lr]|RC[LR]|
+                    	rdmsr|RDMSR|
+                    	rdpmc|RDPMC|
+                    	rdtsc|RDTSC|
+                    	ret[fn]?|RET[FN]?|
+                    	ro[lr]|RO[LR]|
+                    	rsm|RSM|
+                    	sahf|SAHF|
+                    	sa[lr]|SA[LR]|
+                    	salc|SALC|
+                    	sbb|SBB|
+                    	scas[bwd]|SCAS[BWD]|
+                    	s[gil]dt|S[GIL]DT|
+                    	sh[lr]d?|SH[LR]D?|
+                    	smi|SMI|
+                    	smsw|SMSW|
+                    	st[cdi]|ST[CDI]|
+                    	stos[bwd]|STOS[BWD]|
+                    	str|STR|
+                    	sub|SUB|
+                    	test|TEST|
+                    	umov|UMOV|
+                    	ver[rw]|VER[RW]|
+                    	wait|WAIT|
+                    	wbinvd|WBINVD|
+                    	wrmsr|WRMSR|
+                    	xadd|XADD|
+                    	xbts|XBTS|
+                    	xchg|XCHG|
+                    	xlatb|XLATB|
+                    	xor|XOR|
+                    	(res|d)[bwdq]|(RES|D)[BWDQ]|
+                    	equ|EQU
+                    )\b</match>
+                </context>
+                
+                <!-- labels -->
+                <context id="labels" style-ref="common-defines" class="common-defines">
+                    <match extended="true">^\s*\.?\w+:</match>
+                </context>
+            </include>
+        </context>
+    </definitions>
+</language>

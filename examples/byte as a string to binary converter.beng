@@ -1,0 +1,18 @@
+##< The program takes in all the command line arguments, reads each one as an unsigned byte (0 - 255, inclusive), and prints out a string representing that byte in binary 1s and 0s. >#
+for each Argument in Arguments:
+	byte? Parsed Argument := Argument as a byte
+	if Parsed Argument is an error,
+		print Parsed Argument
+		exit the program;
+	else:
+		byte Number := Parsed Argument's value
+
+		string Bits := "00000000"
+
+		from i := 0 to 8:
+			Bits[i] := Number & 1 as a string
+			Number >>= 1
+			if Number = 0,
+				i := 8 #< break >#;
+
+		print Bits;;

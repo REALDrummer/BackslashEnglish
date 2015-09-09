@@ -574,6 +574,7 @@
 						return|
 						overridden|
 						strict|
+						alias|
 						(an\s+)?empty\s+list|
 						is\s+empty|
 						(the\s+)?current\s+time(\s+of\s+day)?|
@@ -584,16 +585,11 @@
 						try(\s+to)?|
 						(and\s+)?catch(\s+any)?|
 						print|
+						(a\s+)?new|
+						(a\s+)?new\s+type\s+of|
+						(new\s+)?types\s+of|
 						swap|switch		# this switch is an alias for "swap"; it is different from the switch-case setup
 					)\b</match>
-				</context>
-				
-				<context id="saying-word-in-throws">
-					<match>(errors?|warnings?)\s+(saying)</match>
-					<include>
-						<context sub-pattern="1" style-ref="key-op"/>
-						<context sub-pattern="2" style-ref="common-defines"/>
-					</include>
 				</context>
 				
 				<!-- more key operators -->
@@ -603,39 +599,42 @@
 						run|
 						using|
 						with|
-						op(erator)?s?|
-						modifiers?|
-						types?(\s+of)?|
-						(a\s+)?new|
-						(a\s+)?new\s+type\s+of|
-						(new\s+)?types\s+of|
 						(copies|clones)\s+of|
 						(a\s+)?(copy|clone)(\s+of)?|
 						((return|enviro)-)?final|
 						(super-)?implicit|
 						priority-(?=\S)|
-						alias|
-						null|
 						bits?|
 						ignore(?=.+?warnings?)|
-						warnings?|
-						errors?|
 						use|
 						stdlib
 					)\b</match>
 				</context>
 				
+				<context id="errors-and-warnings-with-optional-saving-word">
+					<match>((warning|error)s?)(\s+saying)?</match>
+					<include>
+						<context sub-pattern="1" style-ref="type"/>
+						<context sub-pattern="2" style-ref="common-defines"/>
+					</include>
+				</context>
+				
 				<!-- stdlib basic types -->
+				<context id="error-prone-type" style-ref="type" class="type">
+					<match>(?&lt;=[A-Za-z])\?</match>
+				</context>
+				
 				<context id="types" style-ref="type" class="type">
 					<match extended="true">(?&lt;!\\)\b(
 						(
 							thing|
+							op(erator)?|
+							modifier|
 							((un)?signed\s+|u)?(double\s+|d)?(
 								number|
 								int(eger)?|
 								byte|
 								float)|
-							stream|
 							((exec(utable)?|data?|binary|text|random\s+access)\s+)?file|RAF|R\.A\.F\.|
 							char(acter)?|
 							string|
@@ -646,8 +645,11 @@
 							time(\s+of\s+day)?\s+interval|
 							duration
 						)s?|(
+							type|
 							collection|
-							list|
+							(linked\s+)?list|
+							vector|
+							stream|
 							array|
 							((AVL|A\.V\.L\.|red(-|\s+)black|RB|R.B.|binary(\s+search)?)\s+)?tree|BST|B\.S\.T\.|
 							tuple)

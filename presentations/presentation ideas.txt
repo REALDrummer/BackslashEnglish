@@ -1,0 +1,2 @@
+- Come up with one short inline and one longer block of code example and show it in C, C++, Java or other languages, then compare it to \English for readability.
+- Discuss Einstein's "Theory of everything" 

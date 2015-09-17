@@ -469,9 +469,6 @@
 								<context sub-pattern="0" where="start" style-ref="function"/>
 								<context id="operator-body-interior">
 									<include>
-										<context id="is-given-operator" style-ref="key-op">
-											<match>is\s+(not\s+)?given</match>
-										</context>
 										<!-- this context ensures that the ending semicolon is matched properly -->
 										<context id="block">
 											<start>:(?!=)</start>
@@ -542,6 +539,9 @@
 
 				<context id="basic-operators" style-ref="common-defines" class="common-defines">
 					<match extended="true">\b(
+						(an\s+)?empty\s+list|
+						is\s+empty|
+						(is|are)(\s+not)?\s+given|
 						is(\s+an?)?|
 						to|
 						if|
@@ -563,7 +563,8 @@
 						contains|
 						(b(itwise)?-)?(
 							n?and|
-							x?n?or
+							x?n?or|
+							not
 						)|
 						n?either|
 						both|
@@ -575,8 +576,6 @@
 						overridden|
 						strict|
 						alias|
-						(an\s+)?empty\s+list|
-						is\s+empty|
 						(the\s+)?current\s+time(\s+of\s+day)?|
 						forever|
 						when|
@@ -624,8 +623,16 @@
 					<match>(?&lt;=[A-Za-z])\?</match>
 				</context>
 				
+				<context id="regexp-error">
+					<match>\b(regex)(p)\b</match>
+					<include>
+						<context sub-pattern="1" style-ref="type"/>
+						<context sub-pattern="2" style-ref="error"/>
+					</include>
+				</context>
+				
 				<context id="types" style-ref="type" class="type">
-					<match extended="true">(?&lt;!\\)\b(
+					<match extended="true">\b(
 						(
 							thing|
 							op(erator)?|
@@ -643,18 +650,27 @@
 							error|
 							enum(\s+value)?|
 							time(\s+of\s+day)?\s+interval|
-							duration
+							duration|
+							matcher|
+							point|pixel
 						)s?|(
 							type|
 							collection|
 							(linked\s+)?list|
 							vector|
+							matrix|
 							stream|
 							array|
+							pair|
+							queue|
+							stack|
 							((AVL|A\.V\.L\.|red(-|\s+)black|RB|R.B.|binary(\s+search)?)\s+)?tree|BST|B\.S\.T\.|
 							tuple)
 						s?(\s+of)?|
-						process(es)?|
+						(
+							process|
+							regex
+						)(es)?|
 						times?\s+of\s+day
 					)\b</match>
 				</context>

@@ -1,0 +1,17 @@
+#< NOTE: most of these operators involve the "@", which is a pattern-matching symbol; basically, any "@"s with the same name (if any name is given) must be able to evaluate to a value that satisfies all the requirements of the operator. In the first operator example, the return type of Last Op (the "@" in "op=>@ Last Op") matches the return type of the entire operator (the "@" in the "<@>" just after "define"). >#
+#< Also note that unlike in average regex, the "|" and "?" characters in operator definintions work on whole words rather than single characters when no parentheses are involved. >#
+
+define <string> <string String 1> \+ <string String 2>:
+	#< This operator appends String 2 to String 1 and returns the result. >#;
+
+define <@> do?\: <op Ops>* <op=>@ Last Op>;: 
+	#< A colon (preceded by an optional "do") and a semicolon delimit a block of operators, allowing them to be treated as one operator like in Haskell's "do" blocks or a group of statements between curly braces in a C-like language. >#;
+
+define <@> if <bit Condition>,? <op=>@ True Branch> else,? <op=>@ False Branch>:
+	#< This operator represents an 'if' statement with its 'else' branch; the commas after the "else" and the Condition are optional and a "bit" is the most basic type in \English, which is being used here like a Boolean value to evaluate a condition. The True and False Branches are operators, but using the "do" block operator above, they can be made to run multiple operators inside the block as one. Also, since this if statement is itself an operator that returns something (unlike in a C-like language), this operator can be used inline as well like the C ternary operator ("? [...] :"). >#;
+
+define <array of (Items's length + 1) @s> (<@ Items>, )* and|or <@ Last Item>:
+	#< This operator matches any comma-delimited list of things with a conjunctive "and" or "or" and builds them into an array, e.g. "2, 3, 5, 7, and 11" will give you an array of five integers (2, 3, 5, 7, and 11); this would be like "new int[] { 2, 3, 5, 7, 11 }" in Java or "[2, 3, 5, 7, 11]" in Haskell. >#;
+
+define <string> replace all? the? <regex Search String> in <string To Modify> with <regex output Replacement>:
+	#< This operator is meant to replace any substring matching the Search String regex with Replacement in To Modify. I realize that the earlier operator definitions here looked ugly and hard to read, but that is because they are in the standard library and defined to work very generally within the language. Most operators defined by programmers using this language would probably look more like this one. >#;

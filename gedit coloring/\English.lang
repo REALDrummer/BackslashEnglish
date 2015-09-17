@@ -536,6 +536,15 @@
 						</context>
 					</include>
 				</context>
+				
+				<context id="read-as-a">
+					<start>\bread\b(?=[^\n]*\bas\s+an?\b)</start>
+					<end>\bas\s+an?\b</end>
+					<include>
+						<context sub-pattern="0" where="start" style-ref="common-defines"/>
+						<context sub-pattern="0" where="end" style-ref="common-defines"/>
+					</include>
+				</context>
 
 				<context id="basic-operators" style-ref="common-defines" class="common-defines">
 					<match extended="true">\b(
@@ -584,9 +593,8 @@
 						try(\s+to)?|
 						(and\s+)?catch(\s+any)?|
 						print|
+						read|
 						(a\s+)?new|
-						(a\s+)?new\s+type\s+of|
-						(new\s+)?types\s+of|
 						swap|switch		# this switch is an alias for "swap"; it is different from the switch-case setup
 					)\b</match>
 				</context>
@@ -597,7 +605,6 @@
 						as(\s+an?)?|
 						run|
 						using|
-						with|
 						(copies|clones)\s+of|
 						(a\s+)?(copy|clone)(\s+of)?|
 						((return|enviro)-)?final|

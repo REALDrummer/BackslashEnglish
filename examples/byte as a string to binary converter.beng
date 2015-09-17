@@ -1,7 +1,7 @@
 ##< The program takes in all the command line arguments, reads each one as an unsigned byte (0 - 255, inclusive), and prints out a string representing that byte in binary 1s and 0s. >#
 for each Argument in Arguments:
-	byte? Parsed Argument := Argument as a byte
-	if Parsed Argument is an error,
+	byte? Parsed Argument := read Argument as a byte
+	if Parsed Argument is an error:
 		print Parsed Argument
 		exit the program;
 	else:

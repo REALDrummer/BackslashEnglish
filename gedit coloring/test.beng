@@ -1,11 +1,16 @@
-# 
+#<
 	This file is used to test the Gedit \English syntax highlighting.
-#
+>#
 
 use ./test/what\ ever/something.beng.
 use stdlib/thing.beng.
 
-#- switch-case testing
+# comment testing:
+#< nested #< comment ># testing ># Not a comment!
+# #< not actually comments inside a linear comment
+Not a comment!
+
+# switch-case testing
 switch by Number:
 	case 1:
 		do nothing
@@ -15,7 +20,7 @@ switch by Number:
 	default:
 		whatever
 	case not-actually-a-case:
-		#- this should not count as a case even though it's in the switch block because it's coming after the default case
+		# this should not count as a case even though it's in the switch block because it's coming after the default case
 		Number := -1;
 
 switch by Number:
@@ -35,7 +40,7 @@ switch by Number:
 			just kidding, not a default case;
 		
 
-#- regex and regular string testing:
+# regex and regular string testing:
 
 "testing" No color!
 "\""		¡Nada de color!
@@ -44,7 +49,7 @@ switch by Number:
 "multi-line `insertion
 	testing` string".
 "\tnon-regex^string\n\"`whatever`IS (?'name'\)\"regexp?(?ss)\)\\) because(?'name':h) of\1 \\(l?<!l) \s!"/ No color here!
-"This? `Thing`\s+IS\s+regex\s+`but this`is+NOT?+regex`check.
+"This? `Thing`is+\nOT?+regex`check`, but it can still do this: \Q"Hi!"\"\"\"\\E and MORE!".
 
 test
 
@@ -61,12 +66,12 @@ test
 "\x"
 "\u3346`this`\U8923FFfadg`tests`\x`escape + "\n\t\u\r`sequences`\u5!"
 
-#- all-escaping backslash testing:
+# all-escaping backslash testing:
 \asm
 asm
 super-\implicit
 
-#- char testing:
+# char testing:
 '\''
 '\'
 '\x'
@@ -74,12 +79,12 @@ super-\implicit
 '\u6678'
 '''
 
-#- operator definition testing
-Non-existent Arg is not given  #- <- no highlighting on "is not given"
+# operator definition testing
+Non-existent Arg is not given  # <- no highlighting on "is not given"
 
 
 define test <int Arg1> [-+] \t?<dint Arg2>?:
 	if Arg2 is not given:
-		Arg2 := 19;;	#- <- ending semicolon at the end of this line
+		Arg2 := 19;;	# <- ending semicolon at the end of this line
 
-Non-existent Arg is not given  #- <- no highlighting on "is not given"
+Non-existent Arg is not given  # <- no highlighting on "is not given"

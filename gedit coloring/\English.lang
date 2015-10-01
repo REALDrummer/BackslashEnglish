@@ -48,14 +48,6 @@
 				</context>
 				
 				<!-- comments -->
-				<context id="comment" style-ref="comment" end-at-line-end="true" class="comment" class-disabled="no-spell-check">
-					<start>#+-</start>
-
-					<include>
-					  <context ref="def:in-line-comment"/>
-					</include>
-				</context>
-
 				<context id="comment-multiline" style-ref="comment" class="comment" class-disabled="no-spell-check">
 					<start>#+&lt;</start>
 					<end>>#+</end>
@@ -63,6 +55,13 @@
 						<!-- this self-reference allows for nested comments! -->
 						<context ref="comment-multiline"/>
 						<context ref="def:in-comment"/>
+					</include>
+				</context>
+								
+				<context id="comment" style-ref="comment" end-at-line-end="true" class="comment" class-disabled="no-spell-check">
+					<start>#+</start>
+					<include>
+					  <context ref="def:in-line-comment"/>
 					</include>
 				</context>
 
@@ -500,17 +499,6 @@
 					</include>
 				</context>
 				
-				<!-- TODO TEMP CMT
-				<context id="where-operator-definitions">
-					<start>\bwith\b</start>
-					<end>:=</end>
-					<include>
-						<context sub-pattern="0" where="start" style-ref="common-defines"/>
-						<context sub-pattern="0" where="end" style-ref="function"/>
-						<context ref="operator-definition"/>
-					</include>
-				</context> -->
-				
 				<!-- stdlib basic operators -->
 				<context id="switch-case">
 					<start>(switch(\s+by)?)(?=.+?:)</start>
@@ -533,6 +521,7 @@
 								</context>
 								<context ref="beng"/>
 							</include>
+							<!-- TODO: beng context should be ref'd here, but it would interfere with the switch's block! -->
 						</context>
 					</include>
 				</context>
@@ -543,14 +532,25 @@
 					<include>
 						<context sub-pattern="0" where="start" style-ref="common-defines"/>
 						<context sub-pattern="0" where="end" style-ref="common-defines"/>
+						<context ref="beng"/>
+					</include>
+				</context>
+				
+				<context id="new-type-with">
+					<start>\b(a\s+)?new\s+(?=type\s+of.+?with)</start>
+					<end>\bwith\b</end>
+					<include>
+						<context sub-pattern="0" where="start" style-ref="common-defines"/>
+						<context sub-pattern="0" where="end" style-ref="common-defines"/>
+						<context ref="beng"/>
 					</include>
 				</context>
 
 				<context id="basic-operators" style-ref="common-defines" class="common-defines">
 					<match extended="true">\b(
 						(an\s+)?empty\s+list|
-						is\s+empty|
-						(is|are)(\s+not)?\s+given|
+						is(n't|\s+not)\s+empty|
+						(is|are)(n't|\s+not)?\s+given|
 						is(\s+an?)?|
 						to|
 						if|
@@ -595,7 +595,9 @@
 						print|
 						read|
 						(a\s+)?new|
-						swap|switch		# this switch is an alias for "swap"; it is different from the switch-case setup
+						swap|switch|		# this switch is an alias for "swap"; it is different from the switch-case setup
+						(copies|clones)\s+of|
+						(a\s+)?(copy|clone)(\s+of)?|
 					)\b</match>
 				</context>
 				
@@ -605,15 +607,14 @@
 						as(\s+an?)?|
 						run|
 						using|
-						(copies|clones)\s+of|
-						(a\s+)?(copy|clone)(\s+of)?|
 						((return|enviro)-)?final|
 						(super-)?implicit|
 						priority-(?=\S)|
 						bits?|
 						ignore(?=.+?warnings?)|
 						use|
-						stdlib
+						stdlib|
+						(this\s+)OS
 					)\b</match>
 				</context>
 				
@@ -684,10 +685,10 @@
 				
 				<!-- asm terms -->	 
 				<!-- in the future, just make asm create a context that uses nasm highlighting -->  
-				<context id="NASM" style-ref="key-op">
+				<context id="NASM">
 					<match extended="true">
 					(asm|ASM)			# the unescaped ASM directive "keyword"
-					(\s+\.?\w+:?)?		# an optional assembly label
+					(\s+\.?\w+:)?		# an optional assembly label
 					(\s+(
 						aa[asdm]|AA[ASDM]|
 						adc|ADC|
@@ -826,6 +827,11 @@
 						(res|d)[bwdq]|(RES|D)[BWDQ]|
 						equ|EQU
 					))?</match>
+					<include>
+						<context sub-pattern="1" style-ref="key-op"/>
+						<context sub-pattern="2" style-ref="preprocessor"/>
+						<context sub-pattern="3" style-ref="key-op"/>
+					</include>
 				</context>
 			</include>
 		</context>

@@ -13,6 +13,6 @@ for each Argument in Arguments:
 			Bits[i] := Number & 1 as a string
 			Number >>= 1
 			if Number = 0,
-				i := 8 #< break >#;
+				break;
 
 		print Bits;;

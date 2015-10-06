@@ -1,0 +1,32 @@
+##< @author connor >#
+
+use ./org/bukkit/ChatColor.beng
+use ./org/bukkit/entity/EntityType.beng
+use ./org/bukkit/entity/Player.beng
+use ./org/bukkit/entity/Wolf.beng
+use ./org/bukkit/event/EventHandler.beng
+use ./org/bukkit/event/Listener.beng
+use ./org/bukkit/event/entity/CreatureSpawnEvent.beng
+use ./org/bukkit/plugin/java/JavaPlugin.beng
+
+define <plugin> myWolfFinder:
+	a new listener plugin;
+
+define implicit <string> <location Location> as a <string>:
+	"(`Location's coordinates as a ", "-separated string`)";
+
+define <bit> enable <myWolfFinder>:
+	register myWolfFinder as a listener
+	
+	# print out the locations of all the wolves on the server
+	for each Wolf in myWolfFinder's server's worlds[0]'s wolves,
+		for each Player in myWolfFinder's server's online players,
+			if Player is an \op,
+				tell Player that "`LIGHT PURPLE`There's a wolf at `Wolf's location`!";
+
+# find wolves as they spawn
+when a creature spawn event Event occurs,
+	if Event's type = wolf,
+		for each Player in myWolfFinder's server's online players,
+			if Player is an \op,
+				tell Player that "A wolf spawned at `event's location`!";

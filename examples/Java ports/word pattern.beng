@@ -1,0 +1,14 @@
+string Pattern := read
+
+strings Words := split read by /"\s+"/
+
+map of chars to strings Matches := a new map of chars to strings
+bit Result := true
+from i := 0 to Pattern's size:
+	if Matches[Pattern[i]] doesn't exist,
+		Matches[Pattern[i]] := Words[i]
+	else if Matches[Pattern[i]] = Words[i]:
+		bit Result := false
+		break;
+
+print Result as "true" or "false"

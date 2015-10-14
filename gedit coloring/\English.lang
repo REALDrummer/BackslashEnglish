@@ -524,6 +524,14 @@
 							<!-- TODO: beng context should be ref'd here, but it would interfere with the switch's block! -->
 						</context>
 					</include>
+				</context>				
+				
+				<context id="errors-and-warnings-with-optional-saving-word">
+					<match>((warning|error)s?)(\s+saying)?</match>
+					<include>
+						<context sub-pattern="2" style-ref="type"/>
+						<context sub-pattern="3" style-ref="common-defines"/>
+					</include>
 				</context>
 				
 				<context id="read-as-a">
@@ -618,14 +626,6 @@
 					)\b</match>
 				</context>
 				
-				<context id="errors-and-warnings-with-optional-saving-word">
-					<match>((warning|error)s?)(\s+saying)?</match>
-					<include>
-						<context sub-pattern="1" style-ref="type"/>
-						<context sub-pattern="2" style-ref="common-defines"/>
-					</include>
-				</context>
-				
 				<!-- stdlib basic types -->
 				<context id="error-prone-type" style-ref="type" class="type">
 					<match>(?&lt;=[A-Za-z])\?</match>
@@ -653,7 +653,6 @@
 							((exec(utable)?|data?|binary|text|random\s+access)\s+)?file|RAF|R\.A\.F\.|
 							char(acter)?|
 							string|
-							((array|hash)\s+)?map|
 							warning|
 							error|
 							enum(\s+value)?|
@@ -673,8 +672,9 @@
 							queue|
 							stack|
 							((AVL|A\.V\.L\.|red(-|\s+)black|RB|R.B.|binary(\s+search)?)\s+)?tree|BST|B\.S\.T\.|
-							tuple)
-						s?(\s+of)?|
+							tuple|
+							((array|hash)\s+)?map
+						)s?(\s+of)?|
 						(
 							process|
 							regex

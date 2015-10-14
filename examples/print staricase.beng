@@ -1,0 +1,9 @@
+uint Size := read a uint
+
+from Row := 0 to Size + 1,
+	from Column := 0 to Size:
+		if Row < Size - Column,
+			print ' '
+		else
+			print '*'
+	print '\n';

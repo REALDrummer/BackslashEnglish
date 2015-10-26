@@ -1,0 +1,24 @@
+define <sorted @s> (quick)?sort <@s Unsorted Stuff>:
+	if Unsorted Stuff is sorted or Unsorted Stuff's size <= 1,
+		Unsorted Stuff
+	else:
+		uint Index From Start := 0
+		uint Index From End := Unsorted Stuff's size - 1
+		
+		@ Pivot := Unsorted Stuff[Unsorted Stuff's size / 2]
+		
+		while Index From Start < Index From End,
+			# if an element in the first half of the array belongs in the second half (after pivot)...
+			if Unsorted Stuff[Index From Start] > Pivot:
+				# find an element on the right side that belongs on the left
+				while Index From End > Index From Start and Unsorted Stuff[Index From End] >= Pivot:
+					Index From End--
+				if Index From End <= Index From Start
+					break
+				else
+					swap Unsorted Stuff[Index From Start] and Unsorted Stuff[Index From End];;
+		
+		quicksort Unsorted Stuff[to Unsorted Stuff's size / 2]
+		quicksort Unsorted Stuff[from Unsorted Stuff's size / 2]
+		
+		Unsorted Stuff;;

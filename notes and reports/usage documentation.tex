@@ -1,16 +1,48 @@
 \documentclass{article}
 
 \usepackage{indentfirst}		% indents the first line of paragraphs after (sub)*section headers
+\usepackage[margin=1in]{geometry}	% makes 1in reasonable margins (as opposed to the huge default ones)
+\usepackage{titlesec}			% allows the use of \paragraph and some other small section commands and tools
+\usepackage[dvipsnames]{xcolor}	% allows the coloring of text, especially for the simulated syntax highlighting
+\usepackage{lmodern}			% allows the use of lmodern fonts, which have less issues than the default like '<' doesn't become '¡' and tt text can be bold
+\usepackage[T1]{fontenc}		% fixes those weird fint-compatibility issues that can turn '<' into '¡' and so forth
 
-\newcommand{\name}{\textbackslash{}English}
+\setcounter{secnumdepth}{4}		% allows 4-point sequence numbers in delineating sections, e.g. "2.2.2.1"
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\newcommand{\name}{\textbackslash{}English}				% just lets me avoid typing "\textbackslash{}English" all the time
+
+% redefine headers for automatic labelling
+\let\oldsection\section
+
+\renewcommand{\section}[2]{\oldsection{#1}\label{#2}}
+
+% commands for syntax highlighting code
+\newcommand{\comment}[1]{\texttt{\textcolor{LimeGreen}{#1}}}
+\newcommand{\type}[1]{\texttt{\textcolor{ForestGreen}{\textbf{#1}}}}
+\newcommand{\keyop}[1]{\texttt{\textcolor{Purple}{\textbf{#1}}}}
+\newcommand{\defpunct}[1]{\texttt{\textcolor{SkyBlue}{\textbf{#1}}}}
+\newcommand{\define}[2]{\texttt{\keyop{define} \defpunct{<}#1\defpunct{>} #2\defpunct{:}}}
+\newenvironment{code}[0]
+{\ttfamily{}				% use true-type fonts for code
+\setlength\parindent{0cm}	% remove paragraph indentation for code
+~\\}
+{\setlength\parindent{1cm}
+~\\}
 
 \begin{document}
+\setlength\parindent{1cm}								% unify the paragraph indentation size
 
 \tableofcontents
 \newpage
 
-\section{Introduction: What, Why, and How?}
+\obeylines												% makes line breaks occur in the doducment as they occur in code
 
+\section{Introduction: What, Why, and How?}{intro}
 \subsection{What is \name{}?}
 
 \subsection{What makes it different?}
@@ -19,32 +51,89 @@
 
 \subsection{How are these differences possible?}
 
-\section{How to Use the Language}
+\section{How to Use the Language}{how}
 \subsection{Compilation}
 
 \subsection{The Basic Basics}
+\subsubsection{Comments}
+\indent I mention comments first because they'll be used in future examples within this documentation.
+\indent The octothorpe ('\#') begins single-line comments:
+\begin{code}
+some code		\comment{\# a comment}
+\comment{\#\#\#\#\#\#\# comment comment comment}
+more code		\comment{\#\# more comment with more \#s!}
+\end{code}
+\indent Octothorpes can be paired with angle brackets ('<' and '>') to make multi-line or inline comments:
+\begin{code}
+some \comment{\#< awesome >\#} code
+
+\comment{\#\#\#< You can have as many \#s as you want and they don't
+even have to match the number at the end! >\#\\}
+code
+\comment{\#< You can also have nested comments to make commenting out sections of code easier. 
+I commented out the code below even though it also has multi-line comments.\\
+
+\#< This is a comment >\# Here is some code that is commented and bad\\
+
+Still, the comment doesn't end at the first ">" followed by an "\#"; it matches them like parentheses. 
+>\#}
+more code
+\comment{\#\#< below is a pretty cool operator that we'll explain and even show you how to make later; this two-\# could be used as a doc comment (maybe?) >\#}
+\define{\type{type of chars}}{string}
+\qquad\type{chars}\defpunct{;}
+\end{code}
+
 \subsubsection{\texttt{main(}... Oh, Wait}
+\indent There is no main method/function/operator. Just write what you want to do!
 
 \subsubsection{Variables and Math}
-\subsubsubsection{Standard Number Types}
+\indent \name{} is strongly, statically typed. Variables need to be declared and need to be declared with a type. Variable declarations follow the same classic C-like format of a type followed by a name. Note that \name{} convention is the reverse of Java and many other languages: capitalize the first letter(s) of the variable names and keep types lowercase.
 
-\subsubsubsection{Variable Declaration and Assignment}
+\begin{code}
+\type{int} Integer
+\type{queue} Queue
+\end{code}
 
-\subsubsubsection{Standard Arithmatic Operators}
+In \name{}, there's a bit of a twist: in this language, types, variable names, and other operators can have spaces, can be defined with special character-matching operators, and more. (See Section \ref{subsec:Operators} later on.)
+\begin{code}
+\type{int} Number of Variables
+\type{list of queues of pairs of ints and floats} My Beautiful Queues
+\end{code}
 
-\subsubsection{Lists (and Strings)}
-\subsubsubsection{Making a List}
+\paragraph{Standard Number Types}
+\indent \name{} includes a wide variety of different types of numbers; some have static memory sizes and some don't. Here are some of the most basic number types that do \emph{not} have set memory sizes:
+\begin{itemize}
+	\item \type{number} is any kind of number, floating point or integer, static or arbitrary size, etc.
+	\item \type{decimal} is any kind of rational number, including integers, floating-point numbers, or any special kinds of numbers like integral fractions or square roots calculated lazily. All \type{decimal}s are types of \type{number}s.
+	\item \type{integer} is any kind of integer or any size, arbitrary or static. All \type{integer}s are types of \type{decimal}s.
+\end{itemize}
 
-\subsubsubsection{Manipulating Lists By Index(es)}
+\indent \name{} also includes a few types of numbers of static size:
+\begin{itemize}
+	\item \type{byte} is an 8-bit integer.
+	\item \type{int} is a 32-bit integer.
+	\item \type{float} is a 32-bit (single-precision) floating point number (IEEE-style).
+\end{itemize}
 
-\subsubsubsection{Strings Are Lists And More!}
+\indent Other features of number types will be described in \ref{sssec:TypeModifiers}
+
+\paragraph{Variable Declaration and Assignment}
+
+\paragraph{Standard Arithmatic Operators}
+
+\subsubsection{Lists and More}
+\paragraph{Making a List}
+
+\paragraph{Manipulating Lists By Index(es)}
+
+\paragraph{Strings Are Lists And More!}
 
 \subsection{Code Blocks}
 \subsubsection{If and Its Friends}
 
 \subsubsection{Loops}
 
-\subsection{Operators}
+\subsection{Operators} \label{subsec:Operators}
 \subsubsection{Defining Them}
 
 \subsubsection{Using Them}
@@ -54,15 +143,15 @@
 
 \subsubsection{Using Them}
 
-\subsubsection{Type Modifiers}
-\subsubsubsection{Defining Them}
+\subsubsection{Type Modifiers}	\label{sssec:TypeModifiers}
+\paragraph{Defining Them}
 
-\subsubsubsection{Using Them}
+\paragraph{Using Them}
 
 \subsubsection{Units}
-\subsubsubsection{Defining Them}
+\paragraph{Defining Them}
 
-\subsubsubsection{Using Them}
+\paragraph{Using Them}
 
 \subsection{Errors}
 \subsubsection{Defining Them}
@@ -92,7 +181,7 @@
 
 \subsubsection{Scope and Contextual Operators}
 
-\section{The Basis of the Language}
+\section{The Basis of the Language}{basis}
 \subsection{\texttt{\textbf{operator}}}
 
 \subsection{\texttt{\textbf{define}}}
@@ -105,7 +194,7 @@
 
 \subsection{\texttt{\textbf{use}}}
 
-\section{The Not-So-Complicated Compilation}
+\section{The Not-So-Complicated Compilation}{compilation}
 \subsection{Idea}
 
 \subsection{Optimizability}

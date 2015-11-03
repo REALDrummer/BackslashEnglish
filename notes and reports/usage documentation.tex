@@ -17,16 +17,18 @@
 \newcommand{\name}{\textbackslash{}English}				% just lets me avoid typing "\textbackslash{}English" all the time
 
 % redefine headers for automatic labelling
-\let\oldsection\section
-
-\renewcommand{\section}[2]{\oldsection{#1}\label{#2}}
+\newcommand{\secl}[1]{\section{#1}\label{sec:#1}}
+\newcommand{\ssecl}[1]{\subsection{#1}\label{ssec:#1}}
+\newcommand{\sssecl}[1]{\subsubsection{#1}\label{sssec:#1}}
 
 % commands for syntax highlighting code
-\newcommand{\comment}[1]{\texttt{\textcolor{LimeGreen}{#1}}}
+\newcommand{\commentline}[1]{\texttt{\textcolor{LimeGreen}{#1}}}
 \newcommand{\type}[1]{\texttt{\textcolor{ForestGreen}{\textbf{#1}}}}
 \newcommand{\keyop}[1]{\texttt{\textcolor{Purple}{\textbf{#1}}}}
+\newcommand{\common}[1]{\texttt{\textcolor{Mulberry}{\textbf{#1}}}}
 \newcommand{\defpunct}[1]{\texttt{\textcolor{SkyBlue}{\textbf{#1}}}}
 \newcommand{\define}[2]{\texttt{\keyop{define} \defpunct{<}#1\defpunct{>} #2\defpunct{:}}}
+\newcommand{\codestring}[1]{\texttt{\textcolor{NavyBlue}{"#1"}}}
 \newenvironment{code}[0]
 {\ttfamily{}				% use true-type fonts for code
 \setlength\parindent{0cm}	% remove paragraph indentation for code
@@ -42,35 +44,37 @@
 
 \obeylines												% makes line breaks occur in the doducment as they occur in code
 
-\section{Introduction: What, Why, and How?}{intro}
-\subsection{What is \name{}?}
+\secl{Introduction: What, Why, and How?}
+\ssecl{What is \name{}?}
 
-\subsection{What makes it different?}
+\ssecl{What makes it different?}
 
-\subsection{What is good about these differences?}
+\ssecl{What is good about these differences?}
 
-\subsection{How are these differences possible?}
+\ssecl{How are these differences possible?}
 
-\section{How to Use the Language}{how}
-\subsection{Compilation}
+\secl{How to Use the Language}
+\ssecl{Compilation}{Compilation}
 
-\subsection{The Basic Basics}
-\subsubsection{Comments}
+\ssecl{First Things First}
+\sssecl{\texttt{main(}... Oh, Wait}
+\indent There is no main method/function/operator. Just write what you want to do!
+\sssecl{Comments}
 \indent I mention comments first because they'll be used in future examples within this documentation.
 \indent The octothorpe ('\#') begins single-line comments:
 \begin{code}
-some code		\comment{\# a comment}
-\comment{\#\#\#\#\#\#\# comment comment comment}
-more code		\comment{\#\# more comment with more \#s!}
+some code		\commentline{\# a comment}
+\commentline{\#\#\#\#\#\#\# comment comment comment}
+more code		\commentline{\#\# more comment with more \#s!}
 \end{code}
 \indent Octothorpes can be paired with angle brackets ('<' and '>') to make multi-line or inline comments:
 \begin{code}
-some \comment{\#< awesome >\#} code
+some \commentline{\#< awesome >\#} code
 
-\comment{\#\#\#< You can have as many \#s as you want and they don't
+\commentline{\#\#\#< You can have as many \#s as you want and they don't
 even have to match the number at the end! >\#\\}
 code
-\comment{\#< You can also have nested comments to make commenting out sections of code easier. 
+\commentline{\#< You can also have nested comments to make commenting out sections of code easier. 
 I commented out the code below even though it also has multi-line comments.\\
 
 \#< This is a comment >\# Here is some code that is commented and bad\\
@@ -78,15 +82,15 @@ I commented out the code below even though it also has multi-line comments.\\
 Still, the comment doesn't end at the first ">" followed by an "\#"; it matches them like parentheses. 
 >\#}
 more code
-\comment{\#\#< below is a pretty cool operator that we'll explain and even show you how to make later; this two-\# could be used as a doc comment (maybe?) >\#}
+\commentline{\#\#< below is a pretty cool operator that we'll explain and even show you how to make later; this two-\# could be used as a doc comment (maybe?) >\#}
 \define{\type{type of chars}}{string}
 \qquad\type{chars}\defpunct{;}
 \end{code}
 
-\subsubsection{\texttt{main(}... Oh, Wait}
-\indent There is no main method/function/operator. Just write what you want to do!
+\ssecl{Variables and Math}
+\indent Math is important! \name{} has mutable variables like most languages and plenty of arithmatic operators for powerful math.
 
-\subsubsection{Variables and Math}
+\sssecl{Declaring Variables}
 \indent \name{} is strongly, statically typed. Variables need to be declared and need to be declared with a type. Variable declarations follow the same classic C-like format of a type followed by a name. Note that \name{} convention is the reverse of Java and many other languages: capitalize the first letter(s) of the variable names and keep types lowercase.
 
 \begin{code}
@@ -94,13 +98,44 @@ more code
 \type{queue} Queue
 \end{code}
 
-In \name{}, there's a bit of a twist: in this language, types, variable names, and other operators can have spaces, can be defined with special character-matching operators, and more. (See Section \ref{subsec:Operators} later on.)
+In \name{}, there's a bit of a twist: in this language, types, variable names, and other operators can have spaces, can be defined with special character-matching operators (as in operator definitions; see Section \ref{ssec:Operators} later on), and more. Here are some examples with spaces in the names of the variables and/or the names of their types:
 \begin{code}
 \type{int} Number of Variables
 \type{list of queues of pairs of ints and floats} My Beautiful Queues
 \end{code}
 
-\paragraph{Standard Number Types}
+\sssecl{Assigning Variables}
+\indent This is different from most languages! In \name{}, assign variables using "\texttt{:=}" rather than just "\texttt{=}". This leaves the "\texttt{=}" free for seeing if two things are equal (instead of "\texttt{==}").
+\begin{code}
+\type{int} Value := 5
+\type{strings} Words := \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing} \commentline{\# More on this later in Section \ref{ssec:Lists and More}!}\\
+\commentline{\# Yes, you can declare a variable without assigning it a value, then assign it later.}
+\type{int} Seven	\commentline{\# Try and use it now and it will given you an error.}
+Seven := 7	\commentline{\# Now it's safe because it has 7 in it.}
+\end{code}
+
+\sssecl{Numbers}
+\indent This language can understand integers in base 10 normally; hexadecimal (base 16) with "\texttt{0x}"; octal (base 8) with "\texttt{0o}"; or binary (base 2) with "\texttt{0b}".
+\begin{code}
+\type{int} My Everyday Number := 839
+\type{byte} A Byte := 0xFF
+\type{int} Number of Legs on Ten Octopi := 0o100
+\end{code}
+
+\indent Oh, wait, little twist: base 10 numbers should have commas between every trio of digits just like in English! Numbers in other bases do not have commas.
+\begin{code}
+\type{int} Two Thousand One Seventeen := 2,117
+\type{float} Five Million Fifteen Thousand Point One := 5,015,000.1
+\end{code}
+
+\indent In addition, it can understand enot only base 10 floating point numbers, but also in the other bases mentioned! There aren't many places where that would be useful but\ldots{}eh.
+\begin{code}
+\type{float} Three And a Half := 3.5
+\type{float} Three And a Half in Binary := 0b11.1
+\type{float} Three And a Half in Hex := 0x3.8
+\end{code}
+
+\sssecl{Standard Number Types}
 \indent \name{} includes a wide variety of different types of numbers; some have static memory sizes and some don't. Here are some of the most basic number types that do \emph{not} have set memory sizes:
 \begin{itemize}
 	\item \type{number} is any kind of number, floating point or integer, static or arbitrary size, etc.
@@ -110,6 +145,7 @@ In \name{}, there's a bit of a twist: in this language, types, variable names, a
 
 \indent \name{} also includes a few types of numbers of static size:
 \begin{itemize}
+	\item \type{bit} is a 1-bit integer. These are used instead of "bool"s or "boolean"s. Special note: \keyop{bits} is one of the very special pre-defined types; the \type{bit} type is just a special form of \keyop{bits} with one bit.
 	\item \type{byte} is an 8-bit integer.
 	\item \type{int} is a 32-bit integer.
 	\item \type{float} is a 32-bit (single-precision) floating point number (IEEE-style).
@@ -117,85 +153,143 @@ In \name{}, there's a bit of a twist: in this language, types, variable names, a
 
 \indent Other features of number types will be described in \ref{sssec:TypeModifiers}
 
-\paragraph{Variable Declaration and Assignment}
+\sssecl{Arithmetic}
+\indent Most arithmetic is what you've seen a million times: there's "+", "-", "*", and "/". If either argument with any of these operators is floating-point, the result will be floating point, but if both are integers, then the result will be an integer (even the division).
 
-\paragraph{Standard Arithmatic Operators}
+\begin{code}
+\type{integer} Eight := 5 + 3
+\type{int} Four Over Two := 4 / 2
+\type{decimal} Big Decimal := 2,100.0 * 15 \commentline{\# That first number is floating point even though its decimal portion is just a ".0", so this product is still floating point even though the second term is an integer.}
+\type{integer} Integer Division := 3 / 2 \commentline{\# This is 1 because integer division!!}
+\end{code}
 
-\subsubsection{Lists and More}
-\paragraph{Making a List}
+\indent We've also got most all the rest of the C operator family: "\texttt{\%}" for modulus, "\texttt{++}" for increment (prefix or postfix), "\verb+--+" for decrement (prefix or postfix), "\verb+<<+" for bit shift left, "\verb+>>+" for bit shift right, and bitwise operators, too: "\texttt{\&}" for bitwise 'and', "\texttt{|}" for bitwise 'or', and "\texttt{\textasciitilde}" for bitwise negation. Note that C's "\texttt{\^}" bitwise 'xor' is missing; I'll reveal why in the next paragraph.
 
-\paragraph{Manipulating Lists By Index(es)}
+\begin{code}
+\type{integer} One := 9 \% 4
+\type{byte} Eight := 1 \verb+<<+ 3
+\type{byte} Zero := 0b10010 \& 0b01001
+\type{byte} All Ones := 0xF0 | 0o17
+\type{byte} One Zero Zero One := \textasciitilde{}0b0110
+\\
+\type{byte} i := 0
+i++	\commentline{\# Now i is 1.}
+\\
+\commentline{\# Oh, yeah, and modulus works with floats as well as ints!}
+\type{float} One Half := 3 \% 1.25	\commentline{\# Remember: one float means the result will be a float.}
+\end{code}
 
-\paragraph{Strings Are Lists And More!}
+\indent There are lots of custom arithmatic operators, too! Exponents, as I mentioned earlier, are done with the "\texttt{\^}". In addition, there are cool symbolic operators for absolute value, ceiling, floor, and more.
+\begin{code}
+\type{integer} Twenty Seven := 3 \^{} 3
+\type{float} Three Point Five := |-3.5|	\commentline{\# absolute value}
+\type{int} Four := |\^{}3.5\^{}| \commentline{\# ceiling}
+\type{int} Three := |\_3.5\_| \commentline{\# floor}
+\end{code}
 
-\subsection{Code Blocks}
-\subsubsection{If and Its Friends}
+\indent Finally, just like C, those binary operators can be joined with the equals sign to make cool assignment-modifications operators:
+\begin{code}
+\type{int} Eight := 5	\commentline{\# Here, Eight equals 5.}
+Eight += 3	\commentline{\# Now it's actually 8.}
+\\
+\type{byte} One := 9	\commentline{\# Now it's 9\ldots.}
+One \%= 4	\commentline{\# Okay, now it's 1.}
+\end{code}
 
-\subsubsection{Loops}
+\ssecl{Lists and More}
+\indent Lists are difficult to use in most languages, but I honestly think that lists are easier to use in \name{} than in any other language!!
+\indent First cool thing: collections are the type that includes any grouping of one of more things, including lists, arrays, sets, and all the rest. How do you make them? Just use the plural of the type! By default, you just put an "s" at the end, like "\type{strings}"; however, some types (like "\type{process}") will have their own specially defined collection syntax with their proper plural ("\type{processes}"). If you make your own type, you can define its plural, too. You don't have to settle with using an "array of bushs"; no one wants that.
+\indent The last cool thing you need to know before trying to make or use lists: list types consist of the type of list; the word "of"; and the plural (collection) of that type\ldots yeah, you guessed it, just like English. For example, an array of strings would be\ldots well, "\type{array of strings}"!
 
-\subsection{Operators} \label{subsec:Operators}
-\subsubsection{Defining Them}
+\sssecl{Making a List}
+\indent The first thing you need to know about how to make a list is how to make an array. Do it like English! Comma-delimit the items and use an 'and' near the end for three or more; use just an 'and' for two items; and single items can just be used as one-item lists as they are (more on that in Section \ref{ssec:Implicit Conversion}).
+\begin{code}
+\type{strings} Words := \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing} \commentline{\# You saw this earlier.}
+\type{array of ints} Numbers := 0o8823 and 6,598
+\type{bytes} Bytes := 0xCD \commentline{\# Yep, this is fine. One byte ==> an array of bytes containing one byte.}
+\end{code}
 
-\subsubsection{Using Them}
+\indent For other kinds of lists, you can just use "a new"; the type of the list; and optionally the word "with" followed by the items you want to put into the new list initially. Of course, if you leave out the optional "with\ldots" part, you'll get an empty list.
+\begin{code}
+\commentline{\# This kind of list has no declared element type, so will take anything: numbers, strings, custom objects, whatever!}
+\type{list} Empty List := \common{a new} \type{array}
 
-\subsection{Types}
-\subsubsection{Defining Them}
+\commentline{\# Remember: "strings" means "collection of strings" and sets are collections, too!}
+\type{strings} Words := \common{a new} \type{set of strings} \common{with} \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing}
+\end{code}
 
-\subsubsection{Using Them}
+\sssecl{Manipulating Lists By Index(es)}
 
-\subsubsection{Type Modifiers}	\label{sssec:TypeModifiers}
+\sssecl{Strings Are Lists And More!}
+
+\ssecl{Code Blocks}
+\sssecl{If and Its Friends}
+
+\sssecl{Loops}
+
+\ssecl{Operators}{Operators}
+\sssecl{Defining Them}
+
+\sssecl{Using Them}
+
+\ssecl{Types}
+\sssecl{Defining Them}
+
+\sssecl{Using Them}
+
+\sssecl{Type Modifiers}	\label{sssec:TypeModifiers}
 \paragraph{Defining Them}
 
 \paragraph{Using Them}
 
-\subsubsection{Units}
+\sssecl{Units}
 \paragraph{Defining Them}
 
 \paragraph{Using Them}
 
-\subsection{Errors}
-\subsubsection{Defining Them}
+\ssecl{Errors}
+\sssecl{Defining Them}
 
-\subsubsection{Using Them}
+\sssecl{Using Them}
 
-\subsection{Input and Output}
-\subsubsection{Stdin Reading and Stdout Printing}
+\ssecl{Input and Output}
+\sssecl{Stdin Reading and Stdout Printing}
 
-\subsubsection{File Reading and Writing}
+\sssecl{File Reading and Writing}
 
-\subsection{Implicit Conversion}
-\subsubsection{What?}
+\ssecl{Implicit Conversion}
+\sssecl{What?}
 
-\subsubsection{Why?}
+\sssecl{Why?}
 
-\subsubsection{Super-implicit?}
+\sssecl{Super-implicit?}
 
-\subsection{High Order Functionality}
-\subsubsection{What?}
+\ssecl{High Order Functionality}
+\sssecl{What?}
 
-\subsubsection{Why?}
+\sssecl{Why?}
 
-\subsubsection{Missing Something? Partially Applied Operators}
+\sssecl{Missing Something? Partially Applied Operators}
 
-\subsubsection{Operator Modifiers}
+\sssecl{Operator Modifiers}
 
-\subsubsection{Scope and Contextual Operators}
+\sssecl{Scope and Contextual Operators}
 
-\section{The Basis of the Language}{basis}
-\subsection{\texttt{\textbf{operator}}}
+\secl{The Basis of the Language}
+\ssecl{\texttt{\textbf{operator}}}
 
-\subsection{\texttt{\textbf{define}}}
+\ssecl{\texttt{\textbf{define}}}
 
-\subsection{\texttt{\textbf{asm}}}
+\ssecl{\texttt{\textbf{asm}}}
 
-\subsection{\texttt{\textbf{run}}}
+\ssecl{\texttt{\textbf{run}}}
 
-\subsection{\texttt{\textbf{bits}}}
+\ssecl{\texttt{\textbf{bits}}}
 
-\subsection{\texttt{\textbf{use}}}
+\ssecl{\texttt{\textbf{use}}}
 
-\section{The Not-So-Complicated Compilation}{compilation}
-\subsection{Idea}
+\secl{The Not-So-Complicated Compilation}
+\ssecl{Idea}
 
-\subsection{Optimizability}
+\ssecl{Optimizability}
 \end{document}

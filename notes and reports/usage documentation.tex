@@ -6,6 +6,7 @@
 \usepackage[dvipsnames]{xcolor}	% allows the coloring of text, especially for the simulated syntax highlighting
 \usepackage{lmodern}			% allows the use of lmodern fonts, which have less issues than the default like '<' doesn't become '¡' and tt text can be bold
 \usepackage[T1]{fontenc}		% fixes those weird fint-compatibility issues that can turn '<' into '¡' and so forth
+\usepackage[utf8x]{inputenc}		% allow the proper use and translation of Unicode characters
 
 \setcounter{secnumdepth}{4}		% allows 4-point sequence numbers in delineating sections, e.g. "2.2.2.1"
 
@@ -54,7 +55,7 @@
 \ssecl{How are these differences possible?}
 
 \secl{How to Use the Language}
-\ssecl{Compilation}{Compilation}
+\ssecl{Compilation}
 
 \ssecl{First Things First}
 \sssecl{\texttt{main(}... Oh, Wait}
@@ -128,7 +129,7 @@ Seven := 7	\commentline{\# Now it's safe because it has 7 in it.}
 \type{float} Five Million Fifteen Thousand Point One := 5,015,000.1
 \end{code}
 
-\indent In addition, it can understand enot only base 10 floating point numbers, but also in the other bases mentioned! There aren't many places where that would be useful but\ldots{}eh.
+\indent In addition, it can understand not only base 10 floating point numbers, but also in the other bases mentioned! There aren't many places where that would be useful but\ldots{}eh.
 \begin{code}
 \type{float} Three And a Half := 3.5
 \type{float} Three And a Half in Binary := 0b11.1
@@ -163,28 +164,32 @@ Seven := 7	\commentline{\# Now it's safe because it has 7 in it.}
 \type{integer} Integer Division := 3 / 2 \commentline{\# This is 1 because integer division!!}
 \end{code}
 
-\indent We've also got most all the rest of the C operator family: "\texttt{\%}" for modulus, "\texttt{++}" for increment (prefix or postfix), "\verb+--+" for decrement (prefix or postfix), "\verb+<<+" for bit shift left, "\verb+>>+" for bit shift right, and bitwise operators, too: "\texttt{\&}" for bitwise 'and', "\texttt{|}" for bitwise 'or', and "\texttt{\textasciitilde}" for bitwise negation. Note that C's "\texttt{\^}" bitwise 'xor' is missing; I'll reveal why in the next paragraph.
+\indent We've also got most all the rest of the C operator family: "\texttt{\%}" for modulus, "\texttt{++}" for increment (prefix or postfix), "\verb+--+" for decrement (prefix or postfix), "\verb+<<+" for bit shift left, "\verb+>>+" for bit shift right, and bitwise operators, too: "\texttt{\&}" for bitwise 'and', "\texttt{|}" for bitwise 'or', and "\texttt{\textasciitilde}" for bitwise negation.
+\indent Note that C's "\texttt{\^}" bitwise 'xor' is missing; I'll reveal why in the next paragraph. You can use the mathematical xor symbol, though:
 
 \begin{code}
 \type{integer} One := 9 \% 4
 \type{byte} Eight := 1 \verb+<<+ 3
 \type{byte} Zero := 0b10010 \& 0b01001
 \type{byte} All Ones := 0xF0 | 0o17
-\type{byte} One Zero Zero One := \textasciitilde{}0b0110
-\\
+\type{byte} One Zero Zero One := \textasciitilde{}0b0110\\
+
 \type{byte} i := 0
-i++	\commentline{\# Now i is 1.}
-\\
+i++	\commentline{\# Now i is 1.}\\
+
+\commentline{\# Here's now \name{} does xor:}
+\type{byte} One One := 0b10 (+) 0b01 \commentline{\# It's meant to look like "⨁", which you can also use.}\\
+
 \commentline{\# Oh, yeah, and modulus works with floats as well as ints!}
 \type{float} One Half := 3 \% 1.25	\commentline{\# Remember: one float means the result will be a float.}
 \end{code}
 
-\indent There are lots of custom arithmatic operators, too! Exponents, as I mentioned earlier, are done with the "\texttt{\^}". In addition, there are cool symbolic operators for absolute value, ceiling, floor, and more.
+\indent There are lots of custom arithmatic operators, too! Exponents are done with the "\texttt{\^}". (This is why the C-style bitwise 'xor' is not used.) In addition, there are cool symbolic operators for absolute value, ceiling, floor, and more.
 \begin{code}
 \type{integer} Twenty Seven := 3 \^{} 3
 \type{float} Three Point Five := |-3.5|	\commentline{\# absolute value}
-\type{int} Four := |\^{}3.5\^{}| \commentline{\# ceiling}
-\type{int} Three := |\_3.5\_| \commentline{\# floor}
+\type{int} Four := |\^{}3.5\^{}| \commentline{\# ceiling; meant to look like "⌈3.5⌉", which you can also use.}
+\type{int} Three := |\_3.5\_| \commentline{\# floor; meant to look like "⌊3.5⌋", which you can also use.}
 \end{code}
 
 \indent Finally, just like C, those binary operators can be joined with the equals sign to make cool assignment-modifications operators:
@@ -198,7 +203,7 @@ One \%= 4	\commentline{\# Okay, now it's 1.}
 
 \ssecl{Lists and More}
 \indent Lists are difficult to use in most languages, but I honestly think that lists are easier to use in \name{} than in any other language!!
-\indent First cool thing: collections are the type that includes any grouping of one of more things, including lists, arrays, sets, and all the rest. How do you make them? Just use the plural of the type! By default, you just put an "s" at the end, like "\type{strings}"; however, some types (like "\type{process}") will have their own specially defined collection syntax with their proper plural ("\type{processes}"). If you make your own type, you can define its plural, too. You don't have to settle with using an "array of bushs"; no one wants that.
+\indent First cool thing: collections are the type that includes any grouping of one of more things, including lists, arrays, sets, and all the rest. How do you make them? Just use the plural of the type! By default, you just put an "s" at the end, like "\type{strings}"; however, some types (like "\type{process}") will have their own specially defined collection syntax with their proper plural ("\type{processes}"). If you make your own type, you can define its plural, too. You don't have to settle with using an "array of bushs"; no one wants that. One downside is that if you're working with words like "deer" that are the same in plural and singular forms, you'll have to write out "\type{collection of deer}", but the stdlib can help take care of that with the "\common{identically-plural}" modifier (more on modifiers in Section \ref{ssec:Op Modifiers}).
 \indent The last cool thing you need to know before trying to make or use lists: list types consist of the type of list; the word "of"; and the plural (collection) of that type\ldots yeah, you guessed it, just like English. For example, an array of strings would be\ldots well, "\type{array of strings}"!
 
 \sssecl{Making a List}
@@ -227,17 +232,20 @@ One \%= 4	\commentline{\# Okay, now it's 1.}
 
 \sssecl{Loops}
 
-\ssecl{Operators}{Operators}
+\ssecl{Operators}
 \sssecl{Defining Them}
 
 \sssecl{Using Them}
 
+\ssecl{Op Modifiers}
+\sssecl{Definining Them}
+\sssecl{Using Them}
 \ssecl{Types}
 \sssecl{Defining Them}
 
 \sssecl{Using Them}
 
-\sssecl{Type Modifiers}	\label{sssec:TypeModifiers}
+\sssecl{Type Modifiers}
 \paragraph{Defining Them}
 
 \paragraph{Using Them}

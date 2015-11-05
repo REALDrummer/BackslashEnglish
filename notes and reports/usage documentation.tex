@@ -30,6 +30,7 @@
 \newcommand{\defpunct}[1]{\texttt{\textcolor{SkyBlue}{\textbf{#1}}}}
 \newcommand{\define}[2]{\texttt{\keyop{define} \defpunct{<}#1\defpunct{>} #2\defpunct{:}}}
 \newcommand{\codestring}[1]{\texttt{\textcolor{NavyBlue}{"#1"}}}
+\newcommand{\codechar}[1]{\texttt{\textcolor{Blue}{#1}}}
 \newenvironment{code}[0]
 {\ttfamily{}				% use true-type fonts for code
 \setlength\parindent{0cm}	% remove paragraph indentation for code
@@ -152,7 +153,7 @@ Seven := 7	\commentline{\# Now it's safe because it has 7 in it.}
 	\item \type{float} is a 32-bit (single-precision) floating point number (IEEE-style).
 \end{itemize}
 
-\indent Other features of number types will be described in \ref{sssec:TypeModifiers}
+\indent Other features of number types like the ability to ensure that a number is between two other numbers will be described in \ref{sssec:Type Modifiers}
 
 \sssecl{Arithmetic}
 \indent Most arithmetic is what you've seen a million times: there's "+", "-", "*", and "/". If either argument with any of these operators is floating-point, the result will be floating point, but if both are integers, then the result will be an integer (even the division).
@@ -178,7 +179,7 @@ Seven := 7	\commentline{\# Now it's safe because it has 7 in it.}
 i++	\commentline{\# Now i is 1.}\\
 
 \commentline{\# Here's now \name{} does xor:}
-\type{byte} One One := 0b10 (+) 0b01 \commentline{\# It's meant to look like "⨁", which you can also use.}\\
+\type{byte} One One := 0b10 (+) 0b01 \commentline{\# It's meant to look like the xor circled plus, which you can also use.}\\
 
 \commentline{\# Oh, yeah, and modulus works with floats as well as ints!}
 \type{float} One Half := 3 \% 1.25	\commentline{\# Remember: one float means the result will be a float.}
@@ -203,6 +204,7 @@ One \%= 4	\commentline{\# Okay, now it's 1.}
 
 \ssecl{Lists and More}
 \indent Lists are difficult to use in most languages, but I honestly think that lists are easier to use in \name{} than in any other language!!
+\indent First off, the top of the inheritance chain concerning grouping things is a "\type{collection}". This includes \type{lists}, \type{sets}, \type{stacks}, \type{trees}, \type{tuples}, and more. It includes pretty much anything that contains other things. The other (arguably) most important type in here is "\type{list}", which is anything that contains things that can be linearly ordered (indexed, i.e. numbered). The most notable \type{collection} that is not a \type{list} is a \type{set}.
 \indent First cool thing: collections are the type that includes any grouping of one of more things, including lists, arrays, sets, and all the rest. How do you make them? Just use the plural of the type! By default, you just put an "s" at the end, like "\type{strings}"; however, some types (like "\type{process}") will have their own specially defined collection syntax with their proper plural ("\type{processes}"). If you make your own type, you can define its plural, too. You don't have to settle with using an "array of bushs"; no one wants that. One downside is that if you're working with words like "deer" that are the same in plural and singular forms, you'll have to write out "\type{collection of deer}", but the stdlib can help take care of that with the "\common{identically-plural}" modifier (more on modifiers in Section \ref{ssec:Op Modifiers}).
 \indent The last cool thing you need to know before trying to make or use lists: list types consist of the type of list; the word "of"; and the plural (collection) of that type\ldots yeah, you guessed it, just like English. For example, an array of strings would be\ldots well, "\type{array of strings}"!
 
@@ -223,9 +225,86 @@ One \%= 4	\commentline{\# Okay, now it's 1.}
 \type{strings} Words := \common{a new} \type{set of strings} \common{with} \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing}
 \end{code}
 
-\sssecl{Manipulating Lists By Index(es)}
+\sssecl{List Arithmetic}
+TODO: I'll put stuff here next!
+
+\sssecl{List Indexes}
+\indent Accessing list items by index is done with the classic "box notation" (with "\texttt{[]}"s) from index 0.
+\begin{code}
+\type{array of ints} Integers := 15 and 27
+Integers[0]	\commentline{\# 15}
+Integers[2] \commentline{\# ERROR!}
+Integers[0] := 26	\commentline{\# Integers now has 26 and 27}
+Integers[0]++	\commentline{\# Integers now has two 27s}
+\end{code}
+
+\indent Accessing with this box notation will be available for any type of \type{list}, including not just \type{arrays}, but also \type{linked lists}, \type{binary trees}, \type{queues} and more! \emph{However}, only in lists will you be able to modify things with that box notation!
+\begin{code}
+\type{strings} Words := \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing} \commentline{\# This list again?!}
+Words[2] \commentline{\# "fishing"}
+Words[0] := \codestring{cat} \commentline{\# ERROR! Look: Words is declared as "strings", not a "list of strings"!}
+\end{code}
+
+\indent Here's a convenient twist: negative numbers index from the end of a list. You might think about it like if you get a negative number, it will add the size of the list to it and use that as the index. It makes things pretty convenient for mesing with the end of a list.
+\begin{code}
+\type{list of ints} Count := 0, 1, 2, 3, 4, 5, 6, 7, \common{and} 8
+Count[-2] \commentline{\# 7!; Count's size - 2 = 9 - 2 = 7}
+\end{code}
+
+\indent It gets better, though. You can get segments of lists through box notation with the easy use of a couple words: "\common{to}" and "\common{from}". Observe:
+\begin{code}
+\commentline{\# I'll use the same "Count" as in the last example.}
+Count[4 \common{to} 8] \commentline{\# 4, 5, 6, and 7; note that the first index is inclusive and the second is exclusive.}
+Count[\common{to} 3] \commentline{\# 0, 1, and 2; when the first index is omitted, it's considered 0.}
+Count[\common{from} -2] \commentline{\# 7 and 8; yes, you can use negative indices here, too.}
+\end{code}
+
+\indent Even more: you can use any kind of list of unsigned integers as indices and it will put it together for you! Combine this stuff with the array list syntax!
+\begin{code}
+\commentline{\# I'm going to use the same "Count" from the last example.}
+Count[0, 5, \common{and} 2] \commentline{\# 0, 5, and 2}
+Count[\common{to} 4, 6, \common{and from} -1] \commentline{\# 0, 1, 2, 3, 6, and 8}
+Count[0, 5, 1, 0, and from 5] \commentline{\# 0, 5, 1, 0, 5, 6, 7, and 8; yes, repetition is allowed}
+\end{code}
+
+\indent I think the \type{string} examples below are more fun.
 
 \sssecl{Strings Are Lists And More!}
+\indent All the stuff you've seen about \type{lists} and \type{collections} so far applies to \type{strings} too\ldots because what are \type{strings} but \type{lists of chars}? Of course, as you've seen earlier and I didn't mention because it's kind of obvious, you can delimit strings with double quotes, e.g. \codestring{dog}. In addition, like in C-like languages, \type{chars} can be given by single quotes, e.g. \codechar{'A'}.
+\begin{code}
+\type{list of chars} Word := \codestring{house} \commentline{\# Yep! All good here.}
+Word[3]	\commentline{\# 's'; you could do this even if Word was declared as "string".}
+Word[0] := \codechar{'m'} \commentline{\# Word is now "mouse".}
+Word[from 2] \commentline{\# "use"}
+
+\type{string} City := \codestring{New York City}
+City[4 \common{to} 8] \commentline{\# "York"}
+City[\common{to} 8] \commentline{\# "New York"}
+City[\common{from} 10] \commentline{\# "City"}
+City[4 \common{to} -5] \commentline{\# "York"}
+\end{code}
+
+TODO: more to add here!
+
+\indent Note that \name{} \type{strings} aren't generally null-terminated like in C. If you're using C stuff, be careful about that.
+
+\sssecl{Special List Types}
+\indent Here's an incredibly powerful tool that you won't find in almost any other programming language: you can specify the size of the list as part of the type! As we'll explain more later on in Section \ref{ssec:Types}, types can come with any kinds of properties: not just other types like Java or C++, but numbers, strings, or whatever else you can think of!
+\begin{code}
+3 \type{strings} Three Words For You := \codestring{I}, \codestring{hate}, and \codestring{you}	\commentline{\# "I", "hate", and "you"}
+Three Words For You[1] := \codestring{love}	\commentline{\# "I", "love", and "you"}
+Three Words For You := \codestring{I} and \codestring{love}	\commentline{\# ERROR! There are only two strings in this array!}
+\end{code}
+
+\indent There are a million uses for that one.
+\indent One last thing in this section: there are times when you want to make a data structure with lots of dimensions, e.g. a four-dimensional matrix (for all you crazy math people out there)\ldots{}but who would want to write out "\type{list of lists of lists of lists of numbers}"? Thankfully, you don't have to!
+\begin{code}
+4-D \type{list of numbers} Hyperdimensional List := \common{a new} 4-D \type{list of numbers}
+Hyperdimensional Matrix += 0	\commentline{\# [[[[0]]]]}
+Hyperdimensional Matrix += (0, 5, and 9) and 12	\commentline{\# [[[[0], [0, 5, 9], [12]]]]}
+\end{code}
+
+\sssecl{Streaming (not the Netflix kind)}
 
 \ssecl{Code Blocks}
 \sssecl{If and Its Friends}
@@ -233,17 +312,17 @@ One \%= 4	\commentline{\# Okay, now it's 1.}
 \sssecl{Loops}
 
 \ssecl{Operators}
-\sssecl{Defining Them}
+\paragraph{Defining Them}
 
-\sssecl{Using Them}
+\paragraph{Using Them}
 
 \ssecl{Op Modifiers}
 \sssecl{Definining Them}
-\sssecl{Using Them}
+\paragraph{Using Them}
 \ssecl{Types}
-\sssecl{Defining Them}
+\paragraph{Defining Them}
 
-\sssecl{Using Them}
+\paragraph{Using Them}
 
 \sssecl{Type Modifiers}
 \paragraph{Defining Them}
@@ -256,9 +335,9 @@ One \%= 4	\commentline{\# Okay, now it's 1.}
 \paragraph{Using Them}
 
 \ssecl{Errors}
-\sssecl{Defining Them}
+\paragraph{Defining Them}
 
-\sssecl{Using Them}
+\paragraph{Using Them}
 
 \ssecl{Input and Output}
 \sssecl{Stdin Reading and Stdout Printing}

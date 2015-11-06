@@ -23,7 +23,8 @@
 \newcommand{\sssecl}[1]{\subsubsection{#1}\label{sssec:#1}}
 
 % commands for syntax highlighting code
-\newcommand{\commentline}[1]{\texttt{\textcolor{LimeGreen}{#1}}}
+\newcommand{\codecomment}[1]{\texttt{\textcolor{LimeGreen}{#1}}}
+\newcommand{\commentline}[1]{\codecomment{\# #1}}
 \newcommand{\type}[1]{\texttt{\textcolor{ForestGreen}{\textbf{#1}}}}
 \newcommand{\keyop}[1]{\texttt{\textcolor{Purple}{\textbf{#1}}}}
 \newcommand{\common}[1]{\texttt{\textcolor{Mulberry}{\textbf{#1}}}}
@@ -65,18 +66,18 @@
 \indent I mention comments first because they'll be used in future examples within this documentation.
 \indent The octothorpe ('\#') begins single-line comments:
 \begin{code}
-some code		\commentline{\# a comment}
-\commentline{\#\#\#\#\#\#\# comment comment comment}
-more code		\commentline{\#\# more comment with more \#s!}
+some code		\commentline{a comment}
+\commentline{\#\#\#\#\# comment comment comment}
+more code		\commentline{more comment with more \#s!}
 \end{code}
 \indent Octothorpes can be paired with angle brackets ('<' and '>') to make multi-line or inline comments:
 \begin{code}
-some \commentline{\#< awesome >\#} code
+some \codecomment{\#< awesome >\#} code
 
-\commentline{\#\#\#< You can have as many \#s as you want and they don't
+\codecomment{\#\#\#< You can have as many \#s as you want and they don't
 even have to match the number at the end! >\#\\}
 code
-\commentline{\#< You can also have nested comments to make commenting out sections of code easier. 
+\codecomment{\#< You can also have nested comments to make commenting out sections of code easier. 
 I commented out the code below even though it also has multi-line comments.\\
 
 \#< This is a comment >\# Here is some code that is commented and bad\\
@@ -84,7 +85,7 @@ I commented out the code below even though it also has multi-line comments.\\
 Still, the comment doesn't end at the first ">" followed by an "\#"; it matches them like parentheses. 
 >\#}
 more code
-\commentline{\#\#< below is a pretty cool operator that we'll explain and even show you how to make later; this two-\# could be used as a doc comment (maybe?) >\#}
+\codecomment{\#\#< below is a pretty cool operator that we'll explain and even show you how to make later; this two-\# could be used as a doc comment (maybe?) >\#}
 \define{\type{type of chars}}{string}
 \qquad\type{chars}\defpunct{;}
 \end{code}
@@ -110,10 +111,10 @@ In \name{}, there's a bit of a twist: in this language, types, variable names, a
 \indent This is different from most languages! In \name{}, assign variables using "\texttt{:=}" rather than just "\texttt{=}". This leaves the "\texttt{=}" free for seeing if two things are equal (instead of "\texttt{==}").
 \begin{code}
 \type{int} Value := 5
-\type{strings} Words := \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing} \commentline{\# More on this later in Section \ref{ssec:Lists and More}!}\\
-\commentline{\# Yes, you can declare a variable without assigning it a value, then assign it later.}
-\type{int} Seven	\commentline{\# Try and use it now and it will given you an error.}
-Seven := 7	\commentline{\# Now it's safe because it has 7 in it.}
+\type{strings} Words := \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing} \commentline{More on this later in Section \ref{ssec:Lists and More}!}\\
+\commentline{Yes, you can declare a variable without assigning it a value, then assign it later.}
+\type{int} Seven	\commentline{Try and use it now and it will given you an error.}
+Seven := 7	\commentline{Now it's safe because it has 7 in it.}
 \end{code}
 
 \sssecl{Numbers}
@@ -161,8 +162,8 @@ Seven := 7	\commentline{\# Now it's safe because it has 7 in it.}
 \begin{code}
 \type{integer} Eight := 5 + 3
 \type{int} Four Over Two := 4 / 2
-\type{decimal} Big Decimal := 2,100.0 * 15 \commentline{\# That first number is floating point even though its decimal portion is just a ".0", so this product is still floating point even though the second term is an integer.}
-\type{integer} Integer Division := 3 / 2 \commentline{\# This is 1 because integer division!!}
+\type{decimal} Big Decimal := 2,100.0 * 15 \commentline{That first number is floating point even though its decimal portion is just a ".0", so this product is still floating point even though the second term is an integer.}
+\type{integer} Integer Division := 3 / 2 \commentline{This is 1 because integer division!!}
 \end{code}
 
 \indent We've also got most all the rest of the C operator family: "\texttt{\%}" for modulus, "\texttt{++}" for increment (prefix or postfix), "\verb+--+" for decrement (prefix or postfix), "\verb+<<+" for bit shift left, "\verb+>>+" for bit shift right, and bitwise operators, too: "\texttt{\&}" for bitwise 'and', "\texttt{|}" for bitwise 'or', and "\texttt{\textasciitilde}" for bitwise negation.
@@ -176,30 +177,30 @@ Seven := 7	\commentline{\# Now it's safe because it has 7 in it.}
 \type{byte} One Zero Zero One := \textasciitilde{}0b0110\\
 
 \type{byte} i := 0
-i++	\commentline{\# Now i is 1.}\\
+i++	\commentline{Now i is 1.}\\
 
-\commentline{\# Here's now \name{} does xor:}
-\type{byte} One One := 0b10 (+) 0b01 \commentline{\# It's meant to look like the xor circled plus, which you can also use.}\\
+\commentline{Here's now \name{} does xor:}
+\type{byte} One One := 0b10 (+) 0b01 \commentline{It's meant to look like the xor circled plus, which you can also use.}\\
 
-\commentline{\# Oh, yeah, and modulus works with floats as well as ints!}
-\type{float} One Half := 3 \% 1.25	\commentline{\# Remember: one float means the result will be a float.}
+\commentline{Oh, yeah, and modulus works with floats as well as ints!}
+\type{float} One Half := 3 \% 1.25	\commentline{Remember: one float means the result will be a float.}
 \end{code}
 
 \indent There are lots of custom arithmatic operators, too! Exponents are done with the "\texttt{\^}". (This is why the C-style bitwise 'xor' is not used.) In addition, there are cool symbolic operators for absolute value, ceiling, floor, and more.
 \begin{code}
 \type{integer} Twenty Seven := 3 \^{} 3
-\type{float} Three Point Five := |-3.5|	\commentline{\# absolute value}
-\type{int} Four := |\^{}3.5\^{}| \commentline{\# ceiling; meant to look like "⌈3.5⌉", which you can also use.}
-\type{int} Three := |\_3.5\_| \commentline{\# floor; meant to look like "⌊3.5⌋", which you can also use.}
+\type{float} Three Point Five := |-3.5|	\commentline{absolute value}
+\type{int} Four := |\^{}3.5\^{}| \commentline{ceiling; meant to look like "⌈3.5⌉", which you can also use.}
+\type{int} Three := |\_3.5\_| \commentline{floor; meant to look like "⌊3.5⌋", which you can also use.}
 \end{code}
 
 \indent Finally, just like C, those binary operators can be joined with the equals sign to make cool assignment-modifications operators:
 \begin{code}
-\type{int} Eight := 5	\commentline{\# Here, Eight equals 5.}
-Eight += 3	\commentline{\# Now it's actually 8.}
+\type{int} Eight := 5	\commentline{Here, Eight equals 5.}
+Eight += 3	\commentline{Now it's actually 8.}
 \\
-\type{byte} One := 9	\commentline{\# Now it's 9\ldots.}
-One \%= 4	\commentline{\# Okay, now it's 1.}
+\type{byte} One := 9	\commentline{Now it's 9\ldots.}
+One \%= 4	\commentline{Okay, now it's 1.}
 \end{code}
 
 \ssecl{Lists and More}
@@ -211,60 +212,93 @@ One \%= 4	\commentline{\# Okay, now it's 1.}
 \sssecl{Making a List}
 \indent The first thing you need to know about how to make a list is how to make an array. Do it like English! Comma-delimit the items and use an 'and' near the end for three or more; use just an 'and' for two items; and single items can just be used as one-item lists as they are (more on that in Section \ref{ssec:Implicit Conversion}).
 \begin{code}
-\type{strings} Words := \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing} \commentline{\# You saw this earlier.}
-\type{array of ints} Numbers := 0o8823 and 6,598
-\type{bytes} Bytes := 0xCD \commentline{\# Yep, this is fine. One byte ==> an array of bytes containing one byte.}
+\type{strings} Words := \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing} \commentline{You saw this earlier.}
+\type{array of ints} Numbers := 0o8823 \common{and} 6,598
+\type{bytes} Bytes := 0xCD \commentline{Yep, this is fine. One byte ==> an array of bytes containing one byte.}
 \end{code}
 
-\indent For other kinds of lists, you can just use "a new"; the type of the list; and optionally the word "with" followed by the items you want to put into the new list initially. Of course, if you leave out the optional "with\ldots" part, you'll get an empty list.
+\indent For other kinds of lists, you can just use "a new"; the type of the list; and optionally the word "with" followed by the items you want to put into the new list initially. Of course, if you leave out the optional "with\ldots" part, you'll get an empty list. Some types of lists may require additional information; for example, a sorted list has to know how to sort the list, but we'll get to that when we get to high-order functionality in Section \ref{ssec:High Order Functionality}.
 \begin{code}
-\commentline{\# This kind of list has no declared element type, so will take anything: numbers, strings, custom objects, whatever!}
+\commentline{This kind of list has no declared element type, so will take anything: numbers, strings, custom objects, whatever!}
 \type{list} Empty List := \common{a new} \type{array}
 
-\commentline{\# Remember: "strings" means "collection of strings" and sets are collections, too!}
+\commentline{Remember: "strings" means "collection of strings" and sets are collections, too!}
 \type{strings} Words := \common{a new} \type{set of strings} \common{with} \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing}
 \end{code}
 
 \sssecl{List Arithmetic}
-TODO: I'll put stuff here next!
+\indent Lists can be changed and manipulated. Of course they can! But how? Well, here are some examples below. First, here are the basics:
+\begin{code}
+\type{ints} Odd Numbers := 1, 3, 5, \common{and} 7
+\type{ints} Even Numbers := 2, 4, 6, \common{and} 8
+Odd Numbers's size \commentline{4 because Odd Numbers has 4 elements}
+Odd Numbers + Even Numbers \commentline{1, 3, 5, 7, 2, 4, 6, and 8; concatenation}
+Odd Numbers + 9 \commentline{1, 3, 5, 7, and 9; 9 becomes a list with a single item implicitly}
+Odd Numbers = Even Numbers \commentline{false; it sees if all the elements in each collection are equivalent (and in the same order for lists)}
+3 \common{is in} Odd Numbers \commentline{true because 3 is in Odd Numbers}
+2, 4, \common{and} 5 \common{are in} Even Numbers \commentline{false because 5 isn't in Even Numbers}
+\commentline{Yes, you can use those += and similar operators, too.}
+\end{code}
+
+\indent Yeah, plus is common enough for a concatenation operator, but with \name{}, we have more cool list arithmatic operators:
+\begin{code}
+\type{ints} Paired Odd Numbers := 1, 1, 3, 3, \common{and} 5
+\type{ints} Prime Numbers := 2, 3, 5, 7, \common{and} 11
+Paired Odd Numbers - Prime Numbers \commentline{1, 1, and 3; subtraction removes the FIRST matching element in the first collection for each element in the second}
+Paired Odd Numbers \% Prime Numbers \commentline{1 and 1; modulus removes EVERY element in the first collection that matches one in the second}
+Prime Numbers * 2 \commentline{2, 3, 5, 7, 2, 3, 5, and 7; a list times a number is that list repeated that many times!}
+
+\commentline{There are currently no uses for multiplying a list by a list or dividing a list by something.}
+\end{code}
+
+\indent Those are the arithmatic ones that utilize the mathematical symbols, but there are other list utilities, too (many inspired by Haskell):
+\begin{code}
+\commentline{Going back to these guys again\ldots}
+\common{zip} Odd Numbers \common{and} Even Numbers \commentline{1, 2, 3, 4, 5, 6, 7, and 8; it takes an element from each list one at a time}
+Odd Numbers \common{starts with} 1, 3, \common{and} 5 \commentline{true}
+4's \common{index in} Even Numbers \commentline{1 because Even Numbers[1] is 4 (indexed from 0; see Section \ref{sssec:List Indexes})}
+7's \common{last index in} Odd Numbers \commentline{3 because Odd Numbers[3] is 11}
+\end{code}
+
+\indent There are so many more cool ones\ldots but I'm afraid that they'll have to wait until Section \ref{ssec:High Order Functionality} on high-order functionality.
 
 \sssecl{List Indexes}
 \indent Accessing list items by index is done with the classic "box notation" (with "\texttt{[]}"s) from index 0.
 \begin{code}
-\type{array of ints} Integers := 15 and 27
-Integers[0]	\commentline{\# 15}
-Integers[2] \commentline{\# ERROR!}
-Integers[0] := 26	\commentline{\# Integers now has 26 and 27}
-Integers[0]++	\commentline{\# Integers now has two 27s}
+\type{array of ints} Integers := 15 \common{and} 27
+Integers[0]	\commentline{15}
+Integers[2] \commentline{ERROR!}
+Integers[0] := 26	\commentline{Integers now has 26 and 27}
+Integers[0]++	\commentline{Integers now has two 27s}
 \end{code}
 
 \indent Accessing with this box notation will be available for any type of \type{list}, including not just \type{arrays}, but also \type{linked lists}, \type{binary trees}, \type{queues} and more! \emph{However}, only in lists will you be able to modify things with that box notation!
 \begin{code}
-\type{strings} Words := \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing} \commentline{\# This list again?!}
-Words[2] \commentline{\# "fishing"}
-Words[0] := \codestring{cat} \commentline{\# ERROR! Look: Words is declared as "strings", not a "list of strings"!}
+\type{strings} Words := \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing} \commentline{This list again?!}
+Words[2] \commentline{"fishing"}
+Words[0] := \codestring{cat} \commentline{ERROR! Look: Words is declared as "strings", not a "list of strings"!}
 \end{code}
 
-\indent Here's a convenient twist: negative numbers index from the end of a list. You might think about it like if you get a negative number, it will add the size of the list to it and use that as the index. It makes things pretty convenient for mesing with the end of a list.
+\indent Here's a convenient twist: negative numbers index from the end of a list. You might think about it like if you get a negative number, it will add the size of the list to it and use that as the index. It makes things pretty convenient for messing with the end of a list.
 \begin{code}
 \type{list of ints} Count := 0, 1, 2, 3, 4, 5, 6, 7, \common{and} 8
-Count[-2] \commentline{\# 7!; Count's size - 2 = 9 - 2 = 7}
+Count[-2] \commentline{7!; Count's size - 2 = 9 - 2 = 7}
 \end{code}
 
 \indent It gets better, though. You can get segments of lists through box notation with the easy use of a couple words: "\common{to}" and "\common{from}". Observe:
 \begin{code}
-\commentline{\# I'll use the same "Count" as in the last example.}
-Count[4 \common{to} 8] \commentline{\# 4, 5, 6, and 7; note that the first index is inclusive and the second is exclusive.}
-Count[\common{to} 3] \commentline{\# 0, 1, and 2; when the first index is omitted, it's considered 0.}
-Count[\common{from} -2] \commentline{\# 7 and 8; yes, you can use negative indices here, too.}
+\commentline{I'll use the same "Count" as in the last example.}
+Count[4 \common{to} 8] \commentline{4, 5, 6, and 7; note that the first index is inclusive and the second is exclusive.}
+Count[\common{to} 3] \commentline{0, 1, and 2; when the first index is omitted, it's considered 0.}
+Count[\common{from} -2] \commentline{7 and 8; yes, you can use negative indices here, too.}
 \end{code}
 
 \indent Even more: you can use any kind of list of unsigned integers as indices and it will put it together for you! Combine this stuff with the array list syntax!
 \begin{code}
-\commentline{\# I'm going to use the same "Count" from the last example.}
-Count[0, 5, \common{and} 2] \commentline{\# 0, 5, and 2}
-Count[\common{to} 4, 6, \common{and from} -1] \commentline{\# 0, 1, 2, 3, 6, and 8}
-Count[0, 5, 1, 0, and from 5] \commentline{\# 0, 5, 1, 0, 5, 6, 7, and 8; yes, repetition is allowed}
+\commentline{I'm going to use the same "Count" from the last example.}
+Count[0, 5, \common{and} 2] \commentline{0, 5, and 2}
+Count[\common{to} 4, 6, \common{and from} -1] \commentline{0, 1, 2, 3, 6, and 8}
+Count[0, 5, 1, 0, \common{and from} 5] \commentline{0, 5, 1, 0, 5, 6, 7, and 8; yes, repetition is allowed}
 \end{code}
 
 \indent I think the \type{string} examples below are more fun.
@@ -272,16 +306,17 @@ Count[0, 5, 1, 0, and from 5] \commentline{\# 0, 5, 1, 0, 5, 6, 7, and 8; yes, r
 \sssecl{Strings Are Lists And More!}
 \indent All the stuff you've seen about \type{lists} and \type{collections} so far applies to \type{strings} too\ldots because what are \type{strings} but \type{lists of chars}? Of course, as you've seen earlier and I didn't mention because it's kind of obvious, you can delimit strings with double quotes, e.g. \codestring{dog}. In addition, like in C-like languages, \type{chars} can be given by single quotes, e.g. \codechar{'A'}.
 \begin{code}
-\type{list of chars} Word := \codestring{house} \commentline{\# Yep! All good here.}
-Word[3]	\commentline{\# 's'; you could do this even if Word was declared as "string".}
-Word[0] := \codechar{'m'} \commentline{\# Word is now "mouse".}
-Word[from 2] \commentline{\# "use"}
+\type{list of chars} Word := \codestring{house} \commentline{Yep! All good here.}
+Word[3]	\commentline{'s'; you could do this even if Word was declared as "string".}
+Word[0] := \codechar{'m'} \commentline{Word is now "mouse".}
+Word[\common{from} 2] \commentline{"use"}\\
 
 \type{string} City := \codestring{New York City}
-City[4 \common{to} 8] \commentline{\# "York"}
-City[\common{to} 8] \commentline{\# "New York"}
-City[\common{from} 10] \commentline{\# "City"}
-City[4 \common{to} -5] \commentline{\# "York"}
+City[4 \common{to} 8] \commentline{"York"}
+City[\common{to} 8] \commentline{"New York"}
+City[\common{from} 10] \commentline{"City"}
+City[4 \common{to} -5] \commentline{"York"}
+City[\common{to} 5] * 3 + City[\common{from} 5] \commentline{"New New New York City"}
 \end{code}
 
 TODO: more to add here!
@@ -291,18 +326,20 @@ TODO: more to add here!
 \sssecl{Special List Types}
 \indent Here's an incredibly powerful tool that you won't find in almost any other programming language: you can specify the size of the list as part of the type! As we'll explain more later on in Section \ref{ssec:Types}, types can come with any kinds of properties: not just other types like Java or C++, but numbers, strings, or whatever else you can think of!
 \begin{code}
-3 \type{strings} Three Words For You := \codestring{I}, \codestring{hate}, and \codestring{you}	\commentline{\# "I", "hate", and "you"}
-Three Words For You[1] := \codestring{love}	\commentline{\# "I", "love", and "you"}
-Three Words For You := \codestring{I} and \codestring{love}	\commentline{\# ERROR! There are only two strings in this array!}
+3 \type{strings} Three Words For You := \codestring{I}, \codestring{hate}, and \codestring{you}	\commentline{"I", "hate", and "you"}
+Three Words For You[1] := \codestring{love}	\commentline{"I", "love", and "you"}
+Three Words For You := \codestring{I} and \codestring{love}	\commentline{ERROR! There are only two strings in this array!}
 \end{code}
 
 \indent There are a million uses for that one.
-\indent One last thing in this section: there are times when you want to make a data structure with lots of dimensions, e.g. a four-dimensional matrix (for all you crazy math people out there)\ldots{}but who would want to write out "\type{list of lists of lists of lists of numbers}"? Thankfully, you don't have to!
+\indent There are times when you want to make a data structure with lots of dimensions, e.g. a four-dimensional matrix (for all you crazy math people out there)\ldots{}but who would want to write out "\type{list of lists of lists of lists of numbers}"? Thankfully, you don't have to!
 \begin{code}
 4-D \type{list of numbers} Hyperdimensional List := \common{a new} 4-D \type{list of numbers}
-Hyperdimensional Matrix += 0	\commentline{\# [[[[0]]]]}
-Hyperdimensional Matrix += (0, 5, and 9) and 12	\commentline{\# [[[[0], [0, 5, 9], [12]]]]}
+Hyperdimensional Matrix += 0	\commentline{[[[[0]]]]}
+Hyperdimensional Matrix += (0, 5, and 9) and 12	\commentline{[[[[0], [0, 5, 9], [12]]]]}
 \end{code}
+
+\indent TODO: "sorted" lists
 
 \sssecl{Streaming (not the Netflix kind)}
 

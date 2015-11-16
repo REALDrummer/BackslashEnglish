@@ -15,7 +15,7 @@
 \titlespacing*{\paragraph}
 {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
-\newcommand{\name}{\textbackslash{}English}				% just lets me avoid typing "\textbackslash{}English" all the time
+\newcommand{\English}{\textbackslash{}English}				% just lets me avoid typing "\textbackslash{}English" all the time
 
 % redefine headers for automatic labelling
 \newcommand{\secl}[1]{\section{#1}\label{sec:#1}}
@@ -48,7 +48,7 @@
 \obeylines												% makes line breaks occur in the doducment as they occur in code
 
 \secl{Introduction: What, Why, and How?}
-\ssecl{What is \name{}?}
+\ssecl{What is \English{}?}
 
 \ssecl{What makes it different?}
 
@@ -91,24 +91,24 @@ more code
 \end{code}
 
 \ssecl{Variables and Math}
-\indent Math is important! \name{} has mutable variables like most languages and plenty of arithmatic operators for powerful math.
+\indent Math is important! \English{} has mutable variables like most languages and plenty of arithmatic operators for powerful math.
 
 \sssecl{Declaring Variables}
-\indent \name{} is strongly, statically typed. Variables need to be declared and need to be declared with a type. Variable declarations follow the same classic C-like format of a type followed by a name. Note that \name{} convention is the reverse of Java and many other languages: capitalize the first letter(s) of the variable names and keep types lowercase.
+\indent \English{} is strongly, statically typed. Variables need to be declared and need to be declared with a type. Variable declarations follow the same classic C-like format of a type followed by a name. Note that \English{} convention is the reverse of Java and many other languages: capitalize the first letter(s) of the variable names and keep types lowercase.
 
 \begin{code}
 \type{int} Integer
 \type{queue} Queue
 \end{code}
 
-In \name{}, there's a bit of a twist: in this language, types, variable names, and other operators can have spaces, can be defined with special character-matching operators (as in operator definitions; see Section \ref{ssec:Operators} later on), and more. Here are some examples with spaces in the names of the variables and/or the names of their types:
+In \English{}, there's a bit of a twist: in this language, types, variable names, and other operators can have spaces, can be defined with special character-matching operators (as in operator definitions; see Section \ref{ssec:Operators} later on), and more. Here are some examples with spaces in the names of the variables and/or the names of their types:
 \begin{code}
 \type{int} Number of Variables
 \type{list of queues of pairs of ints and floats} My Beautiful Queues
 \end{code}
 
 \sssecl{Assigning Variables}
-\indent This is different from most languages! In \name{}, assign variables using "\texttt{:=}" rather than just "\texttt{=}". This leaves the "\texttt{=}" free for seeing if two things are equal (instead of "\texttt{==}").
+\indent This is different from most languages! In \English{}, assign variables using "\texttt{:=}" rather than just "\texttt{=}". This leaves the "\texttt{=}" free for seeing if two things are equal (instead of "\texttt{==}").
 \begin{code}
 \type{int} Value := 5
 \type{strings} Words := \codestring{blue}, \codestring{dog}, \common{and} \codestring{fishing} \commentline{More on this later in Section \ref{ssec:Lists and More}!}\\
@@ -139,14 +139,14 @@ Seven := 7	\commentline{Now it's safe because it has 7 in it.}
 \end{code}
 
 \sssecl{Standard Number Types}
-\indent \name{} includes a wide variety of different types of numbers; some have static memory sizes and some don't. Here are some of the most basic number types that do \emph{not} have set memory sizes:
+\indent \English{} includes a wide variety of different types of numbers; some have static memory sizes and some don't. Here are some of the most basic number types that do \emph{not} have set memory sizes:
 \begin{itemize}
 	\item \type{number} is any kind of number, floating point or integer, static or arbitrary size, etc.
 	\item \type{decimal} is any kind of rational number, including integers, floating-point numbers, or any special kinds of numbers like integral fractions or square roots calculated lazily. All \type{decimal}s are types of \type{number}s.
 	\item \type{integer} is any kind of integer or any size, arbitrary or static. All \type{integer}s are types of \type{decimal}s.
 \end{itemize}
 
-\indent \name{} also includes a few types of numbers of static size:
+\indent \English{} also includes a few types of numbers of static size:
 \begin{itemize}
 	\item \type{bit} is a 1-bit integer. These are used instead of "bool"s or "boolean"s. Special note: \keyop{bits} is one of the very special pre-defined types; the \type{bit} type is just a special form of \keyop{bits} with one bit.
 	\item \type{byte} is an 8-bit integer.
@@ -179,8 +179,8 @@ Seven := 7	\commentline{Now it's safe because it has 7 in it.}
 \type{byte} i := 0
 i++	\commentline{Now i is 1.}\\
 
-\commentline{Here's now \name{} does xor:}
-\type{byte} One One := 0b10 (+) 0b01 \commentline{It's meant to look like the xor circled plus, which you can also use.}\\
+\commentline{Here's now \English{} does xor:}
+\type{byte} One One := 0b10 (+) 0b01 \commentline{It's meant to look like the xor circled plus symbol, which you can also use.}\\
 
 \commentline{Oh, yeah, and modulus works with floats as well as ints!}
 \type{float} One Half := 3 \% 1.25	\commentline{Remember: one float means the result will be a float.}
@@ -203,8 +203,23 @@ Eight += 3	\commentline{Now it's actually 8.}
 One \%= 4	\commentline{Okay, now it's 1.}
 \end{code}
 
+\sssecl{Comparisons}
+\indent Numbers can be compared in most of the usual ways. The first most notable part is that to see if two numbers are equal, we use "\texttt{=}" rather than "\texttt{==}" like you'd see in most languages. Other than that, things look mostly the same: "\texttt{<}" sees if the first thing is less than the second thing, "\texttt{>}" does the opposite; "\texttt{<=}" sees if the first thing is less than or equal to the second thing, "\texttt{>=}" does the opposite; and "\texttt{!=}" sees if two things are not equal. Finally, one last one that you may or may not have sees in other languages: "\texttt{<=>}" "compares" the two values given to it; it returns a 2-bit number that is 0 if the first number is less than the second, 1 if they are equal, and 2 if the first number is greater than the second. Note that these same comparison operators can be used for things other than numbers! However, since we're talking about numbers right now, we'll stick with number examples.
+\indent All comparisons return a \type{bit}, a 1-bit number that is either 1 or 0. 1 means "\common{true}"; 0 means "\common{false}". Since \type{bit} is still a type of number, you can also use it as one, but this generally makes things less readable, so I'd advise against it.
+\begin{code}
+\commentline{Again, you can do the operations below, but they're not that readable, so please try to avoid it.}
+\type{bit} True := 5 >= 3
+\type{bit} False := 7 != 7
+\type{bit} True := 9 * 7 < 8 * 8 \% 100\\
+2-bit \type{number} Two For Greater Than := 7 * 2 <=> 3^2
+
+\commentline{Here is a more common use of these comparison operators that will be explained more in Section \ref{sssec:If And Its Friends}.}
+\common{if} Number != 8,
+	Number := 8
+\end{code}
+
 \ssecl{Lists and More}
-\indent Lists are difficult to use in most languages, but I honestly think that lists are easier to use in \name{} than in any other language!!
+\indent Lists are difficult to use in most languages, but I honestly think that lists are easier to use in \English{} than in any other language!!
 \indent First off, the top of the inheritance chain concerning grouping things is a "\type{collection}". This includes \type{lists}, \type{sets}, \type{stacks}, \type{trees}, \type{tuples}, and more. It includes pretty much anything that contains other things. The other (arguably) most important type in here is "\type{list}", which is anything that contains things that can be linearly ordered (indexed, i.e. numbered). The most notable \type{collection} that is not a \type{list} is a \type{set}.
 \indent First cool thing: collections are the type that includes any grouping of one of more things, including lists, arrays, sets, and all the rest. How do you make them? Just use the plural of the type! By default, you just put an "s" at the end, like "\type{strings}"; however, some types (like "\type{process}") will have their own specially defined collection syntax with their proper plural ("\type{processes}"). If you make your own type, you can define its plural, too. You don't have to settle with using an "array of bushs"; no one wants that. One downside is that if you're working with words like "deer" that are the same in plural and singular forms, you'll have to write out "\type{collection of deer}", but the stdlib can help take care of that with the "\common{identically-plural}" modifier (more on modifiers in Section \ref{ssec:Op Modifiers}).
 \indent The last cool thing you need to know before trying to make or use lists: list types consist of the type of list; the word "of"; and the plural (collection) of that type\ldots yeah, you guessed it, just like English. For example, an array of strings would be\ldots well, "\type{array of strings}"!
@@ -240,7 +255,7 @@ Odd Numbers = Even Numbers \commentline{false; it sees if all the elements in ea
 \commentline{Yes, you can use those += and similar operators, too.}
 \end{code}
 
-\indent Yeah, plus is common enough for a concatenation operator, but with \name{}, we have more cool list arithmatic operators:
+\indent Yeah, plus is common enough for a concatenation operator, but with \English{}, we have more cool list arithmatic operators:
 \begin{code}
 \type{ints} Paired Odd Numbers := 1, 1, 3, 3, \common{and} 5
 \type{ints} Prime Numbers := 2, 3, 5, 7, \common{and} 11
@@ -303,6 +318,20 @@ Count[0, 5, 1, 0, \common{and from} 5] \commentline{0, 5, 1, 0, 5, 6, 7, and 8; 
 
 \indent I think the \type{string} examples below are more fun.
 
+\sssecl{Comparing Lists}
+\indent Remember all those numerical comparison operators from Section \ref{sssec:Comparisons}? Well, you can use those for lists, too! They work like you would expect.
+\indent The equality operators ("\texttt{=}" and "\texttt{!=}") first see whether or not the sizes of the lists and each element in each of the lists are equal.
+\indent The five inequality operators ("\texttt{<}", "\texttt{>}", "\texttt{<=}", "\texttt{>=}", and "\texttt{<=>}") go through each list element one at a time from the beginning of the two lists being compared until they find a difference, then return the result of that operation on the first difference. If they reach the end of one list and the lists are different sizes, then they return the result of that operation on the sizes of the two lists. Note that all the things in the two lists must be comparable for these operations to work!
+\begin{code}
+\type{bit} True := (5, 3, \common{and} 4) < (5, 6, \common{and} 2) \commentline{Yes, 4 > 2 at the end, but 3 < 6 before that.}
+\type{bit} False := (\codestring{Drake} \common{and} \codestring{Josh}) = (\codestring{Drake}, \codestring{Josh}, \common{and} \codestring{Megan})
+\commentline{ERROR below because how would you compare cars? If you define an operator to compare cars, then this would work, but I don't even know how you would objectively compare cars\ldots{}.}
+\commentline{Also remember that that first car will be implicitly converted to a list with one element.}
+\type{bit} What := 1990 Buick LeSabre < (1959 Ford Mustang \common{and} 1966 Dodge Charger)
+\commentline{Oh, and this is great: strings are just lists of chars, so use these for string lexicographic comparison, too!}
+\type{bit} False := \codestring{apple} <= \codestring{aardvark}
+\end{code}
+
 \sssecl{Strings Are Lists And More!}
 \indent All the stuff you've seen about \type{lists} and \type{collections} so far applies to \type{strings} too\ldots because what are \type{strings} but \type{lists of chars}? Of course, as you've seen earlier and I didn't mention because it's kind of obvious, you can delimit strings with double quotes, e.g. \codestring{dog}. In addition, like in C-like languages, \type{chars} can be given by single quotes, e.g. \codechar{'A'}.
 \begin{code}
@@ -317,11 +346,33 @@ City[\common{to} 8] \commentline{"New York"}
 City[\common{from} 10] \commentline{"City"}
 City[4 \common{to} -5] \commentline{"York"}
 City[\common{to} 5] * 3 + City[\common{from} 5] \commentline{"New New New York City"}
+
+\type{bit} True := City \common{starts with} \codestring{New }
 \end{code}
 
-TODO: more to add here!
+\indent Yes, yes, strings could use some operators unbefitting of other lists. We have a bunch of those, too. The coolest ones are the case-insensitive comparisons: just add an "I" to the comparison operators. 
+\begin{code}
+\type{bit} False := \codestring{CASE} = \codestring{case}
+\type{bit} True := \codestring{CASE} I= \codestring{case}\\
 
-\indent Note that \name{} \type{strings} aren't generally null-terminated like in C. If you're using C stuff, be careful about that.
+\type{bit} True := \codestring{CASE} < \codestring{case}
+\type{bit} False := \codestring{CASE} i< \codestring{case} \commentline{"CASE" and "case" are case-insensitively \emph{equal}.}
+\commentline{By the way, aptly, the "I" is case-insensitive.}\\
+
+\commentline{Most of the time, the "i" just goes before the operator, but the comparer and not equals are a bit different.}
+\type{bit} No := \codestring{CASE} !I= \codestring{case}
+\type{bit} One For Equal := \codestring{CASE} <i=> \codestring{case} \commentline{The spaceship has an antenna.}
+\end{code}
+
+\indent There are more string-specific operators, too, for those little random string manipulation needs.
+\begin{code}
+\type{string} Big Ben := \codestring{big ben} \common{capitalized} \commentline{"Big Ben"}
+\type{string} Screaming Loudly := \codestring{bwaaaaaaaa} \common{fully capitalized} \commentline{"BWAAAAAAAA"}
+\type{string} Words := \codestring{I like big hats.} \common{split} \commentline{"I", "like", "big", and "hats."}
+\commentline{Note that all lists have a split operator, but with strings, it defaults to groups of spaces, i.e. /"\textbackslash{}s+"/ (see Section \ref{par:Regex}).}
+\end{code}
+
+\indent Note that \English{} \type{strings} aren't generally null-terminated like in C. If you're using C stuff, be careful about that.
 
 \sssecl{Special List Types}
 \indent Here's an incredibly powerful tool that you won't find in almost any other programming language: you can specify the size of the list as part of the type! As we'll explain more later on in Section \ref{ssec:Types}, types can come with any kinds of properties: not just other types like Java or C++, but numbers, strings, or whatever else you can think of!
@@ -336,17 +387,132 @@ Three Words For You := \codestring{I} and \codestring{love}	\commentline{ERROR! 
 \begin{code}
 4-D \type{list of numbers} Hyperdimensional List := \common{a new} 4-D \type{list of numbers}
 Hyperdimensional Matrix += 0	\commentline{[[[[0]]]]}
-Hyperdimensional Matrix += (0, 5, and 9) and 12	\commentline{[[[[0], [0, 5, 9], [12]]]]}
+Hyperdimensional Matrix += (0, 5, and 9) and 12	\commentline{[[[[0], [0, 5, 9], [12]]]], a.k.a. 0, (0, 5, and 9), and 12}
 \end{code}
 
-\indent TODO: "sorted" lists
+\indent Much of \English{} is about clarity not just in writing, but in assumptions. In most programming languages, if you want to do some operations on a list of sorted things, you have to hope that the list given to you for the operation is sorted. In \English{}, we can use the advanced type system to guarantee it.
+\indent The two special kinds of lists available to help us to that are called "\type{sorted}" and \type{sorting}". Sorted lists are lists that have been sorted once, e.g. by a run through a quick sort algorithm. Sorting lists are lists that constantly sort themselves as new elements are added to or removed from them. This means that adding things to a sorted list will make it unsorted again while sorting lists will keep sorting.
+\begin{code}
+\type{sorted strings} Sorted Names := \common{quicksort} \codestring{Abby}, \codestring{Doug}, \codestring{Britney}, \common{and} \codestring{Caroline}
+Sorted Names -= \codestring{Abby} \commentline{This is fine; removing elements doesn't affect the order of the remaining ones!}
+Sorted Names += \codestring{Eve} \commentline{ERROR! Even though it would technically still be in order, you're adding an item to a sort\emph{ed} list; this makes it unsorted, but you're also trying to put it back into Sorted Names, which can only contain sorted strings.}\\
 
-\sssecl{Streaming (not the Netflix kind)}
+\type{sorting ints} Tree := \common{a new} \type{binary search tree of ints} \common{with} 5, 9, 8, \common{and} -2 \commentline{B.S.T.s sort themselves; the elements we're putting into it aren't sorted, but they'll be sorted into the tree.}
+Tree += 5 \commentline{This 5 will be sorted into the tree because B.S.T.s are a type of sort\emph{ing} list.}
+\end{code}
+
+\ssecl{Bit/Boolean Logic}
+TODO
 
 \ssecl{Code Blocks}
+\indent Nearly every language has some way to group operations together. Maybe you need to do three different things if something is true, for example. There are plenty of ways to delimit blocks; many language stick with the C-like curly braces ("\texttt{\{\}}"), but \English{} goes a different route. Like Python, in \English{}, indentation matters! To group operators together, you have to make sure that they all have the same indentation as either tabs or groups of four spaces. Blocks with something like an "if" statement, then there might be a comma, then your indented operators.
 \sssecl{If and Its Friends}
+\paragraph{If}
+\indent Let's start with the simplest example of a code block: "\common{if}"! As you would expect whether you're familiar with other programming languages or not, you write the word "if", then some kind of condition that can either be true or false, then you put a comma and put the operators that you want to execute.
+\begin{code}
+\common{if} 5 < 3,
+\qquad{}\commentline{The content below isn't really important; it's just showing how to indent.}
+\qquad{}Variable++
+\qquad{}State -= \codestring{15}
+Variable\verb+--+ \commentline{This operation is NOT part of the if statement! It will be executed even if 5 < 3 is false!}
+\end{code}
 
+\paragraph{Switch-Case}
+\indent \English{} also has "\common{switch}-\common{case}" statements. The basic versions of switch cases let you put one thing at the top; then, you can list cases and the program will execute at the case that matches the thing you put in the top. Also note that switch-case statements use colons instead of commas to start blocks. Here is an example:
+\begin{code}
+\common{switch by} Number: \commentline{\English{} adds the word "by" for readability.}
+\common{case} 0:
+\qquad\commentline{Do stuff if Number = 0.}
+\qquad{}Number -= 5
+\common{case} 1:
+\qquad\commentline{Do stuff if Number = 1.}
+\qquad{}Number++
+\common{case} Another Number:
+\qquad\commentline{Do stuff if Number = Another Number.}
+\qquad\commentline{Yes, you can use other operators like variables for these cases, too.}
+\qquad{}Number := Another Number
+\common{case} 5:
+\qquad\commentline{Do stuff if Number = 5.}
+\qquad\commentline{\ldots{}BUT keep in mind that the case above might get it instead if Another Number was 5.}
+\qquad{}Another Number\verb+--+
+\common{default}:
+\qquad\commentline{Do stuff if all the previous cases did not match; this is basically the 'else' of switch-cases.}
+\qquad{}Number += 59
+\end{code}
+
+\indent Now, \English{} switch-case statements are much more versatile than ones you've seen in other languages. Sadly, the coolest stuff takes knowledge of high-order and partially applicable functionality (Sections \ref{ssec:High Order Functionality} and \ref{sssec:Missing Something? Partially Applied Operators}), but I'll tell you all about the fallthrough stuff now.
+\indent Switch fallthrough is a behavior that determines when the program progresses to the next case in a switch-case statement if it doesn't reach a "\common{break}" statement. If you've seen other programming languages, you know they handle switch fallthrough differently. If the switch-case above was planted in C, it would actually act differently; in C, switch fallthrough always happens, so if Number was 0, it would do everything in case 0, then everything in case 1, then keep going all the way through. In \English{}, in the average switch-case like the one above, there is no switch fallthrough unless you have no operations in a case. (This is the way C\# does it.) Here's a more thorough example of your average everyday \English{} switch-case statement.
+\begin{code}
+\common{switch by} Number:
+\common{case} 0:
+\qquad\commentline{Do stuff if Number = 0.}
+\qquad{}Number -= 5
+\common{case} 1:
+\qquad\commentline{Do stuff if Number = 1.}
+\qquad\commentline{There are no operations in this 'case 1' section. (Comments don't count.)}
+\qquad\commentline{Therefore, if Number is 1, it will fall through into 'case Another Number' below.}
+\common{case} Another Number:
+\qquad\commentline{Do stuff if Number = Another Number OR if Number = 1. (See above.)}
+\qquad{}Number := Another Number
+\common{case} 5:
+\qquad\commentline{Do stuff if Number = 5 AND Number != Another Number.}
+\common{default}:
+\qquad\commentline{Do stuff if all the previous cases did not match.}
+\qquad{}Number += 59
+\end{code}
 \sssecl{Loops}
+\indent We have some really great loops. I think you'll enjoy them.
+\indent We will start with the simplest; \common{while} loops work as you would expect the same way they do in any other language:
+\begin{code}
+\type{int} x := 8 \commentline{x is 8}
+\common{while} x > 0,
+\qquad{}x\verb+--+
+\commentline{x is 0}
+\end{code}
+
+\indent There are also \common{do}-\common{while} loops:
+\begin{code}
+\type{int} x := 0
+\common{do}
+\qquad{}x\verb+--+
+\common{while} x < 0
+\commentline{Now x is -1.}
+\end{code}
+
+\indent "\common{while true}" is kind of ugly, but sometimes necessary, so we made it a bit cleaner:
+\begin{code}
+\common{forever,}
+\qquad{}\commentline{do something forever}
+\end{code}
+
+\indent We have \common{for} loops, too, but our \common{for} loops are more exotic. This kind of \common{for} loop below is most closely related to the one you've seen before.
+\begin{code}
+\common{from} i := 0 \common{until} i < 5 \common{by} i++,
+\qquad{}List[i]++\\
+
+\commentline{The "from" and "by" sections are optional; imagine if i is already declared earlier.}
+\common{until} i < 5 \common{by} i += 2,
+	
+\end{code}
+
+\indent However, most of the time when using \English{}, you shouldn't have to use this. We have a couple of much cleaner \emph{and more efficient} loops that fit the most common situations:
+\begin{code}
+\type{strings} Strings := \codestring{red}, \codestring{blue}, \common{and} \codestring{green}
+\common{for each} String \common{in} Strings,
+\qquad{}String += \codechar{'s'}
+\commentline{Strings is now "reds", "blues", and "greens"}\\
+
+\type{int} Sum From 0 To 9 := 0
+\common{from} i := 0 \common{to} 10, \commentline{Note that this does NOT include 10!}
+\qquad{}Sum From 0 To 9 += i
+\commentline{Sum From 0 To 9 is now 45.}\\
+
+\type{bytes} Ten Zeroes := \common{a new} \type{list}
+10 \common{times},
+\qquad{}Ten Zeroes += 0
+\commentline{Now Ten Zeroes has 10 zeroes}
+\commentline{This can also be written as "do (Ten Zeroes += 0) 10 times" (parentheses optional, but advised)}
+\end{code}
 
 \ssecl{Operators}
 \paragraph{Defining Them}
@@ -366,6 +532,9 @@ Hyperdimensional Matrix += (0, 5, and 9) and 12	\commentline{[[[[0], [0, 5, 9], 
 
 \paragraph{Using Them}
 
+\sssecl{Matchers}
+\paragraph{Regex} \label{par:Regex}
+
 \sssecl{Units}
 \paragraph{Defining Them}
 
@@ -376,6 +545,7 @@ Hyperdimensional Matrix += (0, 5, and 9) and 12	\commentline{[[[[0], [0, 5, 9], 
 
 \paragraph{Using Them}
 
+\ssecl{Streams}
 \ssecl{Input and Output}
 \sssecl{Stdin Reading and Stdout Printing}
 

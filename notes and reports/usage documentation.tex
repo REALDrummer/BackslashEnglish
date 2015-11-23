@@ -218,6 +218,26 @@ One \%= 4	\commentline{Okay, now it's 1.}
 	Number := 8
 \end{code}
 
+\ssecl{Bit/Boolean Logic}
+\indent Remember how in Section \ref{ssec:Variables and Math}, we mentioned that \English{} has 1-bit numbers? This is how we represent what other languages might call "booleans" or "bools". Boolean values are "true" or "false"; bit values are "1" or "0". Why not just combine the concepts? \English{} does; 1 is true and 0 is false (kind of like in C, except that other numbers like 5 and -19 aren't true or false or even bits at all)!
+\begin{code}
+\type{bit} Kittens Are Cute := 1 \commentline{This acts like "true".}
+\type{bit} 9 Is a Letter := \common{false} \commentline{"true" and "false" mean the same as "1" and "0", respectively.}
+\type{bit} Your Computer := \common{on} \commentline{Also, "on" = "true" and "off" = "false"!}
+\type{bit} I Like Dogs := \common{yes} \commentline{"yes" also means "true" and "no" also means "false"! So many choices!}
+\end{code}
+
+\indent Like in English, and like in Python, to compare and perform logic on booleans (bits), you can use the English words "and", "or", "xor", and "not".
+\begin{code}
+\commentline{I will use the same bit variables I made above.}
+\type{bit} False := Kittens Are Cute \common{and} 9 Is a Letter
+\type{bit} No := 9 Is a Letter \common{or} 5 < 3
+\type{bit} Quotient Is Negative := Dividend < 0 \common{xor} Divisor < 0
+\type{bit} Yes := \common{not} No
+\end{code}
+
+\indent Uh\ldots short section!
+
 \ssecl{Lists and More}
 \indent Lists are difficult to use in most languages, but I honestly think that lists are easier to use in \English{} than in any other language!!
 \indent First off, the top of the inheritance chain concerning grouping things is a "\type{collection}". This includes \type{lists}, \type{sets}, \type{stacks}, \type{trees}, \type{tuples}, and more. It includes pretty much anything that contains other things. The other (arguably) most important type in here is "\type{list}", which is anything that contains things that can be linearly ordered (indexed, i.e. numbered). The most notable \type{collection} that is not a \type{list} is a \type{set}.
@@ -400,9 +420,6 @@ Sorted Names += \codestring{Eve} \commentline{ERROR! Even though it would techni
 \type{sorting ints} Tree := \common{a new} \type{binary search tree of ints} \common{with} 5, 9, 8, \common{and} -2 \commentline{B.S.T.s sort themselves; the elements we're putting into it aren't sorted, but they'll be sorted into the tree.}
 Tree += 5 \commentline{This 5 will be sorted into the tree because B.S.T.s are a type of sort\emph{ing} list.}
 \end{code}
-
-\ssecl{Bit/Boolean Logic}
-TODO
 
 \ssecl{Code Blocks}
 \indent Nearly every language has some way to group operations together. Maybe you need to do three different things if something is true, for example. There are plenty of ways to delimit blocks; many language stick with the C-like curly braces ("\texttt{\{\}}"), but \English{} goes a different route. Like Python, in \English{}, indentation matters! To group operators together, you have to make sure that they all have the same indentation as either tabs or groups of four spaces. Blocks with something like an "if" statement, then there might be a comma, then your indented operators.

@@ -29,6 +29,7 @@
 \newcommand{\keyop}[1]{\texttt{\textcolor{Purple}{\textbf{#1}}}}
 \newcommand{\common}[1]{\texttt{\textcolor{Mulberry}{\textbf{#1}}}}
 \newcommand{\defpunct}[1]{\texttt{\textcolor{SkyBlue}{\textbf{#1}}}}
+\newcommand{\preprocess}[1]{\texttt{\textcolor{CarnationPink}{#1}}}
 \newcommand{\define}[2]{\texttt{\keyop{define} \defpunct{<}#1\defpunct{>} #2\defpunct{:}}}
 \newcommand{\codestring}[1]{\texttt{\textcolor{NavyBlue}{"#1"}}}
 \newcommand{\codechar}[1]{\texttt{\textcolor{Blue}{#1}}}
@@ -532,9 +533,35 @@ Variable\verb+--+ \commentline{This operation is NOT part of the if statement! I
 \end{code}
 
 \ssecl{Operators}
-\paragraph{Defining Them}
+\indent Operators are the core of the language. Everything -- \emph{everything} -- in \English is an operator. No, I don't just mean the \texttt{+} and I don't just mean stuff like "\common{a new list}"; I mean numbers, strings, loops, if statements, and even the operator to define new operators that will be described in the next paragraph.
 
-\paragraph{Using Them}
+\indent The operator to define a new operator is one of the few operators built into the language (for obvious reasons). It starts with the word "\keyop{define}". Then, you can use op modifiers (see Section \ref{ssec:Op Modifiers}); don't be concerned about those now. Then, add a return type for the operator delineated by angle brackets ("\texttt{<>}"). Then, we have the operator declaration itself, which ends with a colon ("\texttt{:}"), then all the operators that describe what the new operator should do (like the body of a function).
+\indent Let us begin with the most simple example: an one-word operator with no arguments. Let us imagine an operator called "\texttt{sixteen}" that gives\ldots well, yeah, 16.
+\begin{code}
+\keyop{define} \defpunct{<}\type{byte}\defpunct{>} sixteen\defpunct{:}
+\qquad{}16
+\end{code}
+
+\indent To use this operator, just write "sixteen":
+\begin{code}
+\type{int} Number := sixteen \commentline{Number now contains 16.}
+\end{code}
+
+\indent Now it gets interesting: we'll define an operator with an argument. This operator starts with the word "\texttt{double}", then takes a number; it will add the number it captures to itself (essentially doubing it) and return the result. Note that in \English{}, the last operator in an operator declaration gives the return value; there is no "return" keyword like in other languages.
+\begin{code}
+\keyop{define} \defpunct{<}\type{number}\defpunct{>} double \preprocess{<}\type{number} Number\preprocess{>}\defpunct{:}
+\qquad{}Number + Number
+\end{code}
+
+\indent Here is an example of how you might use the operator we just defined above. Note that we use an \type{int} here rather than a \type{number}, but an \type{int} is a type of \type{number}, so it works.
+\begin{code}
+\type{int} Integer := 2
+Integer := double Integer \commentline{Integer is now 4.}
+\end{code}
+
+\indent The operator declaration syntax is very special; not only can you designate arguments, but you can use many of the basic regex operators found in other languages. For example, the "\preprocess{|}" is a regex "or"; it allows you to match multiple different things with one operator. For example, 
+
+% TODO: example
 
 \ssecl{Op Modifiers}
 \sssecl{Definining Them}

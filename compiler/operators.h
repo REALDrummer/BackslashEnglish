@@ -15,29 +15,22 @@ using namespace std;
 #include <string.h>
 #include <stdio.h>
 
-#include "messaging and debugging utils.h"
+class type;
 
 #include "operator arguments.h"
 #include "operator syntaxes.h"
-
-class type: op {
-	virtual bool matches(op* op_to_match) {
-		// TODO
-		return true;
-	}
-};
+#include "values.h"
 
 class op {
 private:
 	op_syntax syntax;
 	argument* arguments;
 	unsigned int number_of_arguments;
-	type return_type;
+	type& return_type;
 
 public:
-	op(op_syntax syntax, type return_type, argument* arguments, unsigned int number_of_arguments) {
+	op(op_syntax syntax, type& return_type, argument* arguments, unsigned int number_of_arguments) : syntax(syntax), return_type(return_type) {
 		this->syntax = syntax;
-		this->return_type = return_type;
 		this->arguments = arguments;
 		this->number_of_arguments = number_of_arguments;
 	}
@@ -47,18 +40,26 @@ public:
 			free(arguments);
 	}
 
-	virtual string toString() {
-		return "<" + return_type.toString() + "> " + syntax.toString();
-	}
+	virtual string toString();
 
-	virtual op run(argument ... arguments) {
-		// TODO: run a normal op
-		return NULL;
+	virtual value run() {
+		// TODO
 	}
 };
 
-class sysop: op {
-	virtual op run(given_argument ... arguments, op ... contextual_ops);
+class type: public op {
+	virtual bool matches(op* op_to_match) {
+		// TODO
+		return true;
+	}
 };
+
+class sysop: public op {
+	virtual op run(given_argument* arguments, op* contextual_ops);
+};
+
+string op::toString() {
+	return "<" + return_type.toString() + "> " + syntax.toString();
+}
 
 #endif /* OPERATORS_H_ */

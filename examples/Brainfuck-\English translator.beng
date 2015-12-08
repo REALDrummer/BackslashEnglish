@@ -1,0 +1,33 @@
+use stdlib/number
+use stdlib/IO/file
+
+string HEADER := "use stdlib/number\nuse stdlib/IO/file\n\n"
+
+file Input File := open (Command Args[1] + ".bf") for reading
+file Output File := open (Command Args[1] + ".beng") for writing
+
+unumber Indentation Level := 0
+for each Character in Input File,
+	switch by Character:
+	case '+':
+		print ('\t' * Indentation Level) + "tape[tape_index]++\n"
+	case '-':
+		print ('\t' * Indentation Level) + "tape[tape_index]--\n"
+	case '<':
+		print ('\t' * Indentation Level) + "tape_index--\n"
+	case '>':
+		print ('\t' * Indentation Level) + "tape_index++\n"
+	case '[':
+		print ('\t' * Indentation Level) + "while tape[tape_index] != 0,\n"
+		Indentation Level++
+	case ']':
+		Indentation Level--
+	case '.':
+		print ('\t' * Indentation Level) + "print tape[tape_index] as a char"
+	case ',':
+		print ('\t' * Indentation Level) + "tape[tape_index] := read a char"
+	default:
+		# do nothing
+
+close Input File
+close Output File

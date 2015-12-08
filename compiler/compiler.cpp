@@ -5,7 +5,8 @@
  *      Author: connor
  */
 
-#include "messaging and debugging utils.h"
+#define INTERNAL_ERROR -1
+
 #include "operator arguments.h"
 #include "operator syntaxes.h"
 #include "operators.h"

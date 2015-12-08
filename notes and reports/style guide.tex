@@ -1,0 +1,26 @@
+% TABS
+	% tab indentation is required for blocks
+	% indent long statements' lower lines one tab
+	% indent lower lines long block headers, e.g. long op definitions or if statement conditions, two tabs
+	% `case` statements in `switch-case` blocks should be at the SAME indentation level as the switch, NOT one tab in
+	% use `else if` as in C; do not use an else followed by an `if` on its own line and indentation level
+
+% IDENTIFIERS
+	% VARIABLES
+		% declare with the most general types possible to give enough information, e.g. usually declare a variable to put a hashset in as a collection, not a hash set and not even a set
+		% use multiple words; do not use camelcase or underscores
+		% capitalize each word except small prepositions like "of", as in the title of a book
+			% one exception: do not capitalize variables with single-letter names
+		% always make variables full words; never use single letters or partial words (like "Res" instead of "Result")
+			% one exception: in heavily mathematical systems, you can use variable names that are short, e.g. single letters, and capitalized however appropriate, but steer clear of this when possible
+		% do not name a temporary variables "Temporary", "Temp", or any other variation thereupon
+			% NO exceptions!
+		% do not add the type of the variable to the name of the variable
+			% one exception: if the variable needs no further identification other than its type, you can name it after its type, e.g. if you were defining an operator to move a point in a coordinate system, you can call the input point "Point" because no further information is needed to know what the point is or what it is doing other than what the operator is meant to do
+
+% LINE LENGTH
+	% keep identifiers together as much as possible, even if it means extra lines
+	% keep chain calls together as much as possible, even if it means extra lines
+
+% BOOLEAN OPERATORS
+	% never use parentheses in the boolean operators; use the "either-or" or the "both-and" instead

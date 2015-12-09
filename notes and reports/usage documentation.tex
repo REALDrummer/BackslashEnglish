@@ -29,7 +29,7 @@
 \newcommand{\keyop}[1]{\texttt{\textcolor{Purple}{\textbf{#1}}}}
 \newcommand{\common}[1]{\texttt{\textcolor{Mulberry}{\textbf{#1}}}}
 \newcommand{\defpunct}[1]{\texttt{\textcolor{SkyBlue}{\textbf{#1}}}}
-\newcommand{\preprocess}[1]{\texttt{\textcolor{CarnationPink}{#1}}}
+\newcommand{\codespecial}[1]{\texttt{\textcolor{CarnationPink}{#1}}}
 \newcommand{\define}[2]{\texttt{\keyop{define} \defpunct{<}#1\defpunct{>} #2\defpunct{:}}}
 \newcommand{\codestring}[1]{\texttt{\textcolor{NavyBlue}{"#1"}}}
 \newcommand{\codechar}[1]{\texttt{\textcolor{Blue}{#1}}}
@@ -132,11 +132,19 @@ Seven := 7	\commentline{Now it's safe because it has 7 in it.}
 \type{float} Five Million Fifteen Thousand Point One := 5,015,000.1
 \end{code}
 
-\indent In addition, it can understand not only base 10 floating point numbers, but also in the other bases mentioned! There aren't many places where that would be useful but\ldots{}eh.
+\indent In addition, it can understand not only base 10 floating point numbers, but also in the other bases mentioned! There aren't many places where that would be useful but\ldots eh.
 \begin{code}
 \type{float} Three And a Half := 3.5
 \type{float} Three And a Half in Binary := 0b11.1
 \type{float} Three And a Half in Hex := 0x3.8
+\end{code}
+
+\indent Finally, if you want to use a weird base for your numbers like ternary or you just don't like the abbreviations like \texttt{0b}, you can put an underscore followed by an integer between 1 and 36. We don't go above 36 because there are only 10 digits and 26 letters to work with for digits in more bases; if you want to start using punctuation for some crazy base-45 number, you'll have to define that yourself.
+\begin{code}
+\type{byte} Two Hundred and Fifty-Five := FF\_16 \commentline{ = 0xFF}
+\type{byte} Still Two Hundred and Fifty-Five := 11111111\_2 \commentline{ = 0b111111111}
+\type{byte} Nineteen := 201\_3 \commentline{Ternary (base 3)!}
+\type{float} One and a Half := 1.1\_2 \commentline{Yes, this still works with floating point numbers and all that.}
 \end{code}
 
 \sssecl{Standard Number Types}
@@ -158,13 +166,15 @@ Seven := 7	\commentline{Now it's safe because it has 7 in it.}
 \indent Other features of number types like the ability to ensure that a number is between two other numbers will be described in \ref{sssec:Type Modifiers}
 
 \sssecl{Arithmetic}
-\indent Most arithmetic is what you've seen a million times: there's "+", "-", "*", and "/". If either argument with any of these operators is floating-point, the result will be floating point, but if both are integers, then the result will be an integer (even the division).
+\indent Most arithmetic is what you've seen a million times: there's "+", "-", "*", and "/". If either argument with any of these operators is floating-point, the result will be floating point, but if both are integers, then the result will be an integer for all but division. Division is a little bit different from what you would find in other programming languages:
+\indent Normal division in \English{} will be integer division when the integers are divisible, e.g. \texttt{4 / 2} (\texttt{2}). However, when integers that are not divisible are divided, it will actually give back a floating point, so \texttt{3 / 2} will give \texttt{1.5}! If you want to force integer division so that \texttt{3} divided by \texttt{2} will actually give \texttt{1} like in C, you can use the "\texttt{//}".
 
 \begin{code}
 \type{integer} Eight := 5 + 3
 \type{int} Four Over Two := 4 / 2
 \type{decimal} Big Decimal := 2,100.0 * 15 \commentline{That first number is floating point even though its decimal portion is just a ".0", so this product is still floating point even though the second term is an integer.}
-\type{integer} Integer Division := 3 / 2 \commentline{This is 1 because integer division!!}
+\type{float} One and a Half := 3 / 2 \commentline{This is \emph{not} integer division!}
+\type{integer} One := 3 // 2 \commentline{This is 1 because of integer division!!}
 \end{code}
 
 \indent We've also got most all the rest of the C operator family: "\texttt{\%}" for modulus, "\texttt{++}" for increment (prefix or postfix), "\verb+--+" for decrement (prefix or postfix), "\verb+<<+" for bit shift left, "\verb+>>+" for bit shift right, and bitwise operators, too: "\texttt{\&}" for bitwise 'and', "\texttt{|}" for bitwise 'or', and "\texttt{\textasciitilde}" for bitwise negation.
@@ -549,7 +559,7 @@ Variable\verb+--+ \commentline{This operation is NOT part of the if statement! I
 
 \indent Now it gets interesting: we'll define an operator with an argument. This operator starts with the word "\texttt{double}", then takes a number; it will add the number it captures to itself (essentially doubing it) and return the result. Note that in \English{}, the last operator in an operator declaration gives the return value; there is no "return" keyword like in other languages.
 \begin{code}
-\keyop{define} \defpunct{<}\type{number}\defpunct{>} double \preprocess{<}\type{number} Number\preprocess{>}\defpunct{:}
+\keyop{define} \defpunct{<}\type{number}\defpunct{>} double \codespecial{<}\type{number} Number\codespecial{>}\defpunct{:}
 \qquad{}Number + Number
 \end{code}
 
@@ -559,9 +569,31 @@ Variable\verb+--+ \commentline{This operation is NOT part of the if statement! I
 Integer := double Integer \commentline{Integer is now 4.}
 \end{code}
 
-\indent The operator declaration syntax is very special; not only can you designate arguments, but you can use many of the basic regex operators found in other languages. For example, the "\preprocess{|}" is a regex "or"; it allows you to match multiple different things with one operator. For example, 
+\indent The operator declaration syntax is very special; not only can you designate arguments, but you can use many of the basic regex operators found in other languages. For example, the "\codespecial{|}" is a regex "or"; it allows you to match multiple different things with one operator. For example, if you wanted to check if a list is not empty, would it not be even better if you could see if the list \emph{isn't} empty?
+\begin{code}
+\keyop{define} \defpunct{<}\type{bit}\defpunct{>} \codespecial{<}\type{list} List\codespecial{>} \underline{\codespecial{(}is not\codespecial{|}isn't\codespecial{)}} empty\defpunct{:}
+\qquad{}List's size > 0
+\end{code}
 
-% TODO: example
+\indent As you can imagine, you can use this operator in two ways:
+\begin{code}
+\type{list of ints} List := 5, 7, and 19
+\type{bit} Not Empty := List is not empty
+\type{bit} Also Not Empty := List isn't empty
+\end{code}
+
+\indent Operator definition syntax also supports the use of all of the string escape sequences (like \codestring{\textbackslash{}n}) and these special regex characters: \codespecial{()}, \codespecial{[]}, \codespecial{{}}, \codespecial{?}, \codespecial{*}, \codespecial{+}, \codespecial{.}, \codespecial{\textbackslash{}b}, \codespecial{\textbackslash{}B}, \codespecial{\textbackslash{}s}, \codespecial{\textbackslash{}S}, \codespecial{\textbackslash{}w}, \codespecial{\textbackslash{}W}, \codespecial{\textbackslash{}d}, and \codespecial{\textbackslash{}D}. We won't go into describing their use here; you can find it on any regex basics site online. Notably missing, though, for those of you who know regex, are the anchor characters (\codespecial{\textasciicircum} and \codespecial{\$}) and any kind of lookahead or lookbehind.
+
+\indent Also, like in regex, you can use backreferences to capturing groups (in parentheses). In fact, not only can you use them in your operator declaration, but you can use them in your operator's body code! As you would expect, like in regex, capturing group 0 is always the whole operator captured as a string and the other capturing groups are numbered sequentially left to right starting with 1.
+\begin{code}
+\keyop{define} \defpunct{<}\type{bit}\defpunct{>} \codespecial{<}\type{list} List\codespecial{>} \underline{\codespecial{(}is not|isn't|ain't\codespecial{)}} empty\defpunct{:}
+\qquad{}\common{if} \codespecial{\textbackslash{}1} = \codestring{ain't},
+\qquad{}\qquad{}\common{print} \codestring{Heh. You talk funny.}
+
+\qquad{}List's size > 0
+\end{code}
+
+\indent There is also the interesting topic of pattern matching, but that will have to wait until we get to partially applied operators in Section \ref{sssecl:Missing Something? Partially Applied Operators}.
 
 \ssecl{Op Modifiers}
 \sssecl{Definining Them}

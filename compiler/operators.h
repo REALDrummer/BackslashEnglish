@@ -8,7 +8,7 @@
 #ifndef OPERATORS_H_
 #define OPERATORS_H_
 
-using namespace std;
+using std::string;
 
 #include <stdlib.h>
 #include <string>
@@ -42,9 +42,7 @@ public:
 
 	virtual string toString();
 
-	virtual value run() {
-		// TODO
-	}
+	virtual value run();
 };
 
 class type: public op {

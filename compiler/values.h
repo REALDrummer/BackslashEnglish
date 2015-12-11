@@ -8,7 +8,7 @@
 #ifndef VALUES_H_
 #define VALUES_H_
 
-using namespace std;
+using std::string;
 
 #define NUMBER_OF_VALUE_TYPES 4
 typedef enum value_type {
@@ -36,16 +36,19 @@ public:
 	}
 
 	static bool isValidIdentifier(string identifier) {
-		iterator iter = identifier.begin();
-
-		// skip past optional dots at the beginning for local labels
-		while (*iter == '.')
-			++iter;
-
-		for (; iter != identifier.end(); ++iter) {
+		bool skipped_dots = false;
+		bool found_letter_to_start = false;
+		const char* iter = identifier.c_str();
+		for (unsigned int i = 0; i < identifier.length(); ++i, ++iter) {
 			char character = *iter;
-			if ((character < 'A' || character > 'Z') && character != '_')
+			if ((character < 'A' || character > 'Z') && character != '_' && (character != '.' || skipped_dots)
+					&& (character > '0' || character < '9' || !found_letter_to_start))
 				return false;
+			else if (character != '.') {
+				skipped_dots = true;
+				if (character >= 'A' && character <= 'Z')
+					found_letter_to_start = true;
+			}
 		}
 
 		return true;
@@ -66,7 +69,7 @@ typedef enum register_value {
 	R8D, R9D, R10D, R11D, R12D, R13D, R14D, R15D,	// 49-56; 32-bit; x86_64 only
 	R8W, R9W, R10W, R11W, R12W, R13W, R14W, R15W,	// 57-64; 16-bit; x86_64 only
 	R8B, R9B, R10B, R11B, R12B, R13B, R14B, R15B	// 65-72; 8-bit; x86_64 only
-} asm_register_value;
+} register_value;
 #define NUMBER_OF_ASM_REGISTER_VALUES R15B
 const string asm_register_value_strings[] = { "rax", "rbx", "rcx", "rdx", "eax", "ebx", "ecx", "edx", "ax", "bx", "cx", "dx", "ah", "bh", "ch", "dh", "al",
 		"bl", "cl", "dl", "cs", "ds", "es", "fs", "gs", "ss", "rdi", "rsi", "rsp", "rbp", "rip", "edi", "esi", "esp", "ebp", "eip", "di", "si", "sp", "bp",
@@ -122,11 +125,14 @@ public:
 		return REGISTER;
 	}
 
-	register_value fromString(string register_name) {
+	register_value* fromString(string register_name) {
 		for (unsigned int i = 0; i < NUMBER_OF_ASM_REGISTER_VALUES; i++)
-			if (register_name.compare(asm_register_value_strings[i]) == 0)
-				return static_cast<register_value>(i);
-		return static_cast<register_value>(-1);
+			if (register_name.compare(asm_register_value_strings[i]) == 0) {
+				register_value* value = (register_value*) malloc(sizeof(register_value));
+				*value = static_cast<register_value>(i);
+				return value;
+			}
+		return nullptr;
 	}
 
 	string toString() {
@@ -134,35 +140,39 @@ public:
 	}
 };
 
-class effective_address {
-private:
-	/* effective addressing in NASM comes in the following form:
-	 * [ [base] + [index]*[scale] + [offset] ]
-	 * where the index, scale, and offset are optional */
-	asm_register base;
-	asm_register index;			// defaults to -1
-	unsigned char index_scale;	// defaults to 1 or 0 if index is -1 (not given)
-	unsigned int offset;		// defaults to 0
+/* I made this class thinking it may be useful, and I think it will be useful in the future for some really powerful optimizations with the address
+ * calculation ALU. However, with this first version of the compiler, it will probably be too complicated. Still, I'm leaving the work on this
+ * class so far here in case it may be useful.
 
-public:
-	effective_address(asm_register base, asm_register index, unsigned char index_scale, unsigned int offset) {
-		this->base = base;
-		this->index = index;
-		this->index_scale = index_scale;
-		this->offset = offset;
-	}
+ class effective_address {
+ private:
+ /* effective addressing in NASM comes in the following form:
+ * [ [base] + [index]*[scale] + [offset] ]
+ * where the index, scale, and offset are optional * /
+ asm_register base;
+ asm_register index;			// defaults to EAX
+ unsigned char index_scale;	// defaults to 1 or 0 if index is -1 (not given)
+ unsigned int offset;		// defaults to 0
 
-	effective_address(asm_register base, asm_register index, unsigned char index_scale) :
-			effective_address(base, index, index_scale, 0) {
-	}
+ public:
+ effective_address(asm_register base, asm_register index, unsigned char index_scale, unsigned int offset) {
+ this->base = base;
+ this->index = index;
+ this->index_scale = index_scale;
+ this->offset = offset;
+ }
 
-	effective_address(asm_register base, unsigned int offset) :
-			effective_address(base, static_cast<asm_register>(-1), 0, offset) {
-	}
+ effective_address(asm_register base, asm_register index, unsigned char index_scale) :
+ effective_address(base, index, index_scale, 0) {
+ }
 
-	effective_address(asm_register base) :
-			effective_address(base, static_cast<asm_register>(-1), 0, 0) {
-	}
-};
+ effective_address(asm_register base, unsigned int offset) :
+ effective_address(base, *new asm_register(EAX /* placeholder * /), 0, offset) {
+ }
+
+ effective_address(asm_register base) :
+ effective_address(base, *new asm_register(EAX /* placeholder * /), 0, 0) {
+ }
+ }; */
 
 #endif /* VALUES_H_ */

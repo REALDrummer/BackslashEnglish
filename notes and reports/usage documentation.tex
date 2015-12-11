@@ -593,15 +593,26 @@ Integer := double Integer \commentline{Integer is now 4.}
 \qquad{}List's size > 0
 \end{code}
 
-\indent There is also the interesting topic of pattern matching, but that will have to wait until we get to partially applied operators in Section \ref{sssecl:Missing Something? Partially Applied Operators}.
+\indent Op modifiers like "\common{private}" and "\common{implicit}" can go between the word "\keyop{define}" and the return type of the operator. However, we'll have to get to these another time in Section \ref{sssec:Op Modifiers} after we talk about high order functionality (Section \ref{ssec:High Order Functionality}).
+\indent There is also the interesting topic of pattern matching, but that will have to wait until we get to partially applied operators in Section \ref{sssecl:Missing Something? Partially Applied Operators}, also in the section about high order functionality.
 
-\ssecl{Op Modifiers}
-\sssecl{Definining Them}
-\paragraph{Using Them}
 \ssecl{Types}
-\paragraph{Defining Them}
+\indent \English{} is strongly, statically typed. This means that all operators (including variables) must be declared with a type and they cannot deviate from that type. Everything has a type and mismatched types will cause compilation errors! This is opposed to languages like JavaScript and Python, which are "duck typed".
+\indent In fact, \English{} has one of the strongest and most powerful type systems of any programming language. Unlike in most other languages, in \English{}, types can not only have parameters, but those parameters don't just have to be other types; they can be numbers, lists, variables, or anything else!
 
-\paragraph{Using Them}
+\indent In \English{}, types are defined the same way as any other operator: you define the syntax with the "\keyop{define}" system (see Section \ref{ssec:Operators}) and to make the new type, you write it like you would in English. Imagine that!
+\begin{code}
+\define{\type{type}}{car}
+\qquad{}\common{a new type}
+\end{code}
+
+\indent Now, this car type we defined above doesn't have any properties associated with it, so it doesn't seem very useful. Let us define a type for a two-dimensional point called "\texttt{2D point}". (This is actually defined in the standard library already, but it's a good example anyway.) To add properties to a type, follow the "\common{new type}" part with some variables with a list of variables in your much loved commas-and-"and"s syntax for the list and the type-name syntax for the variables:
+\begin{code}
+\define{\type{type}}{2D point}
+\qquad{}\common{a new type with} \type{float} X \common{and} \type{float} Y
+\end{code}
+
+% TODO
 
 \sssecl{Type Modifiers}
 \paragraph{Defining Them}
@@ -644,6 +655,10 @@ Integer := double Integer \commentline{Integer is now 4.}
 \sssecl{Operator Modifiers}
 
 \sssecl{Scope and Contextual Operators}
+\sssecl{Op Modifiers}
+\paragraph{Defining Them}
+
+\paragraph{Using Them}
 
 \secl{The Basis of the Language}
 \ssecl{\texttt{\textbf{operator}}}

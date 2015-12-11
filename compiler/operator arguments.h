@@ -8,8 +8,6 @@
 #ifndef OPERATOR_ARGUMENTS_H_
 #define OPERATOR_ARGUMENTS_H_
 
-using namespace std;
-
 #define NUMBER_OF_ARGUMENT_ERROR_TYPES 1
 enum operator_argument_error_type {
 	/* TODO: fill in this enum with values as needed */
@@ -19,6 +17,7 @@ enum operator_argument_error_type {
 };
 
 class op;
+class type;
 
 class argument {
 public:

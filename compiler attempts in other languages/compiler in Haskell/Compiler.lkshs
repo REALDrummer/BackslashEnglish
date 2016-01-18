@@ -1,0 +1,18 @@
+Version of session file format:
+               1
+Time of storage:
+               "Wed Jan  6 20:40:04 MST 2016"
+Layout:        VerticalP (TerminalP {paneGroups = fromList [], paneTabs = Just TopP, currentPage = 0, detachedId = Nothing, detachedSize = Nothing}) (HorizontalP (TerminalP {paneGroups = fromList [], paneTabs = Just BottomP, currentPage = 0, detachedId = Nothing, detachedSize = Nothing}) (TerminalP {paneGroups = fromList [], paneTabs = Nothing, currentPage = 0, detachedId = Nothing, detachedSize = Nothing}) 618) 343
+Population:    [(Just (ErrorsSt ErrorsState),[SplitP RightP,SplitP TopP]),(Just (FilesSt FilesState),[SplitP RightP,SplitP TopP]),(Just (LogSt LogState),[SplitP RightP,SplitP BottomP]),(Just (BufferSt (BufferState "/home/connor/\\English/BackslashEnglish/compiler in Haskell/compiler/src/Main.hs" 457)),[SplitP LeftP])]
+Window size:   (529,878)
+Completion size:
+               (750,400)
+Workspace:     Just "/home/connor/\\English/BackslashEnglish/compiler in Haskell/Compiler.lkshw"
+Active pane:   Just "Main.hs"
+Toolbar visible:
+               True
+FindbarState:  (True,FindState {entryStr = "\t", entryHist = ["\t","\\\\ -- (.+)","\\ -- (.+)","\\-- (.+)","-- (.+)n","-- (.+)\\\\n","-- (.+)\\n","-- (.+)\\s","-- (.+) ",",","//"], replaceStr = "    ", replaceHist = [], caseSensitive = True, entireWord = False, wrapAround = True, regex = True, lineNr = 1})
+Recently opened files:
+               []
+Recently opened workspaces:
+               []

@@ -1,7 +1,7 @@
 /*
- * compiler.cpp
+ * compiler.c
  *
- *  Created on: Oct 8, 2015
+ *  Created on: Dec 15, 2015
  *      Author: connor
  */
 
@@ -10,13 +10,6 @@
 #include "operator arguments.h"
 #include "operator syntaxes.h"
 #include "operators.h"
-
-using std::string;
-
-string op_syntax::parse(parser* input) {
-	// TODO TEMP
-	return nullptr;
-}
 
 int main(int number_of_args, char** args) {
 	// TODO

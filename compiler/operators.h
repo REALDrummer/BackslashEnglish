@@ -23,13 +23,13 @@ class type;
 
 class op {
 private:
-	op_syntax syntax;
+	op_syntax& syntax;
 	argument* arguments;
 	unsigned int number_of_arguments;
-	type& return_type;
+	op& return_type;
 
 public:
-	op(op_syntax syntax, type& return_type, argument* arguments, unsigned int number_of_arguments) : syntax(syntax), return_type(return_type) {
+	op(op_syntax& syntax, op& return_type, argument* arguments, unsigned int number_of_arguments) : syntax(syntax), return_type(return_type) {
 		this->syntax = syntax;
 		this->arguments = arguments;
 		this->number_of_arguments = number_of_arguments;
@@ -40,24 +40,15 @@ public:
 			free(arguments);
 	}
 
-	virtual string toString();
-
-	virtual value run();
-};
-
-class type: public op {
-	virtual bool matches(op* op_to_match) {
-		// TODO
-		return true;
+	virtual string toString() {
+		return "<" + return_type.toString() + "> " + syntax.toString();
 	}
+
+	virtual value& run(given_argument* arguments, op* contextual_ops) = 0;
 };
 
 class sysop: public op {
-	virtual op run(given_argument* arguments, op* contextual_ops);
+	virtual string toString() = 0;
 };
-
-string op::toString() {
-	return "<" + return_type.toString() + "> " + syntax.toString();
-}
 
 #endif /* OPERATORS_H_ */

@@ -8,8 +8,6 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
-using namespace std;
-
 #include <iostream>
 #include <istream>
 #include <fstream>
@@ -18,6 +16,21 @@ using namespace std;
 #include <stack>
 #include <cstdarg>
 #include <stdio.h>
+#include <climits>
+#include <tuple>
+
+using std::string;
+using std::stack;
+using std::tuple;
+using std::ifstream;
+using std::ostringstream;
+using std::streampos;
+using std::cout;
+
+#define NUMBER_OF_PARSER_ERROR_TYPES 1
+enum parser_error_type {
+	NUMBER_TOO_LARGE = 0x02000000
+};
 
 class parser {
 private:
@@ -37,7 +50,7 @@ private:
 		return message.str();
 	}
 
-	char parseEscapedCharacter(parser input);
+	unsigned int parseEscapedCharacter(parser* input);
 
 public:
 	parser(string input_file_path) :
@@ -88,6 +101,7 @@ public:
 	}
 #undef FORMAT_STRING
 
+	// TODO: in parse() and parsing utility methods, make parameters for error codes and messages to spit out if the parsing was unsuccessful
 	bool parse(string to_parse) {
 		streampos old_position = input_file.tellg();
 
@@ -96,12 +110,46 @@ public:
 		for (unsigned int i = 0; i < to_parse.length(); i++, current_char++) {
 			if (*current_char != (*this)++) {
 				// reset the parser to its old location before attempting this parse
-				input_file.seekg(old_position, input_file.beg);
+				input_file.seekg(old_position, ifstream::beg);
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	tuple<bool, long int> parseInt() {
+		long int result = 0;
+		streampos start_position = input_file.tellg();
+
+		// parse the optional positive or negative sign
+		bool negative = false;
+		if (peek() == '-') {
+			(*this)++;
+			negative = true;
+		} else if (peek() == '+')
+			(*this)++;
+
+		// if there are no digits to parse at all, throw an error
+		if (peek() < '0' || peek() > '9') {
+			// reset the parser to its original position
+			input_file.seekg(start_position, ifstream::beg);
+			return std::make_tuple(false, -1);
+		}
+
+		while (peek() >= '0' && peek() <= '9') {
+			unsigned char new_digit = peek() - 0x30;
+			// if adding the new digit would cause the long int to overflow, throw an error
+			if ((LONG_MAX - new_digit) / 10 < new_digit)
+				err(NUMBER_TOO_LARGE, "I attempted to parse a number too big to fit into a long int!");
+			else
+				result = result * 10 + new_digit;
+		}
+
+		if (negative)
+			return std::make_tuple(true, -result);
+		else
+			return std::make_tuple(true, -result);
 	}
 
 	char operator++(int) /* postfix */{
@@ -153,6 +201,6 @@ public:
 	}
 };
 
-vector<parser> parsers = *new vector<parser>();
+std::vector<parser> parsers = *new std::vector<parser>();
 
 #endif /* PARSER_H_ */

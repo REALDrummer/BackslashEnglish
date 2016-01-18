@@ -10,20 +10,36 @@
 
 using std::string;
 
-#define NUMBER_OF_VALUE_TYPES 4
+#define NUMBER_OF_VALUE_TYPES 3
 typedef enum value_type {
-	REGISTER, EFFECTIVE_ADDRESS, LABEL, LITERAL
+	REGISTER, LABEL, LITERAL
 } value_type;
 
 class value {
 public:
-	virtual value_type getType();
+	virtual ~value() = 0;
+
+	virtual value_type getType() = 0;
 
 	/* returns a string describing the value, e.g. as the Assembly label identifier or a literal number value */
-	virtual string toString();
+	virtual string toString() = 0;
 };
 
-class label {
+class literal : public value {
+private:
+	int value;
+
+public:
+	value_type getType() {
+		return LITERAL;
+	}
+
+	virtual string toString() {
+		return std::to_string(value);
+	}
+};
+
+class label : public value {
 private:
 	string identifier;
 
@@ -53,6 +69,10 @@ public:
 
 		return true;
 	}
+
+	string toString() {
+		return identifier + ":";
+	}
 };
 
 typedef enum register_value {
@@ -76,7 +96,7 @@ const string asm_register_value_strings[] = { "rax", "rbx", "rcx", "rdx", "eax",
 		"ip", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d", "r15d", "r9w", "r10w", "r11w", "r12w",
 		"r13w", "r14w", "r15w", "r9b", "r10b", "r11b", "r12b", "r13b", "r14b", "r15b" };
 
-class asm_register {
+class asm_register : public value {
 	register_value value;
 
 public:

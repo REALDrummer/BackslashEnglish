@@ -1,0 +1,5 @@
+define <type> memory size:
+	a new type of number with
+		memory unit Units;
+
+define <memory size> 

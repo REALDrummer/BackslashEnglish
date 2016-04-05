@@ -1,0 +1,12 @@
+use stdlib/sorted\ lists.blib
+
+# example: to designate floats sorting by their decimal places only, use `floats sorting by (<float> % 1 compared with <float> % 1)`
+define <type of sorted @s> <@s> sorting by <op(@, @)=>comparison Comparer>:
+	a new type of @ with Comparer
+
+# example: to designate a sorting list of strings, use `sorting strings`
+where @ is comparable,
+define <type of sorted @s> sorting <@s>:
+	@ sorting by (compare <@> and <@>)
+
+template <sorting @s> <sorting @s> \+ <@s>:

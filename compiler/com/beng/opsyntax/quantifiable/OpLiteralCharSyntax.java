@@ -1,5 +1,10 @@
 package com.beng.opsyntax.quantifiable;
 
+import com.beng.op.Op;
+import com.beng.op.parseexceptions.NoMatchException;
+import com.beng.op.parseexceptions.OpParseException;
+import com.beng.op.recallentries.RecallEntry;
+import com.beng.opsyntax.OpArguments;
 import com.beng.opsyntax.OperatorDefinitionErrorType;
 import com.beng.parser.Parser;
 
@@ -71,7 +76,7 @@ public class OpLiteralCharSyntax extends QuantifiableOpSyntax {
 	public OpLiteralCharSyntax(char charater) {
 		this.character = charater;
 	}
-	
+
 	public static OpLiteralCharSyntax[] fromString(String string) {
 		OpLiteralCharSyntax[] results = new OpLiteralCharSyntax[string.length()];
 		for (int i = 0; i < results.length; i++) {
@@ -79,7 +84,7 @@ public class OpLiteralCharSyntax extends QuantifiableOpSyntax {
 		}
 		return results;
 	}
-	
+
 	@Override
 	public boolean canMatchNothing() {
 		return false;
@@ -88,7 +93,15 @@ public class OpLiteralCharSyntax extends QuantifiableOpSyntax {
 	public char getChar() {
 		return character;
 	}
-	
+
+	@Override
+	public OpArguments parseCall(Parser input, Op op_to_parse, RecallEntry QR_entry) throws OpParseException {
+		if (input.peekByte() != character)
+			throw new NoMatchException(op_to_parse, this);
+		else
+			return new OpArguments(null);
+	}
+
 	@Override
 	public String toString() {
 		return toPrintable(character, false, false, false, true);
@@ -166,5 +179,10 @@ public class OpLiteralCharSyntax extends QuantifiableOpSyntax {
 			char_printable += " (hex code 0x" + Integer.toHexString(character).toUpperCase() + ")";
 
 		return char_printable;
+	}
+
+	@Override
+	public String toString(OpArguments arguments) {
+		return toString();
 	}
 }

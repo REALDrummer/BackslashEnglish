@@ -1,0 +1,16 @@
+define <bit> <integer Base> (= <integer Comparisons>)*:
+	if Base's memsize > this OS's word size or Comparison's memsize > this OS's word size,
+		equate big Base and Comparisons
+	else for each Comparison in Comparisons:
+		asm cmp Base as bits, Comparison as bits
+		asm je true_branch
+		false
+		asm true_branch:
+		true;;
+
+define <bit> <integer Base> > <integer Comparison>:
+	asm cmp Base as bits, Comparison as bits
+	asm jg true_branch
+	false
+	asm true_branch:
+	true;

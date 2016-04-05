@@ -1,0 +1,4 @@
+define type summable|addable\<<type Summand>>:
+	thing++.
+	
+define template for summable<@> thing <summable<@> Summable> \+ <@ Summand>: null.

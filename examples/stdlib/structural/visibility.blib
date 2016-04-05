@@ -1,0 +1,8 @@
+define <modifier> private <op Op>:
+	# "this caller" is the file in which this operator is being called.
+	# The declaration file for an operator is the file in which it was declared.
+	# Both of those things will be accessible through special operators built into \English.
+	if the caller's declaration's \file != Op's declaration's \file,
+		a new visibility error saying "`Op` is private! `this caller \file` can't call it!"
+	else
+		run Op;

@@ -1,0 +1,24 @@
+# e.g. "2-string array" or "2 string array"
+define <type> <unsigned integer Length> <type Type> array:
+	a new type of list of Types with 
+		Type* Address := malloc Length Types and 
+		final Length
+
+# e.g. "2 strings" or "array of 2 strings"
+define <type> (array of)? <unsigned integer Length> <type of collection Types>:
+	Length (Types's element \type) array
+
+# e.g. "array" or "array of strings"
+define <type> array (of <type Type>s?)?:
+	a new type of list of Types with Type* Address and final unsigned number Length;
+
+define <array of (Items's length + 1) (Items's element \type or Last Item's \type)s> (<thing Items>, )* and|or <thing Last Item>:
+	Items + Last Item
+
+define implicit <array of 1 (Thing's \type)> <thing Thing> as an array:
+	array of 1 (Thing's \type) New Array := a new array of 1 (Thing's \type)
+	New Array[0] := Thing
+	New Array
+
+define <2-(First Item's \type or Second Item's \type) array> <thing First Item> and|or <thing Second Item>: 
+	First Item as an array + Second Item

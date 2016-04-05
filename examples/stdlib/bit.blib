@@ -1,0 +1,34 @@
+define <bit> false|no|off: 0b0;
+	
+define <bit> true|yes|on: 0b1;
+
+define both? <bit Left> and|&& <operator=>bit Right>:
+	if Left is false,
+		false
+	else
+		run Right;
+	
+define either? <bit Left> or|\|\| <operator=>bit Right>:
+	if Left is true,
+		true
+	else
+		run Right;
+
+define bit <{bit} Bits>\[<number Index>\]:
+	if Index < 0,
+		Index += Bits's length
+	
+	Bits & (1 << (Bits's length - 1 - Index)) > 0;
+
+define bit <{bit} Bits>\[<number Index>\] \:= <bit Bit>:
+	if Index < 0,
+		Index += Bits's length
+
+	if Bit is 1,
+		Bits |= 1 << (Bits's length - 1 - Index)
+	else
+		Bits &= -2 #< -2 = 0b111...110 ># << (Bits's length - 1 - Index);
+
+#< Using "not" is tricky since it's embedded inside operators in different ways >#
+define priority-32 bit (.+?) not (.+?):
+	op Op := run (\1 + ' ' + \2)

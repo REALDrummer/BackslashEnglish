@@ -4,7 +4,7 @@
 define <string> <string String 1> \+ <string String 2>:
 	#< This operator appends String 2 to String 1 and returns the result. >#;
 
-define <@> do?\: <op Ops>* <op=>@ Last Op>;: 
+define <@> do?\: <op Ops>* <op Last Op>;: 
 	#< A colon (preceded by an optional "do") and a semicolon delimit a block of operators, allowing them to be treated as one operator like in Haskell's "do" blocks or a group of statements between curly braces in a C-like language. >#;
 
 define <@> if <bit Condition>,? <op=>@ True Branch> else,? <op=>@ False Branch>:

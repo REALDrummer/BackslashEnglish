@@ -1,0 +1,111 @@
+use ./number.beng.
+
+type [Ff]ill(-)?[Ii]n, thing + {
+	constructor [<strings phrases>, <spaces spaces>, <dbyte width>, <dbyte height>].
+	
+	spaces find? all? {spaces} ((with <byte Length> letters)|(that matches <regex Match>)|(containing <string Answer>) )+:
+		Spaces, [0 spaces];
+		for each Space in spaces,
+			if either Length is null or Space's length = Length and either Answer is null or Space's answer is Answer and either Match is null or Answer matches Match,
+				Spaces += Space;
+		Spaces.
+		
+	solve <Fill-In Puzzle>,
+		Space, a random space from all Puzzle's spaces;
+		for each Space in spaces,
+			# TODO #.
+}.
+
+# "{Fill-In}" will refer to and essentially be replaced with "[Ff]ill(-)?[Ii]n" #
+type {Fill-In}? space: thing + {
+	\[<dbyte x>, <dbyte y>, <bit hor(iz(ontal)?)?>, <byte len(gth)?|size>\].
+	
+	\[<dbyte x>, <dbyte y>, <bit {horizontal}>, <string answer|sol(utio)?n>\];
+		set length to answer's length.
+}.
+
+bit debug mode (is active)?, false.
+
+Fill-In Puzzle, null.
+
+@main main <strings Arguments>,
+	# read the arguments #
+	string Input File Name, null;
+	string Output File Name, null;
+	getting output, false;
+	
+	for each Argument in Arguments,
+		if Argument = "--debug" or Argument = "-d":
+			set debug mode to true;
+			debug "Debugging mode is active!";;
+		else if Argument = "--output" or Argument = "-o":
+			if Output File Name is null,
+				debug "found " + Argument + "flag; looking for output file...";
+			else
+				warn "I found an output flag after already finding the output file earlier.
+					I can only output to one file, so I'm using the latest one here, \"" + Argument + "\"";
+			set getting output to true;;
+		else if getting the output:
+			set Output File Name to Argument;
+			debug "found output file name: \"" + Argument + "\"";;
+		else:
+			if Input File Name is null,
+				debug "found input file path: \"" + Argument + "\"";
+			else
+				warn "I found an input file after already finding the input file earlier. I can only take in one input file. Did you make a syntax error?\nI'm using the latest one here, \"" + Argument + "\"";
+			set Input File Name to Argument;;
+	
+	if Input File Name is null,
+		err "You didn't give me an input file!".
+	
+	if Output File Name is null,
+		set Output File Name to "completed " + Input File Name + ".txt"; ##
+	
+	# read the input file #
+	## input file format:
+	<width>x<height>
+	<word>,<word>,<word>,<...>
+	<horizontal(h/~v)>\(<x>,<y>\)<"L"length|answer>
+	<...>
+	#
+	set In to text_file[Input File Name].
+	## read the puzzle's dimensions #
+	Line, In's next line;
+	if Line is null,
+		err "Where are the dimensions for the puzzle?!".
+	Dimensions, split Line by "x";
+	if Dimensions's length is < 2,
+		err "Oh, no! The first line of your input file wasn't formatted properly! It should have the width and the height of the puzzle separated by an \"x\".".
+	## read the puzzle's phrases #
+	set Line to In's next line;
+	if Line is null,
+		err "Where are the phrases for this puzzle?!".
+	sorted_list[strings by length and (>> number)] Phrases, split In's next line by ",";
+	if Phrases's length is <= 1,
+		err "A Fill-In puzzle should have more than 1 phrase to fill in. It's not much of a puzzle otherwise. Where are your phrases?".
+	## read the puzzle's spaces #
+	[spaces] Spaces.
+	while Line, In's next line, is not null:
+		array[strings] Pieces, split Line by /"[\(\),]"/;
+		if Pieces's length is not 4,
+			err "This line should be describing one of the blanks in the puzzle, but it isn't formatted properly:\n\"" + Line + "\"".
+		add space[Pieces[1] # >> dbyte implied #, Pieces[2] # >> dbyte implied #, Pieces[0] = "h", Pieces[3] starts with "L" ? Pieces[3][from 1] >> byte # converted explicitly to avoid calling the wrong space constructor # /~ Pieces[3]] to Spaces;;
+	
+	### ensure that the number of phrases and the number of spaces match #
+	if Phrases's length < Blanks's length,
+		err "There are only " + Phrases's length + " phrases for " + Blanks's length + " blanks!".
+	else if Phrases's length > Blanks's length,
+		err "There are only " + Blanks's length + " blanks for " + Phrases's length + " phrases!".
+
+	## put all that info into a new Fill-In object! #
+	Puzzle, Fill-In[Phrases, Spaces, Dimensions[0], Dimensions[1]]. # note again that the Dimenions are being converted to dbytes via implied conversion operators #
+	
+	solve Puzzle;
+	
+	# write the solution to the output file #
+	# TODO #.
+	
+
+void debug <string Message>,
+	if debug mode is active,
+		print Message.

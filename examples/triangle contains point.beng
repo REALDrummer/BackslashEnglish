@@ -1,0 +1,23 @@
+define <type> point:
+	a new type with float X and float Y
+
+define <point> \(<number X>, <number Y>\):
+	a new point with X and Y
+
+define <type> triangle:
+	a new type with point A, point B, and point C
+
+define <triangle> a triangle from <point A> to <point B> to <point C>:
+	a new triangle with A, B, and C
+
+define <number> the area of <triangle Triangle>:
+	point A := Triangle's A
+	point B := Triangle's B
+	point C := Triangle's C
+	|A's x*(B's y - C's y) + B's x*(A's y - C's y) + C's x*(A's y-B's y)| / 2
+
+define <bit> <triangle Triangle> contains <point Point>:
+	number APC Area := the area of a triangle from Triangle's a to Point to Triangle's c
+	number APB Area := the area of a triangle from Triangle's A to Point to Triangle's b
+	number BPC Area := the area of a triangle from Triangle's b to Point to Triangle's c
+	APC Area + APB Area + BPC Area = the area of Triangle

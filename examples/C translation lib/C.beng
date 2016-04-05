@@ -1,0 +1,245 @@
+define <type> C type:
+	a new type of type with integer Value
+
+# integer types
+define <C type> <memory size Size>? C integer:
+	a new type of C type and Size integer
+
+define translation <type of C integer> int:
+	4 byte C integer
+
+define translation <type of C integer> long:
+	8 byte C integer
+
+define translation <type of C integer> long <type of C integer Half Type>:
+	(Half Type's size * 2) C integer
+
+define translation <type of C integer> short:
+	2 byte C integer
+
+define translation <type of C integer> short <type of C integer Double Type>:
+	if Double Type's size > 1 byte,
+		((Double Type's size / 2) % 1 byte) C integer
+	else
+		throw a new error saying "Someone attempted to shorten the size of a C char! That's too short for C!"
+
+define translation <type of C integer> char:
+	1 byte C integer
+
+define translation <type of C integer> unsigned <type of C integer Inner Type>:
+	unsigned Inner Type
+
+define translation <type of C integer> signed <type of C integer Inner Type>:
+	signed Inner Type
+
+define implicit translation <bit> <C integer Integer>:
+	Integer != 0
+
+# the void type
+define translation <type of C type> void:
+	a new C type
+
+# pointer types
+define <type> C pointer:
+	a new type of C type and pointer
+
+define translation <type of C pointer> <C type Base Type>\*:
+	a new type of C type and Base Type*
+
+define translation <type> void\*:
+	C pointer
+
+define priority-32 translation <Pointer's base \type> \*<C pointer Pointer>:
+	*Pointer
+
+define priority-32 translation <Var's \type*> &<C var Var>:
+	Var's address
+
+# structs
+define <C type> C struct type:
+	a new type of C type with
+		list of C vars Pieces and
+		word Name
+
+define translation <C struct \type> struct "Name"\w+ \{ (<C var Pieces>; )* \}; <op Remainder>*:
+	C struct \type Struct := a new C struct \type with Pieces and Name
+	
+	ops Struct Type And Pieces := define <C struct \type> struct `Name`: Struct
+	from i := 0 to Pieces's length,
+		Struct Type And Pieces += define priority-16 <C var> <C Struct var Struct>\.`Pieces[i]'s name`: Pieces[i]
+		Struct Type And Pieces += define priority-16 <C var> <C Struct* var Struct>->`Pieces[i]'s name`: Pieces[i]
+	
+	run Remainder using Struct And Pieces
+
+	Struct
+
+define translation <C struct var> <C struct var Var> = \{ <thing Values>{", "} \}:
+	if Values's length and Var's \type's pieces's length,
+		throw a new error saying "Someone attempted to create a new struct in C, but the number of values given in the struct doesn't match the number of arguments that this struct takes!"
+	else
+		C struct Struct := a new (Var's \type)
+		from i := 0 to Values's length,
+			Struct's pieces[i] := Values[i]
+		Var := Struct
+
+# enums
+define <C type> C enum type:
+	a new type of C type with
+		word Name,
+		list of words Enum Value Names, and
+		uint Initial Value
+
+define translation <C enum type> enum "Name"\w+ \{ "First Value Name"\w+ (= <uint Initial Value>)(, "Additional Value Names"\w+)* \}; <op Remainder>*:
+	if Initial Value is not given.
+		Initial Value := 0
+
+	C \enum \type Enum := a new type of C enum type with Initial Value and Name
+		where Enum Value Names := First Value Name + Additional Value Names
+	
+	ops Enum Type And Values := define <C \enum \type> enum `Name`: Enum
+	if First Value Name is given,
+		Enum Type And Values += define <C integer> `First Value Name`: Initial Value
+		from i := 0 to Additional Value Names's length,
+			Enum Type And Values += define final <C integer> `Additional Value Names[i]`: Initial Value + i + 1
+	
+	run Remainder using Enum Type And Values
+	
+	Enum
+
+# variables
+define <C type> C <C type Type> var(iable)?:
+	a new type of C type and Type variable
+
+define <Type> a new <type of C var Type> named <string Name>:
+	a new Type with Name
+
+define translation <C var> <C type Type> "Name"\w+:
+	a new C Type variable named Name
+
+define translation <C var> <C (Value's \type) var Var> = <thing Value>:
+	Var := Value
+	Var
+
+# code basic structures
+define <type of code block> C code block:
+	a new type of code block
+
+define <C code block> \{ (<op Body> )* \}:
+	a new C code block with Body
+
+define <Statement's \type> <op Statement>;:
+	Statement
+
+define implicit <C code block> <op C Statement>:
+	{ C Statement }
+
+# functions
+define <type> C <C type Return Type>? function (taking <list of C types Arg Types>):
+	a new type of op(Arg Types)=>Return Type with
+		word Name and
+		C code block Body
+
+define <string> <C function Function> as a string:
+	"`Function's return \type` `Function's name`(`Function's argument \types joined by ", "`)"
+
+define translation <Remainder's return \type> <C type Return Type> "Name"\w+\((<C type First Arg Type> "First Arg Name"\w+(, <C type Other Arg Types> "Other Arg Names"\w+)*)?\) <C code block Body> <op Remainder>*:
+	list of C types Arg Types := an empty list
+	if First Arg Type is given,
+		Arg Types += First Arg Type
+		if Other Arg Types are given,
+			Arg Types += Other Arg Types
+	
+	a new C (Return Type) function taking (Arg Types) with Name and Body
+	
+	string Function Arguments Declaration := ""
+	list of C vars Function Arguments := empty list
+	if First Arg Type is given,
+		Function Arguments Declaration := "<`First Arg Type` `First Arg Name`>"
+		Function Arguments := a new C First Arg Type var named First Arg Name
+		if Other Arg Types are given,
+			from i := 1 to Other Arg Types's length,
+				Function Arguments Declaration += ", <`Other Arg Types[i]` `Other Arg Names[i]`>"
+				Function Arguments += a new C Other Arg Types[i] var named Other Arg Names[i]
+	
+	run Remainder using 
+		define <Return Type> `Name`\(`Function Arguments Declaration`\):
+			run Body using Function Arguments
+
+# control structures
+define translation <C code block> if \(<bit Condition>\) <C code block True Branch> else <C code block False Branch>:
+	if Condition,
+		run True Branch
+	else,
+		run False Branch
+
+define translation <C code block> if \(<bit Condition>\) <C code block Body>:
+	if Condition,
+		Body
+
+define translation <C code block> while \(<op=>bit Condition>\) <C code block Body>:
+	while Condition,
+		Body
+
+define translation <C code block> for \(<C var Init>?; <op=>bit Condition>?; <op Stepper>?\) <C code block Body>:
+	define <thing> RUN:
+		if Init is given,
+			run Body using Init
+		else
+			run Body
+
+		if Stepper is given,
+			run Stepper
+
+	if Condition is given,
+		while Condition, RUN
+	else
+		forever, RUN
+
+# arithmatic operators
+define translation <C integer> <C integer Integers>{" + "}:
+	reduce Integers by <integer> + <integer>
+
+define translation <C integer> <C integer Integers>{" - "}:
+	reduce Integers by <integer> - <integer>
+
+define priority-16 translation <C integer> <C integer var Var>\+\+:
+	Var++
+
+define priority-16 translation <C integer> <C integer var Var>--:
+	Var--
+
+define priority-32 translation <C integer> \+\+<C integer var Var>:
+	++Var
+
+define priority-32 translation <C integer> --<C integer var Var>:
+	--Var
+
+define translation <C integer> <C integer Moduland> % <C integer Modulo>:
+	Moduland % Modulo
+
+define translation <C integer> <C integer Original> & <C integer And>:
+	Original & And
+
+define translation <C integer> <C integer Original> \| <C integer Or>:
+	Original | Or
+
+define translation <C integer> <C integer Original> \^ <C integer Xor>:
+	Original ⨁ Xor
+
+define translation <Op's \type> \(<op Op>\):
+	Op
+
+define priority-16 translation <C (Pointer's base \type) var> <C pointer Pointer>\[<C integer Index>\]:
+	*(Pointer + Index*sizeof(Pointer's base \type))
+
+define priority-32 translation <bit> !<bit To Negate>:
+	not To Negate
+
+define priority-32 translation <C integer> ~<C integer To Negate>:
+	bitwise-not To Negate
+
+# casting
+define priority-32 translation <Cast Type> \(<C type Cast Type>\) <C integer Integer>:
+	a new Cast Type where Value := Integer
+
+

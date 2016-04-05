@@ -1,44 +1,78 @@
 package com.beng.emulator.args;
 
-import com.beng.op.Assemblage;
+import java.util.Arrays;
+
 import com.beng.op.Op;
+import com.beng.op.OpRunException;
 import com.beng.op.StandardOp;
-import com.beng.opsyntax.OperatorDefinitionErrorType;
-import com.beng.parser.Parser;
+import com.beng.op.call.FullyAppliedOpCall;
+import com.beng.op.call.OpCallException;
 
 public class NASMEffectiveAddress implements NASMArg {
-	private Op address;
-	private short size;
+	private FullyAppliedOpCall address;
+	private short size_in_bytes;
+	
+	public NASMEffectiveAddress(int size_in_bytes, FullyAppliedOpCall address) {
+		this.address = address;
+		this.size_in_bytes = (short) size_in_bytes;
 
-	public NASMEffectiveAddress(Parser parser) {
-		if (parser.parse("byte"))
-			size = 8;
-		else if (parser.parse("word"))
-			size = 16;
-		else if (parser.parse("dword"))
-			size = 32;
+	}
+
+	public NASMEffectiveAddress(String size_specifier, FullyAppliedOpCall address) {
+		this(sizeFromSpecifier(size_specifier), address);
+
+		// if the size specifier was invalid, throw an error
+		if (size_in_bytes == -1 && size_specifier != null)
+			throw new RuntimeException("\"" + size_specifier
+					+ "\" is not a valid size specifier for an effective address!");
+	}
+
+	private static int sizeFromSpecifier(String size_specifier) {
+		if (size_specifier == null)
+			return -1;
 		else
-			size = -1;
+			switch (size_specifier) {
+			case "byte":
+				return 1;
+			case "word":
+				return 2;
+			case "dword":
+				return 4;
+			case "qword":
+				return 8;
+			case "tword":
+				return 10;
+			case "oword":
+				return 16;
+			case "yword":
+				return 32;
+			case "zword":
+				return 64;
+			default:
+				return -1;
+			}
+	}
 
-		parser.parseOrErr("[", "opening bracket of an effective address");
-
-		address = parser.parseOp(StandardOp.NUMBER);
-
-		parser.parseOrErr("]", "closing bracket of an effective address");
+	public FullyAppliedOpCall getAddress() {
+		return address;
 	}
 
 	@Override
-	public Assemblage assemble() {
-		return new Assemblage(this);
+	public FullyAppliedOpCall getReturnType() {
+		return StandardOp.EFFECTIVE_ADDRESS;
+	}
+	
+	@Override
+	public short getSizeInBits() {
+		return (short) (size_in_bytes * 8);
 	}
 
-	@Override
-	public short getSize() {
-		return size;
+	public short getSizeInBytes() {
+		return size_in_bytes;
 	}
 
 	public String getSizeModifier() {
-		switch (size) {
+		switch (size_in_bytes) {
 		case 8:
 			return "byte";
 		case 16:
@@ -50,8 +84,8 @@ public class NASMEffectiveAddress implements NASMArg {
 		}
 	}
 
-	public void setSize(short size) {
-		this.size = size;
+	public void setSize(short size_in_bytes) {
+		this.size_in_bytes = size_in_bytes;
 	}
 
 	@Override

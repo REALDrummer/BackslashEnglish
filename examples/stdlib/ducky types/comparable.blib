@@ -1,0 +1,14 @@
+#< comparable: >#
+	define type comparable(\<<type Comparable To ?? thing>>)?:
+		thing++.
+
+	define template for comparable to @ bit <comparable to @ This> \< <@ Compare To>: false.
+	
+	define bit <comparable to @ This> > <@ Compare To>: 
+		This != Compare To and This !< Compare To.
+	
+	define bit <comparable to @ This> !\<|>= <@ Compare To>: 
+		not This < Compare To.
+	
+	define bit <comparable to @ This> !>|<= <@ Compare To>:
+		This < Compare To or This = Compare To.

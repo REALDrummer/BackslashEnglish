@@ -1,0 +1,13 @@
+define <type> hex(adecimal)? digit:
+	4-bit number;
+
+define explicit <hex digit?> <char Char> as a <hex digit>:
+	switch by Char is in <collection>:
+		case '0' to '9':
+			Char as a number - 0x30
+		case 'a' to 'f':
+			Char as a number - 0x61
+		case 'A' to 'F':
+			Char as a number - 0x41
+		default:
+			an error saying "'`Char`' is not a hexadecimal digit!";;

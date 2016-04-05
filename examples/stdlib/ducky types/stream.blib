@@ -1,0 +1,29 @@
+define <type> <type Element Type>? stream:
+	a new type with Element Type or thing
+
+template <Stream's element \type> <stream Stream>\+\+:
+
+# replacing streams
+define <type> replacing <type of stream Inner Type>:
+	a new type of stream with 
+		map of string matchers to strings Replacements and
+		Inner Type Plain Stream
+
+define <type> (<type Replaced Type>(-<type Replacement Type>)?)? replacement:
+	Replaced Type or= thing
+	Replacement Type or= thing
+	
+	a new type with Replaced Type, Replacement Type,
+		string matcher Matcher,
+		(Replacement Type) Replacement, and
+		(Replaced Type) Replaced
+		
+
+define <(Matcher's match \type)-(Replacement's type) replacement> <matcher Matcher> with <thing Replacement>:
+	a new (Matcher's match \type)-(Replacement's type) replacement with Matcher and Replacement
+
+define <char stream> replace <non-\empty list of \string replacements Replacements> in <char stream To Modify>:
+	a new replacement stream with 
+
+define <Stream's element \type> <replacing \stream Stream>\+\+:
+	

@@ -1,0 +1,11 @@
+define <type of Number> <memory size Size> <number Number>:
+	a new type of Number with Size;
+
+define <type of Number> (d+|(double )+)<type of number Number>:
+	if Number's size is not given,
+		a new error saying "You can't double the size of a `Number` because a `Number` doesn't have a set size to begin with!"
+	else
+		a new type of (Number's size in bits * 2^(the number of 'd's in \1))-bit Number;
+
+define <type of Number> half(-size)? <type of number Number>:
+	a new type of (Number's size in bits / 2)-bit Number;

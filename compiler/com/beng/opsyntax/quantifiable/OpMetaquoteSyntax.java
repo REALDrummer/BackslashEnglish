@@ -1,5 +1,10 @@
 package com.beng.opsyntax.quantifiable;
 
+import com.beng.op.Op;
+import com.beng.op.parseexceptions.NoMatchException;
+import com.beng.op.parseexceptions.OpParseException;
+import com.beng.op.recallentries.RecallEntry;
+import com.beng.opsyntax.OpArguments;
 import com.beng.parser.Parser;
 
 public class OpMetaquoteSyntax extends QuantifiableOpSyntax {
@@ -31,7 +36,22 @@ public class OpMetaquoteSyntax extends QuantifiableOpSyntax {
 	}
 
 	@Override
+	public OpArguments parseCall(Parser input, Op op_to_parse, RecallEntry QR_entry) throws OpParseException {
+		for (char literal_char : literal.toCharArray()) {
+			if (input.peekByte() != literal_char)
+				throw new NoMatchException(op_to_parse, this);
+		}
+
+		return new OpArguments(null);
+	}
+
+	@Override
 	public String toString() {
 		return "\\Q" + literal + "\\E";
+	}
+
+	@Override
+	public String toString(OpArguments arguments) {
+		return toString();
 	}
 }

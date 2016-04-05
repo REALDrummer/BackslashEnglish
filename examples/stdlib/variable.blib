@@ -1,0 +1,30 @@
+template <type> <type Type>? var(iable)?:
+
+template <T variable> <type T> .+:
+
+template <@ variable> <@ variable> \:= <@>: 
+
+define <type> <type Type>? var(iable)?:
+	if Type is not given,
+		Type := thing
+
+	a new type of op()=>Type with
+		Type* address := malloc Type's memsize and
+		bit has been set|initialized := false;
+
+define priority-224 <@n @t variables> <@n @t variables Vars> \:= <@n @ts Values>:
+	for any Var in Vars,
+		if Var is final
+			throw a \final modification error saying "Final variables like `Var` can't be reassigned!"
+	
+	from i := 0 to @n,
+		Values[i] := Vars[i]
+	
+	Vars;
+
+define priority-224 <@t variables> <@t variables Vars> \:= <@t Value>:
+	# assign the single given value to all the given variables
+	Var := Value for each Var in Vars;
+
+define <type of collection> <literal list Var Names>:
+	a new variable named Name for each Name in Var Names;

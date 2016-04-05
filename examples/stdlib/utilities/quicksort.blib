@@ -1,0 +1,3 @@
+define <list of @s> quick ?sort <list of @s> (using <op(@, @)=>number Comparer>)::
+	if @ is not comparable and Comparer is not given,
+		# TODO

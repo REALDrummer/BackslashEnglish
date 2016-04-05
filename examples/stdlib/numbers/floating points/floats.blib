@@ -1,0 +1,2 @@
+define <type of floating point number> float:
+	32-bit floating point number;

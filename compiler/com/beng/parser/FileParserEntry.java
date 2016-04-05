@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import com.beng.BEngCompiler;
+import com.beng.SourceFileLocation;
 import com.beng.opsyntax.quantifiable.OpLiteralCharSyntax;
 
 public class FileParserEntry extends ParserEntry {
@@ -55,6 +56,10 @@ public class FileParserEntry extends ParserEntry {
 	protected String locationalFormat() {
 		return "At char " + Integer.toUnsignedString(getColumnNumber()) + " on line "
 				+ Integer.toUnsignedString(getLineNumber()) + " of " + getInputFilePath() + ", %s";
+	}
+
+	public SourceFileLocation getLocation() {
+		return new SourceFileLocation(input_file_path, getLineNumber(), getColumnNumber());
 	}
 
 	@Override

@@ -8,23 +8,48 @@ import java.util.Stack;
 
 import com.beng.BEngCompiler;
 import com.beng.ErrorCode;
+import com.beng.SourceFileLocation;
 import com.beng.WarningType;
-import com.beng.op.Op;
-import com.beng.op.args.OpArg;
+import com.beng.op.call.FullyAppliedOpCall;
+import com.beng.op.call.OpCall;
+import com.beng.op.types.Type;
 
 public class Parser implements Readable {
-	Stack<ParserEntry> entries = new Stack<>();
+	Stack<ParserEntry> context = new Stack<>();
 
 	public Parser(File input_file) {
-		entries.push(new FileParserEntry(this, input_file));
+		context.push(new FileParserEntry(this, input_file));
 	}
 
 	public Parser(String string) {
-		entries.push(new StringParserEntry(this, string));
+		context.push(new StringParserEntry(this, string));
 	}
 
 	protected ParserEntry getCurrentEntry() {
-		return entries.peek();
+		return context.peek();
+	}
+	
+	public static OpCall parseOpInContext(String op, FullyAppliedOpCall type) {
+		// TODO: this is horrible practice for a number of reasons, but it is a temporary solution
+		BEngCompiler.parser.context.push(new StringParserEntry(BEngCompiler.parser, op));
+		OpCall call = BEngCompiler.parser.parseOp(type);
+		BEngCompiler.parser.context.pop();
+		return call;
+	}
+
+	public SourceFileLocation getLocation() {
+		FileParserEntry last_file_entry = null;
+		for (int i = context.size() - 1; i >= 0; i--) {
+			if (context.get(i) instanceof FileParserEntry) {
+				last_file_entry = (FileParserEntry) context.get(i);
+				break;
+			}
+		}
+
+		if (last_file_entry != null)
+			return last_file_entry.getLocation();
+		else
+			return null;
 	}
 
 	/** This method will attempt to read the given literal string from the file from its current point.
@@ -49,11 +74,11 @@ public class Parser implements Readable {
 		getCurrentEntry().parseOrErr(to_parse, parse_purpose);
 	}
 
-	public Op parseOp(Op type) {
+	public OpCall parseOp(FullyAppliedOpCall type) {
 		// TODO
 		return null;
 	}
-	
+
 	public BigInteger parseInteger() {
 		StringBuilder builder = new StringBuilder();
 
@@ -121,7 +146,7 @@ public class Parser implements Readable {
 		getCurrentEntry().ungetByte();
 	}
 
-	// messaging utils// messaging
+	// messaging utils
 	public void err(ErrorCode exit_status, String message) {
 		BEngCompiler.err(exit_status, String.format(getCurrentEntry().locationalFormat(), message));
 	}

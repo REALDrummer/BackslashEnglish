@@ -1,0 +1,74 @@
+define private <templates> collection's templates:
+	template <uint> <collection>'s size|length:;
+
+define <type> collection:
+	a new type of summable with collection's templates;
+
+define <type> <uint Dimensions>[- ]?(D|dimensional) <type of collection Coll Type>:
+	if Dimensions = 0,
+		throw an illegal argument error saying "There's no such thing as `a or an Coll Type` with 0 dimensions!"
+	else if Dimensions = 1,
+		Coll Type
+	else
+		# recursive definition, e.g. 3-D array = array of 2-D arrays = array of array of arrays
+		Coll Type of (Dimensions - 1)-D Coll Types;
+
+define <type> <type of collection Coll Type> (of <type of collection Element Types>)?:
+	type Element Type := Element Types's contained type or things 
+
+	a new type of Contained Type stream with
+		collection's templates;
+
+# e.g. "array of strings"; remember that strings = collection of strings
+define <type> <type of collection Collection Type> of <type of collection Contained Types>:
+	a new type of Collection Type with final type Contained Type := Contained Types's contained type;
+
+# e.g. "string array"
+define <type> <type Contained Type> <type of collection Collection Type>:
+	Collection Type of Contained Types;
+	
+
+define <uint> the? number of <type of collection of @as Filter Type> in? <collection of @bs Coll> (for which <ops(@a)=>bit Filters>)?:
+	iterator Iterator := an iterator for Coll
+	unsigned number size := 0
+	
+	if Type is given,
+		Type := Collection Type's contained type
+	else
+		Type := thing
+	
+	try:
+		thing Next := Iterator's next
+		if Next = Thing and Thing's type < Type and (reduce (run Filters with Thing) with and),
+			size++
+	and catch any end of stream errors;
+	
+	size;
+
+define <<@\> <= type of collection> <@> of <type Type>s:
+	collection of Type;
+	
+define <type of iterator> <collection Coll>'s iterator type:
+	an iterator for Coll's type;
+
+define bit <collection Coll> contains <thing Thing>:
+	iterator Iterator := an iterator for Coll
+	
+	while (thing Next := Iterator's next) != null,
+		if Next = Thing,
+			return true
+	
+	false;
+
+define super-implicit <collection of @s> <@ Thing> in (a(n)?|(a new))? <type of collection of @s Collection Type>: 
+	a new Collection Type of (Thing's type)s with Thing;
+
+#< positional operators >#
+
+define @ the? first|1st ((of the?)? <type of @> in)? <collection of @s Coll>: Coll[0];
+
+define @ the? second|2nd (of? the?|<type of @> in)? <collection of @s Coll>: Coll[1];
+
+define @ the? third|3rd (of? the?|<type of @> in)? <collection of @s Coll>: Coll[2];
+
+define @ the? <uint Index>th (of? the?|<type of @> in)? <collection of @s Coll>: Coll[Index];

@@ -1,0 +1,10 @@
+define <type> string: 
+	list of chars
+
+#< This not only allows you to do the regular old double-quoted strings, but also allows you to use "`" delimitations to easy slip op=>strings into the strings. >#
+define <string> \"(?'First Separator'.*?)(\`<string Variable Strings>\`(?'Separators'.+?))*\":
+	string Result := First Separator
+	from i := 0 to the number of Variable Strings:
+		Result += Variable Strings[i] + Separators[i]
+		db (Separators[i] as bytes)
+	Result

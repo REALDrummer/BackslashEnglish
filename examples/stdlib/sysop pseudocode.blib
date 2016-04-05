@@ -1,0 +1,48 @@
+define <op> define <modifiers Mods> \<<type Return Type>> (.*?(\<<var>|<op(type)=>bit Value Checker>>.+?))\: <op Body>*?;:
+	#< define the new operator as "New Op" >#
+	
+	#< run the trailing ops using the new operator, allowing for localized operator reuse >#
+	run Trailing Operators using New Op
+
+	#< >#;
+
+define <files> use <file matchers Files>: #< >#;
+
+define <thing> asm (.+?): #< compile code to NASM assembly >#;
+
+#< consider all results of this op referentially integral and obtain and use them at compile time rather than at runtime >#
+define final <modifier> ((return|enviro)-)?final <op Op>: #< >#;
+
+# This operator assigns a value to an appropriate type of variable.
+define priority-224 <@t var> <@t var Var> \:= <@t Value>: #< >#;
+
+define super-implicit <@n things> run <final (@n (op(Args' types or null) or string)s Op Values> (with <things Args>)? (using <final operators Ops>)?: #< >#;
+
+define final <modifier> priority-<final byte Priority> <op Op>: #< >#;
+
+## This operator allows implicit conversion using this operator and declares an implicit operator with the "as (a(n)?)?" format that calls this
+define final <modifier> implicit <op(thing) or op(thing and @)=>@ or op(@ and thing)=>@ Op>: #< >#;
+
+#< like implicit, but multiple super-implicit conversions can be made on one thing before errors are thrown while only one implicit conversion can be done >#
+define final <modifier> super-implicit <op(thing) or op(thing and @)=>@ or op(@ and thing)=>@ Op>: #< >#;
+
+define final <type> bit: #< >#;
+
+#< cancels compiler warnings of the given type if Checker is not given or returns true when run with "Warning" as a variable containing the warning >#
+define final <op=>@> ignore <warning type Type> warnings (if|(for which) <ops=>bit Checker>)? <op=>@ Op>: #< >#.
+
+#< CONVERSIONS >#
+
+#< convert the thing to an array of bits >#
+define <bits> <thing Thing> as <<type\> >= bits>: #< >#.
+
+#< downward cast >#
+define super-implicit <Destination Type> <@ Thing> as a? <<type Destination Type\> < @>: #< >#.
+
+#< upward cast >#
+define <Destination Type> <<thing Thing\>'s type < Destination Type> as a? <type Destination Type>: #< >#.
+
+#< This operator is called by the compiler every time something needs to be copied, e.g. if a thing is passed by value to another operator. It can be overridden, but by default, it uses a simple recursive memory CoW-optimized copy method:
+	- at first, just maintain a reference to the original thing to avoid having to copy it in memory;
+	- if the thing or any of its constituent parts are modified, then perform a simple memory copy of the whole thing and also copy the modified constituent part >#
+define a? copy|clone of? <thing Thing>: #< >#.

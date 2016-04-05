@@ -1,0 +1,2 @@
+define type tuple (of <type Contained Types>s?)?:
+	collection of (Contained Types or things) + ( {type} Entry Types ).

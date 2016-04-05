@@ -1,0 +1,29 @@
+#< TODO: add priorities for these operators >#
+
+#< system operators >#
+#< bits <thing Thing> >> <<type> == bits> | returns the bits representing this thing >#
+	
+#< <@ Thing> >> <type of @ Destination Type> | downward cast >#
+	
+#< <type of Destination Type Thing> >> <type Destination Type> | upward cast >#
+
+#< <convertible to Destination Type Thing> >> <type Destination Type> | implicit conversion >#
+
+#< standard operators >#
+define type thing:
+	a new tuple of template or variable operators.
+
+define number <thing Thing>'s mem(ory )?size:
+	(Thing as bits)'s length.
+
+define bit <@ var Left> ==|(is (the same <<type> >= @>? as)?) <@ var Right>:
+	&Left = &Right.
+
+define bit <@ Left> equals|=|(is equivalent|equal \to) <@ Right>:
+	Left == Right.
+	
+define bit <@ Left> !=|(does(( not)|n't) equal)|(is(( not)|n't) equal|equivalent to) <@ Right>:
+	not Left = Right.
+
+define string <thing Thing> as a? string:
+	a \or an + Thing's memsize`-bit `Thing's type.

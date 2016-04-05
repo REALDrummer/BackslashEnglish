@@ -342,7 +342,7 @@ public class SU {
 		return roman_numeral;
 	}
 
-	/** This method is the inverse counterpart to the {@link #readTime(long, boolean) translateStringToTimeInms()}
+	/** This method is the inverse counterpart to the {@link #readTime(String) translateStringToTimeInms()}
 	 * method. It can construct a String to describe an amount of time in ms in an elegant format that is readable
 	 * by the aforementioned counterpart method as well as human readers.
 	 * 

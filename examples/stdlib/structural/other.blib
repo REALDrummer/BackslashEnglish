@@ -1,0 +1,15 @@
+define <error> do nothing: 
+	#< do nothing; duh ># 
+	a new error saying "Someone tried to retrieve the result of doing nothing!"
+
+#< This is the "null coalescing operator". You can give it two options on either side of it. It will return the left option if that option [is given](<op> is given), is not [null], and does not have a Null Pointer Issue; otherwise, it will return the second (right) option. >#
+define <(Option 1's return \type or Option 2's return \type)> <op Option 1> or <op Option 2>:
+	Option 1's Value := run Option 1
+	
+	if Option 1's Value is an error,
+		Option 1's Value
+	else
+		run Option 2
+	
+define <Something's \type> (a(n)?)? <thing Something>: 
+	Something

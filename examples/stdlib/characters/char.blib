@@ -1,0 +1,77 @@
+# system operators:
+# char (?<!\\)'(.)' | creates a char from the captured literal char
+
+define <type> ASCII? char(acter)?:
+	a new type with template implicit <number> (ASCII|numerical)? Value:;
+
+define <char> '\\x"Hex Value"[A-Fa-f0-9]+(\\x)?': 
+	a new char where Value := Hex Value read as a hex int;
+
+define char <string String> as a? char:
+	if String's length = 1,
+		String's first character
+	else if String's first character = '\',
+		parse an escaped char from String
+	else
+		throw a char parsing error saying "A string can only be parsed as a char if it is only one character or it is a valid escape sequence beginning with a backslash.";
+
+define packaged <char> parse? an? escape(d)? <type of char>? from? <char stream String>:
+	if String's max ungets < 2,
+		throw a string parsing error saying "Any char stream that needs to parse an escape sequence must allow at least 2 consecutive unget calls! Try wrapping your char stream in a buffered stream."
+
+	#< translate escape characters like '\n' into unicode characters with the "\x" >#
+	switch by String's first character:
+		#< valid escape sequences: >#
+		case '0':	'\x0'	# the null terminator = 0
+		case 'a':	'\x7'	# alert = 7
+		case 'b':	'\x8'	# backspace = 8
+		case 'f':	'\xC'	# form feed = 12 = 0xC
+		case 'n':	'\xA'	# new line = 10 = 0xA
+		case 'r':	'\xD'	# carriage return = 13 = 0xD
+		case 't':	'\x9'	# (horizontal) tab = 9 #
+		case 'v':	'\xB'	# vertical tab = 11 = 0xB #
+		#< warning cases: >#
+		case ''':
+			throw a string parsing warning: "Unlike in C, you should not escape the single quote that is single-quoted as a char."
+			'''
+		case '"':
+			throw a string parsing warning: "There is no need to escape a double quote that is single-quoted as a char."
+			'"'
+		case '\':
+			throw a string parsing warning: "Unlike in C, single quoted backslash characters do not need to be escaped with an additional backslash."
+			'\'
+		#< long escape sequence cases: >#
+		else:
+			number Value := 0
+			case 'x':
+				bit we found a digit := no
+				while String continues and (char Char := String's next) is a hex digit:
+					we found a digit := yes
+					Value := (Value << 4) + Char as a hex digit;
+				if we found a digit,
+					if Char = '\',
+						if (Char := String's next) = 'x'
+							#< we've parsed over a terminating '\x', so we can be done now >#
+							return Value as a char.
+						else:
+							#< note: this assumes that the given stream allows 2 consecutive ungets! >#
+							unget Char from String
+							unget '\' from String;
+					else
+						unget Char from String
+				else
+					comp-err "The \\x must be followed by at least one hexadecimal digit (0-9, a-f, or A-F) to represent a character by its hexadecimal ASCII or Unicode value; alone, \"\\x\" is meaningless!".
+			case 'u':
+				4 times:
+					if (char Char := String's next) is a hex digit,
+						Value := (Value << 4) + Char as a hex digit;
+					else
+						comp-err "The \\u must be followed by four hexadecimal digits (0-9, a-f, or A-F) to represent a character by its hexadecimal ASCII or Unicode value; alone, \"\\u\" is meaningless!".
+			case 'U':
+				8 times:
+					if (char Char := String's next) is a hex digit,
+						Value := (Value << 4) + Char as a hex digit;
+					else
+						comp-err "The \\U must be followed by eight hexadecimal digits (0-9, a-f, or A-F) to represent a character by its hexadecimal ASCII or Unicode value; alone, \"\\U\" is meaningless!".
+			else:
+				comp-err "\"`$2`\" is not a valid escape character.";

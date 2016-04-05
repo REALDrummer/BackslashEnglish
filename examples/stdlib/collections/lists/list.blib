@@ -1,0 +1,61 @@
+define <@> <list of @s List>'s last (element|<type Type>) (for which <ops(@)=>bit Checks>)?:
+	# though [index] operators would be easiest here, but default, lists are traversed from the beginning by a stream, so using [index] operators could be heavily inefficient; instead, we will traverse the stream ourselves
+	stream of @s Stream := List as a stream
+	Stream := List as a stream from the end
+	while Stream has previous elements:
+		@ Prev := Stream's previous thing
+		if Checks is not given or Prev satisfies Checks and either Type is not given or Prev is a Type,
+			Prev;
+	null;
+
+define <@> <list of @s List>\[<int Index>\]:
+	stream Stream := List as a stream
+	
+	# with normal non-negative indices, we can just iterate to it
+	if Index >= 0:
+		uint i := 0
+		define <@> ITERATE|NEXT:
+			if Stream continues:
+				get Stream's next thing  # just skip past it; we don't need that result
+				i++;	# keep track of the number of successful iterations to provide more information in the error message
+			else
+				throw an index out of bounds error saying "Someone attempted to get the `@` at index `Index` in this `List's type`, but apparently, this list has `
+					if i = 0, "no items"
+					else if i = 1, "only 1 item"
+					else "only `i` items"
+					`!";
+		
+		ITERATE Index times
+		NEXT;
+	# negative indices are interpreted as the collection's size - the index (which, remember, is negative); however, since by default, finding the size of the list uses an iterator to go through the whole list, it would be more efficient to implement this separately by iterating once and caching the result that many spaces back from the end of the stream 
+	else if List is infinite,
+		# before we jump into an infinite loop trying to find the end of an infinite list, check to see if the list is infinite; if it is, then there is no element e.g. 3 slots from the end since there's no end, so throw an error
+		throw an index out of bounds error saying "Someone attempted to get the `|Index| as a positional` `@` from the end of this `List's type`, but this list is infinite!"
+	else:
+		Index := -Index		# take the absolute value of index to make code cleaner later
+
+		Index @s Cache	# Cache is an array of Index number of @s that will cache the last |Index| (absolute value of Index) terms found; the one at the end of the array when Stream ends is the element we were searching for
+		uint Cache's Free Spaces := Index
+		
+		while Stream continues:
+			# note that it's okay to use [index] notation down here because Cache is an array and arrays override this operator
+			if Cache's Free Spaces != 0:
+				Cache[Cache's Free Spaces - 1] := Stream's next thing
+				Cache's Free Spaces--;
+			else:
+				rotate Cache left 1
+				Cache's last element := Stream's next thing;;
+		if Cache's Free Spaces > 0,
+			throw an index out of bounds error saying "Someone attempted to get the `Index as a positional` `@` from the end of this `List's type`, but apparently, this list has`
+				if i = 0, "no items"
+				else if i = 1, "only 1 item"
+				else "only `Index - Cache's Free Spaces` items"
+				`!"
+		else
+			Cache[0]
+
+define <thing> <non-\empty list of things Things> joined by <thing Joiner>:
+	thing Result := Things[0]
+	for each Thing in Things[from 1],
+		Result += Joiner + Thing
+	Result

@@ -1,0 +1,16 @@
+define type subtractable\<<type Subtractand>>:
+	comparable to Subtractand++.
+	
+define type subtractable by <type Subtractand>:
+	subtractable<Subtractand>.
+	
+define template for subtractable by @ number <subtractable by @ This> -|minus|(subtract(ed from)?) <@ To Subtract>: null.
+	
+define bit <subtractable by To Compare's type This> \< <thing To Compare>:
+	This - To Compare < 0.
+	
+define bit <subtractable by To Compare's type This> > <thing To Compare>:
+	This - To Compare > 0.
+	
+define bit <subtractable by To Compare's type This> = <thing To Compare>:
+	This == To Compare or This - To Compare = 0.

@@ -1,6 +1,9 @@
 package com.beng.emulator.args;
 
 import com.beng.op.Assemblage;
+import com.beng.op.SysOp;
+import com.beng.op.call.FullyAppliedOpCall;
+import com.beng.op.recallentries.ConcatRecallEntry;
 
 public enum NASMGeneralRegister implements NASMArg {
 	RAX, RBX, RCX, RDX, // 0-3; 64-bit
@@ -17,7 +20,7 @@ public enum NASMGeneralRegister implements NASMArg {
 	R8W, R9W, R10W, R11W, R12W, R13W, R14W, R15W, // 57-64; 16-bit; x86_64 only
 	R8B, R9B, R10B, R11B, R12B, R13B, R14B, R15B; // 65-72; 8-bit; x86_64 only
 
-	public final short getSize() {
+	public final short getSizeInBits() {
 		if (ordinal() <= DH.ordinal())
 			return (short) ((4 - ordinal() / 4) * 8);
 		else if ((ordinal() <= DL.ordinal()))
@@ -30,12 +33,7 @@ public enum NASMGeneralRegister implements NASMArg {
 			return (short) ((4 - (ordinal() - R8.ordinal()) / 8) * 8);
 	}
 
-	@Override
-	public Assemblage assemble() {
-		return new Assemblage(this);
-	}
-
-	NASMGeneralRegister getFullRegister() {
+	public NASMGeneralRegister getFullRegister() {
 		if (ordinal() <= DL.ordinal())
 			return values()[ordinal() % 4];
 		else if (ordinal() >= RDI.ordinal() && ordinal() <= IP.ordinal())
@@ -54,9 +52,15 @@ public enum NASMGeneralRegister implements NASMArg {
 		return ordinal() <= IP.ordinal();
 	}
 
-	boolean isMutable() {
+	@Override
+	public boolean isMutable() {
 		// all registers are mutable except for the `rip` register (and consequently `eip` and `ip`)
 		return (ordinal() - RIP.ordinal()) % 5 == 0;
+	}
+	
+	@Override
+	public FullyAppliedOpCall getReturnType() {
+		return new FullyAppliedOpCall(SysOp.BYTES, null, new ConcatRecallEntry(new CapturedLiteralRecallEntry("Size in Bytes", "4")))
 	}
 
 	@Override

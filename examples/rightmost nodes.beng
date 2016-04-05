@@ -3,9 +3,9 @@
 It finds said nodes using a depth-first search through the tree. At each node, it recurses right, then left. Then, if the list of rightmost nodes from the left branch is greater than the list of rightmost nodes from the right branch, then the left branch is longer than the right branch. It will therefore take the "extra" nodes from that left branch search, i.e. items in that list from the size of the right branch's list to the end, and tacks them onto the end of the right branch's list of nodes.
 
 Some notes about the language:
-	- The word "of" between a type of list and another type allows designation of the type of thing contained in the list (and 'binary tree' are a type of list)
-	- The `@` symbol is a pattern matching symbol; its use means that it can be anything as long as it is in the same in all places where it is used. In this case, it is ensuring that the binary tree and the returned list contain the same type of data.
-	- The last operator in a block is the return of that whole block; in this case, if `Tree` is empty, this whole operator will return `a new linked list of @s`; otherwise, it will return `Tree's root value + Lower Results`.
+	- The word "of" between a type of list and another type allows designation of the type of thing contained in the list (and 'binary trees' are a type of list)
+	- Blocks are designated by indentation like Python; many, but not all start with a comma.
+	- The last operator in a block is the return of that whole block. In this case, if `Tree` is empty, this whole operator will return `a new linked list of Ss`; otherwise, it will return `Tree's root value + Lower Results`.
 
 Parameters:
 	`Tree` is the binary tree analyzed by this operator to find the values of its rightmost nodes. `Tree` is not assumed to be balanced and neither the size of the tree nor the number of levels is assumed to be cached or efficiently calculable, so it is avoided in this code.
@@ -16,23 +16,24 @@ It returns a list of the values of the rightmost nodes at each level of the tree
 			  2   3
 			 /   /
 			4   5
-		   /
-		  6`
+		 	   /
+		 	  6`
 	results in
 	`[ 1, 3, 5, 6 ]`.		>#
-define <list of @s> <binary tree of @s Tree>'s rightmost nodes:
+define <list of (Tree's element \type's element \type)s> <binary trees Tree>'s rightmost nodes:
+	type S := Tree's element \type's element \type
 	if Tree is empty,
-		a new linked list of @s
-	else:
-		list Lower Results := a new linked list of @s
+		a new linked list of Ss
+	else,
+		list of Ss Lower Results := a new linked list of Ss
 
 		if Tree has a right child,
 			Lower Results := Tree's right's rightmost nodes
 		
-		if Tree has a left child:
-			list Left Lower Results := Tree's left's rightmost nodes
+		if Tree has a left child,
+			list of Ss Left Lower Results := Tree's left's rightmost nodes
 			
 			if Left Lower Results's size > Lower Results's size,
 				Lower Results += Left Lower Results[from Lower Results's size];
 		
-		Tree's root value + Lower Results;;
+		Tree's root value + Lower Results

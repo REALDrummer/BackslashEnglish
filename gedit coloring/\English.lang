@@ -393,17 +393,16 @@
 				<!-- operator definitions -->
 				<context id="operator-definition-with-body">
 					<start>\bdefine\b</start>
-					<end>;</end>
+					<end>:</end>
 					<include>
 						<context sub-pattern="0" where="start" style-ref="key-op"/>
 						<context sub-pattern="0" where="end" style-ref="function"/>
 						<context id="operator-definition">
 							<include>
 								<context id="operator-definition-specials" style-ref="operator-definition-special">
-									<match extended="true">(?&lt;!\w)(
-										\\[0-9]+\b|			# regex capturing group used in operator definition bodies
-										@(\w+)?				# type matching in operator definitions and their bodies
-									)</match>
+									<match extended="true">(?&lt;!\w)
+										\\[0-9]+\b			# regex capturing group used in operator definition bodies
+									</match>
 								</context>
 								<context id="operator-definition-return-type-and-regex">
 									<start>&lt;(?=.+?>)</start>
@@ -422,7 +421,7 @@
 													</include>
 												</context>
 												<context ref="operator-definition-specials"/>
-												<context id="operator-definition-capturing-group" style-ref="linked">
+												<context id="operator-definition-capturing-group">
 													<start extended="true">
 														\%{regex-capturing-group-starter}
 														(?=([^:])*?\))		# ensure that the capturing group ends before the operator definition does						
@@ -450,6 +449,22 @@
 														<context ref="beng"/>
 													</include>
 												</context>
+												<context id="literal-capture" style-ref="string">
+													<start>"</start>
+													<end>"</end>
+													<include>
+														<context sub-pattern="0" where="start" style-ref="string"/>
+														<context sub-pattern="0" where="end" style-ref="string"/>
+														<context id="escaped-quote">
+															<match>(\\)(")</match>
+															<include>
+																<context sub-pattern="1" style-ref="escaped-char"/>
+																<context sub-pattern="2" style-ref="string"/>
+															</include>
+														</context>
+														<context ref="string-literal"/>
+													</include>
+												</context>
 												<context ref="regex-specials"/>
 												<context ref="mismatched-char"/>
 											</include>
@@ -459,28 +474,6 @@
 									</include>
 								</context>
 								<context ref="beng"/>
-							</include>
-						</context>
-						<context id="operator-body">
-							<start>:</start>
-							<end>(?=;)</end>
-							<include>
-								<context sub-pattern="0" where="start" style-ref="function"/>
-								<context id="operator-body-interior">
-									<include>
-										<!-- this context ensures that the ending semicolon is matched properly -->
-										<context id="block">
-											<start>:(?!=)</start>
-											<end>;</end>
-											<include>
-												<context ref="operator-body-interior"/>
-												<context ref="beng"/>
-											</include>
-										</context>
-										<context ref="operator-definition-specials"/>
-										<context ref="beng"/>
-									</include>
-								</context>
 							</include>
 						</context>
 					</include>
@@ -574,6 +567,7 @@
 							packaged|
 							private
 						)|
+						implicit|
 						templates?|
 						var(iable)?s?|
 						(is\s+)?in|
@@ -588,18 +582,12 @@
 						true|yes|on|
 						false|no|off|
 						a(\s+or\s+|/)an|
-						map(?!\[|\s*of)(?=.+?to)|
-						return|
-						overridden|
-						strict|
 						alias|
 						(the\s+)?current\s+time(\s+of\s+day)?|
 						forever|
 						when|
 						after|
 						throw(\s+an?)?|
-						try(\s+to)?|
-						(and\s+)?catch(\s+any)?|
 						print|
 						read|
 						(a\s+)?new|
@@ -612,17 +600,16 @@
 				<!-- more key operators -->
 				<context id="key-ops" style-ref="key-op">
 					<match extended="true">\b(
-						as(\s+an?)?|
 						run|
 						using|
 						((return|enviro)-)?final|
-						(super-)?implicit|
 						priority-(?=\S)|
 						bits?|
 						ignore(?=.+?warnings?)|
 						use|
 						stdlib|
-						(this\s+)OS
+						(this\s+)OS|
+						translation
 					)\b</match>
 				</context>
 				
@@ -684,155 +671,7 @@
 				</context>
 				
 				<!-- asm terms -->	 
-				<!-- in the future, just make asm create a context that uses nasm highlighting -->  
-				<context id="NASM">
-					<match extended="true">
-					(asm|ASM)			# the unescaped ASM directive "keyword"
-					(\s+\.?\w+:)?		# an optional assembly label
-					(\s+(
-						aa[asdm]|AA[ASDM]|
-						adc|ADC|
-						add|ADD|
-						and|AND|
-						bound|BOUND|
-						bs[fr]|BS[FR]|
-						bswap|BSWAP|
-						bt[crs]?|BT[CRS]?|
-						call|CALL|
-						c(bw|wd|dq|wde)|C(BW|WD|DQ|WDE)|
-						cl([cdi]|ts)|CL([CDI]|TS)|
-						cmc|CMC|
-						cmp(s[bwd])?|CMP(S[BWD])?|
-						da[as]|DA[AS]|
-						dec|DEC|
-						div|DIV|
-						enter|ENTER|
-						f2xm1|F2XM1|
-						fabs|FABS|
-						faddp?|FADDP?|
-						fb(ld|stp)|FB(LD|STP)|
-						fchs|FCHS|
-						fclex|FCLEX|
-						fcomp{0,2}|FCOMP{0,2}|
-						fcos|FCOS|
-						fdecstp|FDECSTP|
-						fn?(en|dis)i|FN?(EN|DIS)I|
-						fdivr?p?|FDIVR?P?|
-						ffree|FFREE|
-						fiadd|FIADD|
-						ficomp?|FICOMP?|
-						fidivr?|FIDIVR?|
-						fi(ld|stp?)|FI(LD|STP?)|
-						fimul|FIMUL|
-						fincstp|FINCSTP|
-						fn?init|FN?INIT|
-						fisubr?|FISUBR?|
-						fld(1|l2e|l2t|lg2|ln2|pi|2)|FLD(1|L2E|L2T|LG2|LN2|PI|2)|
-						fld(cw|env)|FLD(CW|ENV)|
-						fmulp?|FMULP?|
-						fpa?tan|FPA?TAN|
-						fprem1?|FPREM1?|
-						frndint|FRNDINT|
-						f(n?save|rstor)|F(N?SAVE|RSTOR)|
-						fscale|FSCALE|
-						fsin(cos)?|FSIN(COS)?|
-						fsqrt|FSQRT|
-						fstp?|FSTP?|
-						fst(cw|env)|FST(CW|ENV)|
-						fsubp?r?|FSUBP?R?|
-						ftst|FTST|
-						fucom[pi]?p?|FUCOM[PI]?P?|
-						fxam|FXAM|
-						fxch|FXCH|
-						fxtract|FXTRACT|
-						hlt|HLT|
-						idiv|IDIV|
-						imul|IMUL|
-						in|IN|
-						inc|INC|
-						ins[bwd]|INS[BWD]|
-						int(o|3|0?1)?|INT(O|3|0?1)?|
-						invd|INVD|
-						invlpg|INVLPG|
-						iret[wd]|IRET[WD]|
-						je?cxz|JE?CXZ|
-						jmp|JMP|
-						j((n?[osezbcalgp]|[abgl]e)|p[eo])|J((N?[OSEZBCALGP]|[ABGL]E)|P[EO])|
-						lahf|LAHF|
-						lar|LAR|
-						l[d-gs]s|L[D-GS]S|
-						lea|LEA|
-						leave|LEAVE|
-						l[gil]dt|L[GIL]DT|
-						lmsw|LMSW|
-						lods[bwd]|LODS[BWD]|
-						loop(n?[ez])?|LOOP(N?[EZ])?|
-						lsl|LSL|
-						ltr|LTR|
-						mov[dq]?|MOV[DQ]?|
-						movs[bwd]|MOVS[BWD]|
-						mov[sz]x|MOV[SZ]X|
-						mul|MUL|
-						neg|NEG|
-						not|NOT|
-						nop|NOP|
-						or|OR|
-						out(s[bwd])?|OUT(S[BWD])?|
-						packss(dw|wb)|PACKSS(DW|WB)|
-						packuswb|PACKUSWB|
-						paddu?s[bw]|PADDU?S[BW]|
-						paddsiw|PADDSIW|
-						pandn?|PANDN?|
-						paveb|PAVEB|
-						pcmp(eq|gt)[bwd]|PCMP(EQ|GT)[BWD]|
-						pop([af][wd]?)?|POP([AF][WD]?)?|
-						por|POR|
-						ps(ll|r[al])[dwq]|PS(LL|R[AL])[DWQ]|
-						psub(u?s)?[bwd]|PSUB(U?S)?[BWD]|
-						psubsiw|PSUBSIW|
-						punpck[hl](bw|wd|dq)|PUNPCK[HL](BW|WD|DQ)|
-						push(a[dw]?)?|PUSH(A[DW]?)?|
-						pxor|PXOR|
-						rc[lr]|RC[LR]|
-						rdmsr|RDMSR|
-						rdpmc|RDPMC|
-						rdtsc|RDTSC|
-						ret[fn]?|RET[FN]?|
-						ro[lr]|RO[LR]|
-						rsm|RSM|
-						sahf|SAHF|
-						sa[lr]|SA[LR]|
-						salc|SALC|
-						sbb|SBB|
-						scas[bwd]|SCAS[BWD]|
-						s[gil]dt|S[GIL]DT|
-						sh[lr]d?|SH[LR]D?|
-						smi|SMI|
-						smsw|SMSW|
-						st[cdi]|ST[CDI]|
-						stos[bwd]|STOS[BWD]|
-						str|STR|
-						sub|SUB|
-						test|TEST|
-						umov|UMOV|
-						ver[rw]|VER[RW]|
-						wait|WAIT|
-						wbinvd|WBINVD|
-						wrmsr|WRMSR|
-						xadd|XADD|
-						xbts|XBTS|
-						xchg|XCHG|
-						xlatb|XLATB|
-						xor|XOR|
-						(res|d)[bwdq]|(RES|D)[BWDQ]|
-						equ|EQU
-					))?</match>
-					<include>
-						<context sub-pattern="1" style-ref="key-op"/>
-						<context sub-pattern="2" style-ref="preprocessor"/>
-						<context sub-pattern="3" style-ref="key-op"/>
-					</include>
-				</context>
+				<context ref="nasm:nasm"/>
 			</include>
 		</context>
 	</definitions>

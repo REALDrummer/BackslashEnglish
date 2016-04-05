@@ -1,0 +1,7 @@
+define <modified \type> <modifiers>{/",? "/} <type>:
+	a new type of type with
+		type Base Type := Type and 
+		modifiers Modifiers := Modifiers.
+	
+define <bit> any <things> are <modifiers>:
+	reduce (map <thing> is <modifier> to Things and Modifiers) by and;

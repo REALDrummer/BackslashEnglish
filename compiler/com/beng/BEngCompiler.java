@@ -1,9 +1,25 @@
 package com.beng;
 
+import com.beng.emulator.NASMEmulator;
 import com.beng.opsyntax.OpSyntax;
+import com.beng.output.OutputHandler;
 import com.beng.parser.Parser;
 
 public class BEngCompiler {
+	public static final ErrorCode INTERNAL_ERROR = new ErrorCode() {
+		@Override
+		public int getErrorCode() {
+			return -1;
+		}
+	};
+
+	/** This {@link Parser} is the only one to be used; in the future, we should be able to use multi-threading and
+	 * concurrency and whatnot to have a bunch of parsers at once, but for now, because of concurrency issues and
+	 * context switching issues, we'll have to stick with a single parser. */
+	public static Parser parser;
+	public static NASMEmulator emulator = new NASMEmulator();
+	public static OutputHandler output;
+
 	public static boolean strictest = false;
 	public static boolean debug = true;
 	public static boolean verbose = true;
@@ -28,13 +44,13 @@ public class BEngCompiler {
 
 	public static void main(String[] args) {
 		// get the input file
-		Parser parser;
 		if (args.length == 0) {
 			err(CompilerExecutionError.NO_INPUT_FILE,
 					"There was no input file given! What should I compile?!");
 			return;
 		} else {
 			parser = new Parser(args[0]);
+			output = OutputHandler.getOutputHandler(args[0].substring(0, args[0].lastIndexOf('.')) + ".asm");
 		}
 
 		// TODO TEMP TESTING

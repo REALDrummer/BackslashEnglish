@@ -1,0 +1,33 @@
+#< system operators >#
+#< @* &<@ Thing> | returns a pointer with Thing's memory address >#
+
+#< implicit @ var <@* Pointer> >> <@ var Var> | converts a pointer to a variable pointing to that location >#
+
+#< standard operators >#
+define <type of pointer> <type Base Type>\*:
+	a new type with Base Type Type, 
+		private (this OS's address size)-bit unsigned number Address, and 
+		private uint Number of References
+	
+#< reference >#
+define implicit <(Op's \return \type)*> &<operator Op>:
+	a new (Op's \type) pointer to Op's address.
+	
+#< dereference >#
+define <Pointer's base \type> \*<pointer Pointer>:
+	[Pointer]	# NASM effective address
+	
+#< pointer type conversion >#
+define <Destination Type*> <thing* Pointer> >> <type of pointer Destination Type>:
+	Destination Type*.
+	
+#< automatic reference >#
+define priority-96 implicit <@*> <@ Thing> >> <type of @*>:
+	&Thing
+	
+#< automatic dereference >#
+define implicit <@> <@* Pointer> >> <type of @>:
+	*Pointer
+
+define implicit (this OS's address size)-bit unsigned number <thing* Pointer> >> <type of number>:
+	Pointer's address.

@@ -1,0 +1,2 @@
+define <visibility error> a? new? <type of visibility error> because <op Caller> tried to call <op Callee>:
+	a new visibility error saying 

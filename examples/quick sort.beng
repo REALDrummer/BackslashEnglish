@@ -1,4 +1,4 @@
-define <sorted Ts> (quick)?sort <<type T\>s Unsorted Stuff>:
+define <sorted (Unsorted Stuff's \type)> (quick)?sort <things Unsorted Stuff>:
 	if Unsorted Stuff is sorted or Unsorted Stuff's size <= 1,
 		Unsorted Stuff
 	else,

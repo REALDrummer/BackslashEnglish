@@ -1,13 +1,23 @@
-package com.beng.opsyntax;
+package com.beng.opsyntax.grouped;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ListIterator;
+import java.util.Spliterator;
 
+import org.omg.CORBA.INTERNAL;
+
+import com.beng.op.Op;
+import com.beng.op.parseexceptions.OpParseException;
+import com.beng.opsyntax.OpSyntax;
+import com.beng.opsyntax.OpWordBoundarySyntax;
+import com.beng.opsyntax.OperatorDefinitionErrorType;
 import com.beng.opsyntax.quantifiable.*;
 import com.beng.opsyntax.quantifiable.escaped.*;
 import com.beng.opsyntax.quantified.*;
 import com.beng.parser.Parser;
 
-public class OpConcatSyntax extends OpSyntax {
+public class OpConcatSyntax implements OpGroupedSyntax {
 	final OpSyntax[] groups;
 
 	private static final OpSyntax parseEscapeSequence(Parser input) {
@@ -172,7 +182,7 @@ public class OpConcatSyntax extends OpSyntax {
 	public OpConcatSyntax(OpSyntax[] groups) {
 		this.groups = groups;
 	}
-	
+
 	public OpSyntax[] getGroups() {
 		return groups;
 	}
@@ -187,11 +197,28 @@ public class OpConcatSyntax extends OpSyntax {
 	}
 
 	@Override
+	public OpArguments parseFrom(Parser input, Op op_to_parse, int quantifier_position_index,
+			int... quantifier_positions) throws OpParseException {
+		OpArguments arguments_parsed = new OpArguments();
+		for (OpSyntax group : getGroups()) {
+			arguments_parsed.add(group.parseFrom(input, op_to_parse, quantifier_position_index,
+					quantifier_positions));
+			quantifier_position_index += group.getNumberOfPointsOfVariance();
+		}
+		return arguments_parsed;
+	}
+
+	@Override
 	public String toString() {
+		return toString(new OpArguments());
+	}
+
+	@Override
+	public String toString(OpArguments arguments) {
 		StringBuilder concat = new StringBuilder();
 
 		for (OpSyntax op_syntax : groups) {
-			concat.append(op_syntax.toString());
+			concat.append(op_syntax.toString(arguments));
 		}
 
 		return concat.toString();

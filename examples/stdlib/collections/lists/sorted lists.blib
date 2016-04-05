@@ -1,0 +1,57 @@
+use stdlib/issues/warnings.blib
+use stdlib/collections/lists/list.blib
+use stdlib/comparable.blib
+
+# example: to designate floats sorted by their decimal places only, use `floats sorted by (<float> % 1 compared with <float> % 1)`
+define <type of list of @s> <@s> sorted by <op(@, @)=>comparison Comparer>:
+	a new type of @ with Comparer
+
+# example: to designate a sorted list of strings, use `sorted strings`
+where @ is comparable,
+define <type of list of @s> sorted <@s>:
+	@ sorted by (compare <@> and <@>)
+
+where @ is comparable,
+define <sorted @s> (quick-?)?sort <@s Unsorted Stuff> by <op(@, @)=>comparison Comparer>:
+	# (re)define comparison of two @s based on the comparison operator given
+	define <bit> <@ Left> \< <@ Right>:
+		(run Comparer with Left and Right) = less than
+
+	if Unsorted Stuff's size <= 1,
+		give a new ineffective sort warning saying 
+			if Unsorted Stuff is empty,
+				"This list you're trying to sort is empty!"
+			else,
+				"This list you're trying to sort only has one element!"
+		Unsorted Stuff
+	else,
+		uint Index From Start := 0
+		uint Index From End := Unsorted Stuff's size - 1
+		
+		@ Pivot := Unsorted Stuff[Unsorted Stuff's size / 2]
+		
+		while Index From Start < Index From End,
+			# if an element in the first half of the array belongs in the second half (after pivot)...
+			if Unsorted Stuff[Index From Start] < Pivot,
+				# find an element on the right side that belongs on the left
+				while Index From End > Index From Start and Unsorted Stuff[Index From End] >= Pivot,
+					Index From End--
+				if Index From End <= Index From Start,
+					break
+				else
+					swap Unsorted Stuff[Index From Start] and Unsorted Stuff[Index From End]
+		
+		quicksort Unsorted Stuff[to Unsorted Stuff's size / 2]
+		quicksort Unsorted Stuff[from Unsorted Stuff's size / 2]
+		
+		Sorted Stuff proclaimed sorted by Comparer	# <-- TODO: how would this work?
+
+where @ is comparable,
+define <@s sorted by <@\> compared with #< <-- syntax highlight ># <@\>> (quick)?sort <@s Unsorted Stuff>:
+	sort Unsorted Stuff by (<@> compared with #< <-- syntax highlight ># <@>)
+
+define <sorted @s> (quick)?sort <sorted @s Unsorted Stuff>:
+	give a new ineffective sort warning saying "This list you're trying to sort is already sorted!"
+	Unsorted Stuff
+
+

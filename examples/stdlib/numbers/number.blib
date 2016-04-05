@@ -1,0 +1,27 @@
+define <type> number:
+	a new type of comparable with
+		bits Value,
+		template super-implicit <Target> <@s Smaller Number> as a <@s's memsize < <type of number Target\>'s memsize>:,
+		template <number> <this Augend> \+ <this Addend>:,
+		template <number> <this Minuend> - <this Subtractahend>:;
+
+define <type> signed <type of number>:
+	a new type of number;
+
+#< converts number to string in the given format (based on Java DecimalFormat) >#
+define <string> format <number Number> (to|->) <string Number Format>:
+	#< TODO >#;
+
+# TODO: fix the following for large numbers
+define <bit> <number Base> \< <number Comparison>:
+	asm cmp Base, Comparison
+	asm jl true_branch
+	false
+	asm true_branch:
+	true;
+
+define private <bit> equate big <numbers Numbers>:
+	from i := 0 to Numbers's size - 1:
+
+define super-implicit <Target> <@s Smaller Number> as a <@s's memsize < <type of number Target\>'s memsize>:
+	#< TODO >#.

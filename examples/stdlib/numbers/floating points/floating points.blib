@@ -1,0 +1,9 @@
+unsigned byte Min(imum)? Floating Point Memsize := 16
+
+define <type> floating point <type of number Number>?:
+	if Number is not given,
+		Number := number
+
+	a new type of Number with
+		template <integer> <floating point Number>'s mantissa: and
+		template <integer> <floating point Number>'s exponent:;

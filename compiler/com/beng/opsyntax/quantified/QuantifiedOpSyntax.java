@@ -1,16 +1,30 @@
 package com.beng.opsyntax.quantified;
 
+import java.util.List;
+
+import com.beng.SourceFileLocation;
+import com.beng.op.OpDefinition;
+import com.beng.op.args.GivenOpArg;
+import com.beng.op.call.OpCall;
+import com.beng.op.call.OpCallException;
+import com.beng.op.recallentries.RecallEntry;
 import com.beng.opsyntax.OpSyntax;
 import com.beng.opsyntax.quantifiable.QuantifiableOpSyntax;
 import com.beng.parser.Parser;
 
-public abstract class QuantifiedOpSyntax extends OpSyntax {
+public abstract class QuantifiedOpSyntax implements OpSyntax {
 	protected static final int NO_UPPER_BOUND = 0;
 
 	final OpSyntax inner_group;
 
 	protected QuantifiedOpSyntax(OpSyntax inner_group) {
 		this.inner_group = inner_group;
+	}
+	
+	@Override
+	public OpCall callWith(List<GivenOpArg> arguments, RecallEntry previous_arguments, OpDefinition definition,
+			SourceFileLocation location) throws OpCallException {
+		
 	}
 
 	public OpSyntax getInnerGroup() {

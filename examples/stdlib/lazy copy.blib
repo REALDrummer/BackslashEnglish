@@ -1,0 +1,2 @@
+define <@ copy> a? new? copy|clone of? <@ Thing>:
+	

@@ -1,8 +1,8 @@
 package com.beng.opsyntax.quantifiable;
 
 import com.beng.op.args.OpArg;
-import com.beng.opsyntax.OpOrSyntax;
 import com.beng.opsyntax.OpSyntax;
+import com.beng.opsyntax.grouped.OpOrSyntax;
 import com.beng.parser.Parser;
 
 public class OpGroupSyntax extends QuantifiableOpSyntax {

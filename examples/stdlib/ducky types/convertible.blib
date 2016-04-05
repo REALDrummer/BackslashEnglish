@@ -1,0 +1,2 @@
+define type convertible to|>> <type Destination Type>:
+	thing + { template Destination Type <this> >> <<type> >= Destination Type> }

@@ -6,7 +6,7 @@
 \usepackage[dvipsnames]{xcolor}	% allows the coloring of text, especially for the simulated syntax highlighting
 \usepackage{lmodern}			% allows the use of lmodern fonts, which have less issues than the default like '<' doesn't become '¡' and tt text can be bold
 \usepackage[T1]{fontenc}		% fixes those weird fint-compatibility issues that can turn '<' into '¡' and so forth
-\usepackage[utf8x]{inputenc}		% allow the proper use and translation of Unicode characters
+\usepackage[utf8x]{inputenc}	% allow the proper use and translation of Unicode characters
 
 \setcounter{secnumdepth}{4}		% allows 4-point sequence numbers in delineating sections, e.g. "2.2.2.1"
 
@@ -46,7 +46,7 @@
 \tableofcontents
 \newpage
 
-\obeylines												% makes line breaks occur in the doducment as they occur in code
+\obeylines												% makes line breaks occur in the document as they occur in code
 
 \secl{Introduction: What, Why, and How?}
 \ssecl{What is \English{}?}
@@ -102,7 +102,7 @@ more code
 \type{queue} Queue
 \end{code}
 
-In \English{}, there's a bit of a twist: in this language, types, variable names, and other operators can have spaces, can be defined with special character-matching operators (as in operator definitions; see Section \ref{ssec:Operators} later on), and more. Here are some examples with spaces in the names of the variables and/or the names of their types:
+In \English{}, there's a bit of a twist: in this language, types, variable names, and other operators can have spaces! Here are some examples with spaces in the names of the variables and/or the names of their types:
 \begin{code}
 \type{int} Number of Variables
 \type{list of queues of pairs of ints and floats} My Beautiful Queues
@@ -294,7 +294,7 @@ Paired Odd Numbers - Prime Numbers \commentline{1, 1, and 3; subtraction removes
 Paired Odd Numbers \% Prime Numbers \commentline{1 and 1; modulus removes EVERY element in the first collection that matches one in the second}
 Prime Numbers * 2 \commentline{2, 3, 5, 7, 2, 3, 5, and 7; a list times a number is that list repeated that many times!}
 
-\commentline{There are currently no uses for multiplying a list by a list or dividing a list by something.}
+\commentline{There are currently no uses for multiplying a list by a list or dividing a list by something, but if you think of a cool use for it, let us know!}
 \end{code}
 
 \indent Those are the arithmatic ones that utilize the mathematical symbols, but there are other list utilities, too (many inspired by Haskell):
@@ -303,10 +303,10 @@ Prime Numbers * 2 \commentline{2, 3, 5, 7, 2, 3, 5, and 7; a list times a number
 \common{zip} Odd Numbers \common{and} Even Numbers \commentline{1, 2, 3, 4, 5, 6, 7, and 8; it takes an element from each list one at a time}
 Odd Numbers \common{starts with} 1, 3, \common{and} 5 \commentline{true}
 4's \common{index in} Even Numbers \commentline{1 because Even Numbers[1] is 4 (indexed from 0; see Section \ref{sssec:List Indexes})}
-7's \common{last index in} Odd Numbers \commentline{3 because Odd Numbers[3] is 11}
+7's \common{last index in} Odd Numbers \commentline{3 because Odd Numbers[3] is 7}
 \end{code}
 
-\indent There are so many more cool ones\ldots but I'm afraid that they'll have to wait until Section \ref{ssec:High Order Functionality} on high-order functionality.
+\indent There are so many more cool ones\ldots but I'm afraid that they'll have to wait until Section \ref{ssec:High Order Functionality} on high-order functionality to explain the rest.
 
 \sssecl{List Indexes}
 \indent Accessing list items by index is done with the classic "box notation" (with "\texttt{[]}"s) from index 0.
@@ -408,9 +408,9 @@ City[\common{to} 5] * 3 + City[\common{from} 5] \commentline{"New New New York C
 \sssecl{Special List Types}
 \indent Here's an incredibly powerful tool that you won't find in almost any other programming language: you can specify the size of the list as part of the type! As we'll explain more later on in Section \ref{ssec:Types}, types can come with any kinds of properties: not just other types like Java or C++, but numbers, strings, or whatever else you can think of!
 \begin{code}
-3 \type{strings} Three Words For You := \codestring{I}, \codestring{hate}, and \codestring{you}	\commentline{"I", "hate", and "you"}
+3 \type{strings} Three Words For You := \codestring{I}, \codestring{hate}, \common{and} \codestring{you}	\commentline{"I", "hate", and "you"}
 Three Words For You[1] := \codestring{love}	\commentline{"I", "love", and "you"}
-Three Words For You := \codestring{I} and \codestring{love}	\commentline{ERROR! There are only two strings in this array!}
+Three Words For You := \codestring{I} \common{and} \codestring{love}	\commentline{ERROR! There are only two strings in this array!}
 \end{code}
 
 \indent There are a million uses for that one.
@@ -422,7 +422,7 @@ Hyperdimensional Matrix += (0, 5, and 9) and 12	\commentline{[[[[0], [0, 5, 9], 
 \end{code}
 
 \indent Much of \English{} is about clarity not just in writing, but in assumptions. In most programming languages, if you want to do some operations on a list of sorted things, you have to hope that the list given to you for the operation is sorted. In \English{}, we can use the advanced type system to guarantee it.
-\indent The two special kinds of lists available to help us to that are called "\type{sorted}" and \type{sorting}". Sorted lists are lists that have been sorted once, e.g. by a run through a quick sort algorithm. Sorting lists are lists that constantly sort themselves as new elements are added to or removed from them. This means that adding things to a sorted list will make it unsorted again while sorting lists will keep sorting.
+\indent The two special kinds of lists available to help us: "\type{sorted}" and "\type{sorting}" lists. Sorted lists are lists that have been sorted once, e.g. by a run through a quick sort algorithm. Sorting lists are lists that constantly sort themselves as new elements are added to or removed from them. This means that adding things to a sorted list will make it unsorted again while sorting lists will keep sorting.
 \begin{code}
 \type{sorted strings} Sorted Names := \common{quicksort} \codestring{Abby}, \codestring{Doug}, \codestring{Britney}, \common{and} \codestring{Caroline}
 Sorted Names -= \codestring{Abby} \commentline{This is fine; removing elements doesn't affect the order of the remaining ones!}
@@ -430,6 +430,7 @@ Sorted Names += \codestring{Eve} \commentline{ERROR! Even though it would techni
 
 \type{sorting ints} Tree := \common{a new} \type{binary search tree of ints} \common{with} 5, 9, 8, \common{and} -2 \commentline{B.S.T.s sort themselves; the elements we're putting into it aren't sorted, but they'll be sorted into the tree.}
 Tree += 5 \commentline{This 5 will be sorted into the tree because B.S.T.s are a type of sort\emph{ing} list.}
+Tree[3] \commentline{8 because if you sort the 5, 9, 8, -2, and the additional 5, you get -2, 5, 5, 8, and 9, and [3] = 8}
 \end{code}
 
 \ssecl{Code Blocks}
@@ -446,29 +447,30 @@ Variable\verb+--+ \commentline{This operation is NOT part of the if statement! I
 \end{code}
 
 \paragraph{Switch-Case}
-\indent \English{} also has "\common{switch}-\common{case}" statements. The basic versions of switch cases let you put one thing at the top; then, you can list cases and the program will execute at the case that matches the thing you put in the top. Also note that switch-case statements use colons instead of commas to start blocks. Here is an example:
+% TODO: change to a special form of if statement with a partially applied operator
+\indent \English{} also has "\common{switch}" statements. The basic versions of switch cases let you put one thing at the top; then, you can list cases and the program will execute at the case that matches the thing you put in the top. Unlike other programming languages, though, you don't need to put "case" at the beginning of each case. Also note that switch-case statements use colons instead of commas to start blocks. Here is an example:
 \begin{code}
 \common{switch by} Number: \commentline{\English{} adds the word "by" for readability.}
-\common{case} 0:
+0:
 \qquad\commentline{Do stuff if Number = 0.}
 \qquad{}Number -= 5
-\common{case} 1:
+1:
 \qquad\commentline{Do stuff if Number = 1.}
 \qquad{}Number++
-\common{case} Another Number:
+Another Number:
 \qquad\commentline{Do stuff if Number = Another Number.}
 \qquad\commentline{Yes, you can use other operators like variables for these cases, too.}
-\qquad{}Number := Another Number
-\common{case} 5:
+\qquad{}Number\verb+--+
+5:
 \qquad\commentline{Do stuff if Number = 5.}
 \qquad\commentline{\ldots{}BUT keep in mind that the case above might get it instead if Another Number was 5.}
 \qquad{}Another Number\verb+--+
-\common{default}:
-\qquad\commentline{Do stuff if all the previous cases did not match; this is basically the 'else' of switch-cases.}
+\common{else}:
+\qquad\commentline{Do stuff if all the previous cases did not match.}
 \qquad{}Number += 59
 \end{code}
 
-\indent Now, \English{} switch-case statements are much more versatile than ones you've seen in other languages. Sadly, the coolest stuff takes knowledge of high-order and partially applicable functionality (Sections \ref{ssec:High Order Functionality} and \ref{sssec:Missing Something? Partially Applied Operators}), but I'll tell you all about the fallthrough stuff now.
+\indent Now, \English{} switch statements are much more versatile than ones you've seen in other languages. Sadly, the coolest stuff takes knowledge of high-order and partially applicable functionality (Sections \ref{ssec:High Order Functionality} and \ref{sssec:Missing Something? Partially Applied Operators}), but I'll tell you all about the fallthrough stuff now.
 \indent Switch fallthrough is a behavior that determines when the program progresses to the next case in a switch-case statement if it doesn't reach a "\common{break}" statement. If you've seen other programming languages, you know they handle switch fallthrough differently. If the switch-case above was planted in C, it would actually act differently; in C, switch fallthrough always happens, so if Number was 0, it would do everything in case 0, then everything in case 1, then keep going all the way through. In \English{}, in the average switch-case like the one above, there is no switch fallthrough unless you have no operations in a case. (This is the way C\# does it.) Here's a more thorough example of your average everyday \English{} switch-case statement.
 \begin{code}
 \common{switch by} Number:
@@ -481,10 +483,10 @@ Variable\verb+--+ \commentline{This operation is NOT part of the if statement! I
 \qquad\commentline{Therefore, if Number is 1, it will fall through into 'case Another Number' below.}
 \common{case} Another Number:
 \qquad\commentline{Do stuff if Number = Another Number OR if Number = 1. (See above.)}
-\qquad{}Number := Another Number
+\qquad{}Number\verb+--+
 \common{case} 5:
 \qquad\commentline{Do stuff if Number = 5 AND Number != Another Number.}
-\common{default}:
+\common{else}:
 \qquad\commentline{Do stuff if all the previous cases did not match.}
 \qquad{}Number += 59
 \end{code}
@@ -577,7 +579,7 @@ Integer := double Integer \commentline{Integer is now 4.}
 
 \indent As you can imagine, you can use this operator in two ways:
 \begin{code}
-\type{list of ints} List := 5, 7, and 19
+\type{list of ints} List := 5, 7, \common{and} 19
 \type{bit} Not Empty := List is not empty
 \type{bit} Also Not Empty := List isn't empty
 \end{code}
@@ -609,18 +611,84 @@ Integer := double Integer \commentline{Integer is now 4.}
 \indent Now, this car type we defined above doesn't have any properties associated with it, so it doesn't seem very useful. Let us define a type for a two-dimensional point called "\texttt{2D point}". (This is actually defined in the standard library already, but it's a good example anyway.) To add properties to a type, follow the "\common{new type}" part with some variables with a list of variables in your much loved commas-and-"and"s syntax for the list and the type-name syntax for the variables:
 \begin{code}
 \define{\type{type}}{2D point}
-\qquad{}\common{a new type with} \type{float} X \common{and} \type{float} Y
+\qquad{}\common{a new type with} \type{number} X \common{and} \type{number} Y
 \end{code}
 
+\indent If you want to be able to create instances of that type, you'll have to define a constructor! As per usual, there are no rules surrounding how you declare a constructor; it's just another operator! \English{} neither knows nor cares about constructors; they're just operators that happen to return a new instance of your object.
+\indent Here is a basic example using the \type{2D point} type we defined above:
+\begin{code}
+\define{\type{2D point}}{\codespecial{\textbackslash}(\defpunct{<}\type{number} S\defpunct{>}, \defpunct{<}\type{number} T\defpunct{>}\codespecial{\textbackslash})}
+\qquad{}\common{a new} \type{2D point} \common{where} X := S \common{and} Y := T
+\end{code}
+
+\indent Note that we used the word "\common{where}" above to define the values of the variables. If you name the arguments the same thing as the properties of the type, you don't even need the assignment syntax; you can use the word "\common{with}" instead and just insert them as they are:
+\begin{code}
+\define{\type{2D point}}{\codespecial{\textbackslash}(\defpunct{<}\type{number} X\defpunct{>}, \defpunct{<}\type{number} Y\defpunct{>}\codespecial{\textbackslash})}
+\qquad{}\common{a new} \type{2D point} \common{with} X \common{and} Y
+\end{code}
+\indent \English{} recognizes that "X" and "Y" have the same names as the "X" and "Y" in the definition of \type{2D point}, so it uses the same values!
+
+\indent \English{} also utilizes inheritance. You can make new types that are types of other types; for example, a cat is a type of animal, so you could make a type called "\type{cat}" that is a new type of "\type{animal}". That code might look something like this:
+\be
+\begin{code}
+\define{\type{type}}{animal}
+\qquad{}\common{a new} \type{type}
+
+\define{\type{type}}{cat}
+\qquad{}\common{a new} \type{type of animal}
+\end{code}
+\indent With these types defined this way, you can use a \type{cat} as an argument to any operator that takes in an \type{animal}! For example, the following code works perfectly!
+\begin{code}
+\define{\type{sound status*}}{play \defpunct{<}\type{animal} Animal\defpunct{>}'s sound}
+\qquad{}\commentline{Make this animal play an animal sound!}
+\qquad{}Animal	\commentline{Return the animal.}
+
+\type{cat} Cat := \common{a new} \type{cat}
+play Cat's sound
+\end{code}
+\indent Even better: you can define an operator with the same syntax, but takes a \type{cat} instead of an \type{animal}, and \English{} will use the \type{cat} version for \type{cat}s and the \type{animal} version for \type{animal}s.
+\begin{code}
+\define{\type{sound status*}}{play \defpunct{<}\type{animal} Animal\defpunct{>}'s sound}
+\qquad{}\commentline{Make Animal play an animal sound!}
+
+\define{\type{sound status*}}{play \defpunct{<}\type{cat} Cat\defpunct{>}'s sound}
+\qquad{}\commentline{Make Cat meow!}
+
+\type{animal} Animal := \common{a new} \type{dog} \commentline{Pretend I defined 'dog' somewhere.}
+\type{animal} Cat := \common{a new} \type{cat}
+
+play Animal's sound \commentline{This dog will make some animal sound.}
+play Cat's sound \commentline{This cat will meow even though Cat was declared as an animal!}
+\end{code}
+\indent \textit{However}, in \English{}, the order of the operator definitions matters very much! If the \type{cat} version of the sound playing operator was defined first, then the \type{animal} version was defined afterward, even cats would make animal sounds. The latest defined operators are used first.
+
+\sssecl{Matchers}
+
+
+\paragraph{Type Matching} \label{par:Type Matching}
+
+\paragraph{Regex} \label{par:Regex}
 % TODO
 
 \sssecl{Type Modifiers}
-\paragraph{Defining Them}
-
-\paragraph{Using Them}
-
-\sssecl{Matchers}
-\paragraph{Regex} \label{par:Regex}
+\indent Type modifiers are not so much a feature of \English{} as much as a logical conclusion of the nature of the language. Types, like everything in \English{}, are operators; they can return data values that represent type information. So, why not have a type with a type as one of its arguments? Thus, type modifiers exist!
+\indent Type modifiers are simply a common \English{} pattern involving an operator that takes in a type as an argument (and possible other arguments) and returns a new type. In this way, additional restrictions and information can be added to types.
+\indent Here's a great example: sometimes, operations are only applicable to prime numbers. Let's take a simple example and say we wanted to create an operator that takes in a prime number and figures out which index the prime number has in the list of prime numbers; for example, since the first 5 prime numbers (and 1 is not prime) are 2, 3, 5, 7, and 11, inputting 5 into this operator would give you 2 (indexing from 0 like in lists). Here is what this might look like:
+\begin{code}
+\type{list of prime ints} Prime Numbers := 2, 3, 5, 7, 11, \commentline{\ldots}
+\define{\type{bit}}{\defpunct{<}\type{prime int} Prime\defpunct{>}'s prime index}
+\qquad{}Prime's \common{index in} Prime Numbers
+\end{code}
+\indent I used "\type{prime int}" as a type, but how? You could declare "\type{prime int}" as a type, but what if at some point you wanted to use a "\type{prime byte}" or a "\type{prime double int}"? So, instead, let us define a type modifier:
+\begin{code}
+\define{\type{type of integer}}{prime \defpunct{<}\type{type of integer} Integer Type\defpunct{>}}:
+\qquad{}\common{a new} \type{type of} Integer Type \common{with} Integer Type
+\end{code}
+\indent Note that since our "\type{prime}" type is a new type of \texttt{Integer Type}, using "\type{prime int}" would result in a new type of \type{int}, using "\type{prime byte}" would result in a new type of byte, and so on. Let's use a type matching operator to describe how to check if a number is prime (see Section \ref{par:Type Matching} for more info on type matchers):
+\begin{code}
+\define{\type{bit}}{\defpunct{<}\type{integer} Integer\defpunct{>} =\textasciitilde{} \defpunct{<}\type{type of prime integer} Type\defpunct{>}}
+\qquad{}Integer =\textasciitilde{} Type's integer type \common{and} Prime Numbers \common{contains} Integer
+\end{code}
 
 \sssecl{Units}
 \paragraph{Defining Them}
@@ -642,8 +710,6 @@ Integer := double Integer \commentline{Integer is now 4.}
 \sssecl{What?}
 
 \sssecl{Why?}
-
-\sssecl{Super-implicit?}
 
 \ssecl{High Order Functionality}
 \sssecl{What?}

@@ -1,0 +1,18 @@
+define <bit> <string Larger> contains an anagram of <string Smaller>:
+	if Larger's size > Smaller's size,
+		bit Contains Anagram := false
+		from i := 0 to Larger's size - Smaller's size,
+			string Smaller Copy := Smaller
+			bit Substring Is An Anagram := true
+			for each Character in Larger[i to (i + Smaller's size)],
+				if Smaller Copy contains Character,
+					Smaller Copy -= Character
+				else,
+					Substring Is An Anagram := false
+					break
+			if Substring Is An Anagram,
+				Contains Anagram := true
+				break
+		Contains Anagram
+	else
+		false

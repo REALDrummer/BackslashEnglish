@@ -66,7 +66,7 @@ public abstract class SysOp<R extends Assemblable> extends OpDefinition {
 		}
 	};
 	public static final SysOp<NASMInteger> INTEGER = new SysOp<NASMInteger>(StandardOp.INTEGER,
-			"\"Number String\"(-[0-7]?[0-9A-Fa-f]{3-})") {
+			"0x\"Number String\"([0-7]?[0-9A-Fa-f]{1-3})") {
 		@Override
 		public NASMInteger runWith(FullyAppliedOpCall call) throws OpRunException {
 			return new NASMInteger(Integer.parseInt(call.getCapturedLiteral("Number String"), 16));

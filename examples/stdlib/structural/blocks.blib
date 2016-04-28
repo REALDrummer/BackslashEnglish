@@ -1,47 +1,30 @@
 use stdlib/number.beng.
 
-uint Indent Level := 0
-string Indentation Unit := /"(\t|    )"/
-define private <string> Indent: Indentation Unit * (Indentation Level + 1);
-define <@> (do:)? 
-`Indent`<op Ops>* 
-`Indent`<op=><type @\> Last Op>:
+unumber Indent Level := 0
+final string Indentation Unit := /"(\n(\t|    ))?"/
+define private <string> Indent: 
+	Indentation Unit * (Indentation Level + 1)
+
+define <Last Op's return type> (`Indent`<op Ops>)*`Indent`<op Last Op>:
 	run Ops
-	run Last Op;
+	run Last Op
 
-define <void> do nothing: a new error saying "You tried to capture the result of doing nothing....";
+define <True Branch's return type or False Branch's return type> if <op=>bit Condition>, <code block True Branch> else, <code block False Branch>:
+	bit Condition Result := run Condition
+	NASM command* If Start := test Condition Result, Condition Result
+	jz If False
+	(True Branch's return type) Result := run True Branch using Condition  #< go to use Condition to run the body in case Condition defined new operators >#
+	jmp If End
+	NASM command* If False := nop
+	(False Branch's return type) Result := run False Branch using Condition
+	NASM command* If End := nop
+	Result
 
-define <@> if <op=>bits Condition>,? <op=>@ True Branch> else,? <op=>@ False Branch>:
-	asm if_start: cmp Condition, 0
-	asm jne if_false
-	@ Result := run True Branch using Condition  #< go to use Condition to run the body in case Condition defined new operators >#
-	asm jmp if_end
-	asm if_false:
-	@ Result := run False Branch using Condition
-	asm if_end:
-	Result;
+define <type of error> missing else error:
+	a new type of error saying "Someone didn't put an else block after an if where the return value is used!"
 
-define <@?> if <bit Condition>,? <op=>@ True Branch>:
+define <(True Branch's return type)?> if <bit Condition>,? <code block True Branch>:
 	if Condition,
 		run True Branch
 	else,
-		a missing else error saying "Someone didn't put an else block after an if where the return value is used!";
-
-define <@> if <\type checker Condition>,? <op=>@ True Branch>:
-	if Condition,
-		run True Branch using define <Condition's \type \to check> `Condition's subject`: Condition's subject as Condition's \type \to check;;
-
-define private <type> where declaration op:
-	a new type of op with 
-		string Op Declaration and
-		op Op Body;
-
-#< @Returns `true` if no `error`s of `Error Type` were caught; `false` if it did catch such an `error`. >#
-define <@> try to?\:? <op=>@ Try Block>* and? (if you?)? catch any? <type of error Error Type>s? (.+?),? <op=>@ Catch Block>:
-	#< TODO: figure out how to handle exceptions >#.
-
-define <@> try to?\: <op=>@ Try Block>* and? fix|ignore any? <types of error Error Types>:
-	try to run Try Block and catch any (Error Types): do nothing.
-
-define <Incomplete Ops' types> where <ops Completers>,? <op Incomplete Ops>:
-	run Incomplete Ops using Completers;
+		a new missing else error

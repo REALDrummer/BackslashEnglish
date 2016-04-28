@@ -5,29 +5,15 @@
 
 #< standard operators >#
 define <type of pointer> <type Base Type>\*:
-	a new type with Base Type Type, 
-		private (this OS's address size)-bit unsigned number Address, and 
-		private uint Number of References
+	a new type with 
+		Base Type Type and
+		# the "unsigned dint" assumes a 64-bit system
+		write-private implicit unsigned dint Address
 	
 #< reference >#
 define implicit <(Op's \return \type)*> &<operator Op>:
-	a new (Op's \type) pointer to Op's address.
+	a new (Op's \type) pointer to Op's address
 	
 #< dereference >#
-define <Pointer's base \type> \*<pointer Pointer>:
+define implicit <Pointer's base \type> \*<pointer Pointer>:
 	[Pointer]	# NASM effective address
-	
-#< pointer type conversion >#
-define <Destination Type*> <thing* Pointer> >> <type of pointer Destination Type>:
-	Destination Type*.
-	
-#< automatic reference >#
-define priority-96 implicit <@*> <@ Thing> >> <type of @*>:
-	&Thing
-	
-#< automatic dereference >#
-define implicit <@> <@* Pointer> >> <type of @>:
-	*Pointer
-
-define implicit (this OS's address size)-bit unsigned number <thing* Pointer> >> <type of number>:
-	Pointer's address.

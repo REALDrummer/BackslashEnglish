@@ -1,5 +1,3 @@
-define @ \: <op Ops>*;?: run Ops.
-
 define <number> while <op=>bit Condition> <op Op>:
 	int i := 0
 	asm while_start:
@@ -9,54 +7,45 @@ define <number> while <op=>bit Condition> <op Op>:
 	i++
 	asm jmp while_start
 	asm while_end:
-	i.
-	
-define number for <variable i> while <op=>bit Condition> with <op Incrementer> <op Op>:
-	while (run Condition using i):
-		run Ops using i
-		run Incrementer using i.
+	i
 
 
 # TODO: find a way to consolidate the two operator definitions below: a type declaration and a constructor for said new type
-define private <type> <int Number of Items>-item each-structure:
+define private <type> (<int Number of Items>-item)? each-structure:
 	a new type with 
 		final string Var Name and
-		final Number of Items thing list List;
+		final Number of Items thing list List
 
-define <@-item each-structure> each (.+) in <@ thing list List>:
+define <(List's size)-item each-structure> each "Var Name"(.+) in <list List>:
 	each-structure Each := a new each-structure
 	
-	Each's Var Name := \1
+	Each's var name := Var Name
 	Each's list := List
 	
-	Each;
+	Each
 
-define <@rs> <op()=>@r Op> for <@n-item each-structures Eaches>:
-	@rs Results := a new array of @n @rs
+define <Eaches's list's type> for <each-structures Eaches>, <code block Body>:
+	(Eaches's list's type) Results := a new array of (Eaches's list's type)
 	
 	# define i ahead of time to use it in the For Vars below
 	int i
 	
 	# define the operators for each for variable
 	vars For Vars := a new array of (Eaches's size) vars
-	from f := 0 to For Vars's size,
-		For Vars[f] := define <var> `Eaches[f]'s var name`: Eaches[f]'s list[i];
+	from f := 0 to For Vars's size,	# don't use the for-each here or there will be an infinite recursion!
+		For Vars[f] := define <var> `Eaches[f]'s var name`: Eaches[f]'s list[i]
 	
-	from i := 0 to Results's size:
-		Results[i] := run Op using For Vars;
+	from i := 0 to Results's size:	# don't use the for-each here or there will be an infinite recursion!
+		Results[i] := run Body using For Vars
 	
-	Results;
+	Results
 
-define number from <variable i> to <number End> <op Op>:
+define <number> from <variable i> to <number End>, <code block Body>:
 	if i = End,
-		run Op using i
+		run Body using i
 	else if i < End,
 		for i while i < End with i++,
-			run Op using i
+			run Body using i
 	else
 		for i while i > End with i--,
-			run Op using i;
-
-define number from <number Start> to <number End>\: <op Ops>*;?:
-	from number i := Start to End:
-		run Ops using i;
+			run Body using i

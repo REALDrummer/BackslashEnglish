@@ -1,2 +1,7 @@
-define <@ copy> a? new? copy|clone of? <@ Thing>:
-	
+define <type of Type> <type Type> (copy|clone):
+	a new type of Type with thing* Original
+
+define <(Thing's type) copy> a? (new)? (copy|clone) of <thing Thing>:
+	a new (Thing's type) copy where Original := &Thing
+
+define <Thing's type>

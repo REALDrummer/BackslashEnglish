@@ -7,6 +7,7 @@
 \usepackage{lmodern}			% allows the use of lmodern fonts, which have less issues than the default like '<' doesn't become '¡' and tt text can be bold
 \usepackage[T1]{fontenc}		% fixes those weird fint-compatibility issues that can turn '<' into '¡' and so forth
 \usepackage[utf8x]{inputenc}	% allow the proper use and translation of Unicode characters
+\usepackage{verbatim}
 
 \setcounter{secnumdepth}{4}		% allows 4-point sequence numbers in delineating sections, e.g. "2.2.2.1"
 
@@ -33,6 +34,7 @@
 \newcommand{\define}[2]{\texttt{\keyop{define} \defpunct{<}#1\defpunct{>} #2\defpunct{:}}}
 \newcommand{\codestring}[1]{\texttt{\textcolor{NavyBlue}{"#1"}}}
 \newcommand{\codechar}[1]{\texttt{\textcolor{Blue}{#1}}}
+\newcommand{\codearg}[1]{\codespecial{<}\texttt{#1}\codespecial{>}}
 \newenvironment{code}[0]
 {\ttfamily{}				% use true-type fonts for code
 \setlength\parindent{0cm}	% remove paragraph indentation for code
@@ -48,17 +50,18 @@
 
 \obeylines												% makes line breaks occur in the document as they occur in code
 
+\begin{comment}
 \secl{Introduction: What, Why, and How?}
 \ssecl{What is \English{}?}
 
 \ssecl{What makes it different?}
 
 \ssecl{What is good about these differences?}
-
 \ssecl{How are these differences possible?}
 
+\end{comment}
 \secl{How to Use the Language}
-\ssecl{Compilation}
+%\ssecl{Compilation}
 
 \ssecl{First Things First}
 \sssecl{\texttt{main(}... Oh, Wait}
@@ -209,7 +212,7 @@ i++	\commentline{Now i is 1.}\\
 \begin{code}
 \type{int} Eight := 5	\commentline{Here, Eight equals 5.}
 Eight += 3	\commentline{Now it's actually 8.}
-\\
+~\\
 \type{byte} One := 9	\commentline{Now it's 9\ldots.}
 One \%= 4	\commentline{Okay, now it's 1.}
 \end{code}
@@ -222,7 +225,7 @@ One \%= 4	\commentline{Okay, now it's 1.}
 \type{bit} True := 5 >= 3
 \type{bit} False := 7 != 7
 \type{bit} True := 9 * 7 < 8 * 8 \% 100\\
-2-bit \type{number} Two For Greater Than := 7 * 2 <=> 3^2
+2-bit \type{number} Two For Greater Than := 7 * 2 <=> 3\^{}2
 
 \commentline{Here is a more common use of these comparison operators that will be explained more in Section \ref{sssec:If And Its Friends}.}
 \common{if} Number != 8,
@@ -629,7 +632,6 @@ Integer := double Integer \commentline{Integer is now 4.}
 \indent \English{} recognizes that "X" and "Y" have the same names as the "X" and "Y" in the definition of \type{2D point}, so it uses the same values!
 
 \indent \English{} also utilizes inheritance. You can make new types that are types of other types; for example, a cat is a type of animal, so you could make a type called "\type{cat}" that is a new type of "\type{animal}". That code might look something like this:
-\be
 \begin{code}
 \define{\type{type}}{animal}
 \qquad{}\common{a new} \type{type}
@@ -694,18 +696,43 @@ play Cat's sound \commentline{This cat will meow even though Cat was declared as
 \paragraph{Defining Them}
 
 \paragraph{Using Them}
+\sssecl{Implications}
+\indent 
 
 \ssecl{Errors}
-\paragraph{Defining Them}
+\indent \English{} has a special kind of object defined in its standard library: the \type{error} type. Like Java \texttt{Exception} objects, \type{error} objects contain information about the error that occurred. Every error contains a message that can be used to describe the error.\\
+\indent Error handling in \English{} is simple and done one of two ways. When an error occurs, \English{} can either "throw" the error using an exclamation point ("\texttt{!}") or return the error. Throwing an error causes the program to stop immediately and print out information about the failure. More commonly, returning the error can allow the part of the program using the current operator to obtain information about what went wrong and possibly even how to fix it.\\
+\indent Returning the error works with a special type known as a "fallible" type. A fallible type represents something that can either be the type of value expected from the operation or an \type{error} object. For example, a value can be obtained from a \type{map} by using the corresponding key. Imagine that there is a \type{map of strings to ints}; the \type{string} keys might represent the names on some employees and the integers might be the number of papers they stamped over the past week. Let's call this \type{map} "\texttt{Stamps}". Map values can be accessed using the list index access syntax, but instead of using integers for indices, we use the keys of the map. Here is how such a map might be initialized and filled:
+\begin{code}
+\type{map of strings to ints} Stamps := \common{a new} \type{map of strings to ints}
+Stamps[\codestring{Jule Farway}] := 3
+Stamps[\codestring{Kylee Renault}] := 15
+Stamps[\codestring{Guy Lazboy}] := 0
+\end{code}
+\indent Now, we can access values \textit{almost} like this:
+\begin{code}
+\type{int} Renault Stamps := Stamps[\codestring{Kylee Renault}]
+\end{code}
+\indent You may ask why the word "almost" was used. If you attempted to use the code above, there would actually be a type error! This is because accessing a value from a map is a fallible operation; it returns not an \type{int}, but a fallible type, \type{int?}. It will return an \type{error} object if the key input is not in the map. Using a question mark ("\texttt{?}") after a type indicates that the true type is \textit{either} the type before the question mark \textit{or} an \type{error}. Therefore, the code above is attempting to put an \type{int or error} into a variable made to contain an \type{int}; this causes the type error.\\
+\indent There are two ways to resolve this type error. The first is to use the "\texttt{!}" operator. If the value before the \texttt{!} is an \type{error}, it will print the error message and stop the running program.\\
+\begin{code}
+\type{int} Renault Stamps := Stamps[\codestring{Kylee Renault}]!
+\end{code}
+\indent The second (and usually smarter) way to resolve this error is to check to see whether or not the value is an error and decide what the program should do from there. This utilizes the implication system (see Section \ref{Implications}) like so:
+\begin{code}
+\type{int?} Renault Stamps := Stamps[\codestring{Kylee Renault}]
+\common{if} Renault Stamps \common{is an} \type{error},
+\qquad{}\common{a new} \type{error} \common{saying} \codestring{I couldn't find Kylee!}
+\common{else}
+\qquad{}Renault Stamps	\commentline{Thanks to implications, this is now just an int.}
+\end{code}
 
-\paragraph{Using Them}
-
+\begin{comment}
 \ssecl{Streams}
 \ssecl{Input and Output}
 \sssecl{Stdin Reading and Stdout Printing}
 
 \sssecl{File Reading and Writing}
-
 \ssecl{Implicit Conversion}
 \sssecl{What?}
 
@@ -745,4 +772,5 @@ play Cat's sound \commentline{This cat will meow even though Cat was declared as
 \ssecl{Idea}
 
 \ssecl{Optimizability}
+\end{comment}
 \end{document}

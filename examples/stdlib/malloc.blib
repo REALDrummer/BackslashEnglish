@@ -1,0 +1,4 @@
+define <thing*> malloc <memory size Size>:
+	mov rdi, Size in bytes
+	call malloc
+	a new thing* where Address := rax

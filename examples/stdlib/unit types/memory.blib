@@ -1,0 +1,18 @@
+define <unit type> memory size unit:
+	a new type of unit for "memory size"
+
+define <unit> bit:
+	a new memory unit named "bit" symbolized by "b"
+
+define <unit> byte:
+	a new memory unit named "byte" symbolized by "B"
+
+define <number> <memory size Size> in <memory unit Unit>:
+	if Size's unit = Unit,
+		Size's value
+	else if Size's unit = bit and Unit = byte,
+		Size's value / 8
+	else if Size's unit = byte and Unit = bit,
+		Size's value * 8
+	else
+		a new error saying "I don't know how to convert from `Size's unit` to `Unit`!"!

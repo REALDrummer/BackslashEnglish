@@ -1,0 +1,25 @@
+# TODO: find an elegant way to define units and unit types in terms of enums
+define <type> unit type:
+	a new type with implicit string Name
+
+define <unit type> a new type of unit for <final string Name>:
+	a new unit type with Name
+
+define <type> <unit type Type> unit:
+	a new type with 
+		implicit string Name,
+		unit type Type, and
+		string Symbol
+
+define <unit> a new <type of unit Unit Type> named <string Name> symbolized by <string Symbol>:
+	a new Unit Type with Symbol and Name
+
+define <type of number> dimension:
+	a new type of number with
+		unit Unit and
+		private number Value
+
+define <dimension> <number Value> <unit Unit>:
+	a new dimension with Unit and Value
+
+template <number> <dimension Dimension> in <(Dimension's unit's unit type)s Type>:
